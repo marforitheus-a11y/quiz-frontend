@@ -13,7 +13,6 @@
 
 // --- CONFIGURAÇÃO E VARIÁVEIS GLOBAIS ---
 // Agora a declaração do token é única e segura.
-const token = localStorage.getItem('token');
 // ⚠️ ATENÇÃO: Verifique se esta é a URL correta da sua API na Render
 const API_URL = 'https://quiz-api.onrender.com'; 
 const mainContent = document.getElementById('main-content');
