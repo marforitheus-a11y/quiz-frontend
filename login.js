@@ -3,7 +3,7 @@ const loginForm = document.getElementById('login-form');
 const errorMessage = document.getElementById('error-message');
 
 // A URL da sua API no ar
-const API_URL = 'https://quiz-api.onrender.com'; // CONFIRA SE ESTA URL ESTÁ CORRETA
+const API_URL = 'https://quiz-api-z4ri.onrender.com'; // CONFIRA SE ESTA URL ESTÁ CORRETA
 
 loginForm.addEventListener('submit', async (event) => {
     // ESTA LINHA É A MAIS IMPORTANTE!
