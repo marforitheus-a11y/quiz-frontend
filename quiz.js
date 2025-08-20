@@ -2,7 +2,8 @@
 
 // --- CONFIGURAÇÃO E VARIÁVEIS GLOBAIS ---
 const token = localStorage.getItem('token');
-const API_URL = 'https://seu-quiz-api.onrender.com'; // ⚠️ LEMBRE-SE DE VERIFICAR SE ESTA É SUA URL CORRETA
+// ⚠️ ATENÇÃO: Verifique se esta é a URL correta da sua API na Render
+const API_URL = 'https://quiz-api.onrender.com'; 
 const mainContent = document.getElementById('main-content');
 const logoutBtn = document.getElementById('logout-btn');
 
@@ -13,7 +14,7 @@ let score = 0;
 
 // --- FLUXO PRINCIPAL ---
 
-// Esta linha é o gatilho que inicia tudo assim que a página carrega.
+// Gatilho que inicia tudo assim que a página é carregada
 window.onload = loadThemes;
 
 logoutBtn.addEventListener('click', () => {
@@ -32,13 +33,13 @@ async function loadThemes() {
         const response = await fetch(`${API_URL}/themes`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (!response.ok) throw new Error('Falha ao carregar temas.');
+        if (!response.ok) throw new Error('Falha ao carregar temas do servidor.');
         
         const themes = await response.json();
         displaySetupScreen(themes); // Passa os temas para a próxima função
 
     } catch (error) {
-        mainContent.innerHTML = `<p class="error">Erro ao carregar temas. Tente novamente mais tarde.</p>`;
+        mainContent.innerHTML = `<p class="error">Não foi possível carregar os temas. Verifique se sua API está no ar e se há temas cadastrados.</p>`;
         console.error(error);
     }
 }
@@ -69,9 +70,12 @@ function displaySetupScreen(themes = []) {
         </div>
     `;
 
-    // Adiciona o event listener ao botão que acabamos de criar
     document.getElementById('start-btn').addEventListener('click', startQuiz);
 }
+
+// ... COLE AQUI O RESTANTE DAS SUAS FUNÇÕES DO quiz.js ...
+// (startQuiz, displayQuestion, selectAnswer, showResults)
+// É crucial que o restante do código que já funcionava seja mantido aqui.
 
 /**
  * 1. Pega as configurações do usuário.

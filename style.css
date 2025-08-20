@@ -1,6 +1,7 @@
-/* arquivo: style.css */
+/* arquivo: style.css (VERSÃO FINAL COMPLETA) */
 :root {
     --primary-color: #007bff;
+    --secondary-color: #6c757d;
     --success-color: #28a745;
     --danger-color: #dc3545;
     --light-gray: #f8f9fa;
@@ -34,7 +35,7 @@ body {
     flex-direction: column;
 }
 
-/* --- Estilos de Login --- */
+/* --- ESTILOS DE LOGIN --- */
 .form-container {
     padding: 40px 30px;
     text-align: center;
@@ -52,21 +53,28 @@ body {
     font-weight: 500;
 }
 .input,
-.input-group input {
+.input-group input,
+.input-group textarea {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
     border: 1px solid #ccc;
     font-size: 1em;
     box-sizing: border-box;
+    font-family: inherit;
 }
 .error {
     color: var(--danger-color);
     margin-top: 15px;
     height: 20px;
 }
+.status {
+    margin-top: 15px;
+    height: 20px;
+    font-weight: bold;
+}
 
-/* --- Estilos Gerais --- */
+/* --- ESTILOS GERAIS --- */
 .btn {
     background-color: var(--primary-color);
     color: var(--white);
@@ -92,8 +100,18 @@ body {
     cursor: pointer;
     font-size: 0.9em;
 }
+.btn-header {
+    background: none;
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    text-decoration: none;
+}
 
-/* --- Estilos do Quiz --- */
+/* --- ESTILOS DO QUIZ --- */
 .app-header {
     background-color: var(--white);
     padding: 15px 20px;
@@ -127,26 +145,115 @@ body {
 .label {
     font-weight: bold;
 }
-/* Adicione ao final do seu style.css */
-.admin-section {
+.question-text {
+    font-size: 1.2em;
+    margin-bottom: 25px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+.options {
+    list-style: none;
+    padding: 0;
+}
+.options li {
+    background-color: var(--white);
     border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
     border-radius: var(--border-radius);
-    padding: 20px;
-    margin-bottom: 30px;
-}
-.status {
-    margin-top: 15px;
-    height: 20px;
-    font-weight: bold;
-}
-/* Adicione ao seu style.css */
-.btn-header {
-    background: none;
-    border: 1px solid var(--secondary-color);
-    color: var(--secondary-color);
-    padding: 8px 15px;
-    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9em;
-    text-decoration: none;
+    transition: all 0.2s;
 }
+.options li.correct {
+    background-color: var(--success-color);
+    color: var(--white);
+    border-color: #1e7e34;
+}
+.options li.incorrect {
+    background-color: var(--danger-color);
+    color: var(--white);
+    border-color: #b21f2d;
+}
+.progress-text {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1em;
+    color: var(--secondary-color);
+}
+
+/* --- ESTILOS DO ADMIN E DESEMPENHO --- */
+.admin-section {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+.admin-table th, .admin-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.admin-table th {
+    background-color: var(--light-gray);
+}
+.btn-delete {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.status-pendente {
+    background-color: #ffc107;
+    color: black;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.8em;
+}
+.status-corrigido {
+    background-color: var(--success-color);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.8em;
+}
+.btn-back {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+.history-item {
+    background-color: var(--light-gray);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+}
+.btn-review {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+.review-question {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+.review-question .options li {
+    pointer-events: none;
+    background-color: #f1f1f1;
+}
+.feedback { font-weight: 500; }
+.feedback-correct { color: var(--success-color); font-weight: bold; }
