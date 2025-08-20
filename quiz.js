@@ -1,46 +1,69 @@
-// arquivo: quiz.js (VERSÃO FINAL COMPLETA E CORRIGIDA)
+// ==================================================================
+// ARQUIVO quiz.js (VERSÃO FINAL COMPLETA E CORRIGIDA)
+// ==================================================================
 
+// --- CONFIGURAÇÃO E VARIÁVEIS GLOBAIS ---
 const token = localStorage.getItem('token');
 const username = localStorage.getItem('username');
-// ⚠️ ATENÇÃO: Verifique se esta é a URL correta da sua API na Render
+// ⚠️ ATENÇÃO: VERIFIQUE SE ESTA É A URL CORRETA DA SUA API NA RENDER!
 const API_URL = 'https://quiz-api.onrender.com';
 
-// Proteção da página: se não houver token, volta para o login
+// Proteção da página: se não houver token, volta para o login.
+// Isso é executado imediatamente.
 if (!token) {
     window.location.href = 'index.html';
 }
 
-const mainContent = document.getElementById('main-content');
-const logoutBtn = document.getElementById('logout-btn');
+// Seleciona os elementos da página DEPOIS que a página carregar
+let mainContent;
+let logoutBtn;
 
+// Variáveis de estado do quiz
 let questionsToAsk = [];
 let userAnswers = [];
 let currentQuestionIndex = 0;
 let score = 0;
 
-// Gatilho que inicia tudo assim que a página é carregada
+// --- FLUXO PRINCIPAL ---
+// Espera o HTML ser completamente carregado para executar o script
 document.addEventListener('DOMContentLoaded', () => {
+    // Agora é seguro selecionar os elementos
+    mainContent = document.getElementById('main-content');
+    logoutBtn = document.getElementById('logout-btn');
+
+    // Liga o botão de sair
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
-            await fetch(`${API_URL}/logout`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: username })
-            });
-            localStorage.removeItem('token');
-            localStorage.removeItem('username');
-            window.location.href = 'index.html';
+            try {
+                await fetch(`${API_URL}/logout`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username })
+                });
+            } catch (error) {
+                console.error("Erro ao notificar o logout no back-end:", error);
+            } finally {
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                window.location.href = 'index.html';
+            }
         });
     }
+    // Carrega os temas para montar a tela de setup
     loadThemes();
 });
 
+
+// --- FUNÇÕES DE LÓGICA ---
+
 async function loadThemes() {
     console.log("Iniciando carregamento de temas...");
+    mainContent.innerHTML = '<p>Carregando simulado...</p>'; // Garante que a mensagem de loading apareça
     try {
         const response = await fetch(`${API_URL}/themes`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
+        console.log("Resposta da API de temas recebida, Status:", response.status);
         if (!response.ok) {
             throw new Error(`Falha ao carregar temas. Status: ${response.status}`);
         }
