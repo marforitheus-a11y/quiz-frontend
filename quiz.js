@@ -1,34 +1,43 @@
-// arquivo: quiz.js (VERSÃO FINAL E CORRIGIDA)
+// ==================================================================
+// ARQUIVO quiz.js (VERSÃO FINAL COMPLETA E CORRIGIDA)
+// ==================================================================
+
 const token = localStorage.getItem('token');
 const username = localStorage.getItem('username');
-const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SUA URL AQUI
+const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SE ESTA É SUA URL CORRETA
 
 // Proteção da página: executada imediatamente
 if (!token) {
     window.location.href = 'index.html';
 }
 
-// Seletores de elementos
-const mainContent = document.getElementById('main-content');
-const logoutBtn = document.getElementById('logout-btn');
+// Seletores de elementos que serão inicializados após o carregamento da página
+let mainContent;
+let logoutBtn;
 
-// Variáveis de estado
+// Variáveis de estado do quiz
 let questionsToAsk = [];
 let userAnswers = [];
 let currentQuestionIndex = 0;
 let score = 0;
 
-// Gatilho que inicia tudo
+// Gatilho que inicia tudo depois que o HTML da página é carregado
 document.addEventListener('DOMContentLoaded', () => {
+    // Inicializa os seletores de elementos
+    mainContent = document.getElementById('main-content');
+    logoutBtn = document.getElementById('logout-btn');
+
+    // Liga o botão de sair
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
-            // Lógica de logout
             try {
                 await fetch(`${API_URL}/logout`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username: username })
                 });
+            } catch (error) {
+                console.error("Erro ao notificar logout no back-end:", error);
             } finally {
                 localStorage.removeItem('token');
                 localStorage.removeItem('username');
@@ -36,28 +45,36 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    // Inicia o processo de carregamento dos temas
     loadThemes();
 });
+
 
 async function loadThemes() {
     mainContent.innerHTML = '<p>Carregando simulado...</p>';
     try {
         const response = await fetch(`${API_URL}/themes`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!response.ok) {
-            // Se o token for inválido, o status será 401 ou 403
-            if (response.status === 401 || response.status === 403) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('username');
-                window.location.href = 'index.html';
+            headers: {
+                'Authorization': `Bearer ${token}`
             }
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            // Token inválido ou expirado, força o logout
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            window.location.href = 'index.html';
+            return;
+        }
+        if (!response.ok) {
             throw new Error(`Erro do servidor: ${response.status}`);
         }
+        
         const themes = await response.json();
         displaySetupScreen(themes);
+
     } catch (error) {
-        mainContent.innerHTML = `<p class="error">Não foi possível carregar os temas.</p>`;
+        mainContent.innerHTML = `<p class="error">Não foi possível carregar os temas. Verifique se a API está no ar e se há temas cadastrados.</p>`;
         console.error("Erro em loadThemes:", error);
     }
 }
@@ -87,8 +104,6 @@ function displaySetupScreen(themes = []) {
     document.getElementById('start-btn').addEventListener('click', startQuiz);
 }
 
-// Cole aqui o restante das suas funções: startQuiz, displayQuestion, selectAnswer, showResults
-// Elas continuam as mesmas da versão anterior.
 async function startQuiz() {
     const selectedThemeIds = Array.from(document.querySelectorAll('input[name="theme"]:checked')).map(cb => parseInt(cb.value));
     const numQuestions = parseInt(document.getElementById('question-count').value, 10);

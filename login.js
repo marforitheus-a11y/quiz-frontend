@@ -1,7 +1,9 @@
-// arquivo: login.js (VERSÃO FINAL)
+// ==================================================================
+// ARQUIVO login.js (VERSÃO FINAL COMPLETA)
+// ==================================================================
 const loginForm = document.getElementById('login-form');
 const errorMessage = document.getElementById('error-message');
-const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SUA URL AQUI
+const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SE ESTA É SUA URL CORRETA
 
 function parseJwt(token) {
     try {
@@ -14,6 +16,7 @@ function parseJwt(token) {
 loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     errorMessage.textContent = 'Entrando...';
+
     const username = event.target.username.value;
     const password = event.target.password.value;
 
@@ -24,7 +27,9 @@ loginForm.addEventListener('submit', async (event) => {
             body: JSON.stringify({ username, password }),
         });
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message);
+        if (!response.ok) {
+            throw new Error(data.message || 'Erro ao fazer login.');
+        }
 
         if (data.token) {
             localStorage.setItem('token', data.token);
