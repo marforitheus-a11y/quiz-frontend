@@ -1,4 +1,4 @@
-/* arquivo: style.css (VERSÃO FINAL COMPLETA) */
+/* arquivo: style.css (VERSÃO FINAL COM MELHORIAS) */
 :root {
     --primary-color: #007bff;
     --secondary-color: #6c757d;
@@ -20,6 +20,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding: 20px 0; /* SUGESTÃO 3: Adiciona um respiro em telas maiores */
 }
 
 .container {
@@ -34,6 +35,16 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+/* SUGESTÃO 3: Media query para telas maiores */
+@media (min-width: 600px) {
+    .container {
+        max-width: 500px; /* Deixa o container um pouco mais largo */
+        height: auto; /* Permite que a altura se ajuste ao conteúdo */
+        max-height: 90vh;
+    }
+}
+
 
 /* --- ESTILOS DE LOGIN --- */
 .form-container {
@@ -62,7 +73,25 @@ body {
     font-size: 1em;
     box-sizing: border-box;
     font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s; /* SUGESTÃO 2: Transição suave para o foco */
 }
+
+/* SUGESTÃO 2: Melhora a acessibilidade para navegação com teclado */
+.input:focus-visible,
+.input-group input:focus-visible,
+.input-group textarea:focus-visible,
+.btn:focus-visible,
+.btn-logout:focus-visible,
+.btn-header:focus-visible,
+.btn-delete:focus-visible,
+.btn-review:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+    border-color: var(--primary-color);
+}
+
+
 .error {
     color: var(--danger-color);
     margin-top: 15px;
@@ -86,21 +115,13 @@ body {
     width: 100%;
     margin-top: 10px;
     box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
 }
 .btn:hover {
     background-color: #0056b3;
+    transform: translateY(-2px); /* SUGESTÃO 1: Efeito sutil ao passar o mouse */
 }
-.btn-logout {
-    background: none;
-    border: 1px solid var(--primary-color);
-    color: var(--primary-color);
-    padding: 8px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9em;
-}
-.btn-header {
+.btn-logout, .btn-header {
     background: none;
     border: 1px solid var(--secondary-color);
     color: var(--secondary-color);
@@ -109,6 +130,11 @@ body {
     cursor: pointer;
     font-size: 0.9em;
     text-decoration: none;
+    transition: all 0.2s;
+}
+.btn-logout:hover, .btn-header:hover {
+    background-color: var(--secondary-color);
+    color: var(--white);
 }
 
 /* --- ESTILOS DO QUIZ --- */
@@ -138,7 +164,14 @@ body {
     margin-bottom: 8px;
     border-radius: 8px;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
+
+/* SUGESTÃO 1: Feedback visual ao passar o mouse sobre os temas */
+.theme-option:hover {
+    background-color: #e2e6ea;
+}
+
 .theme-option input {
     margin-right: 10px;
 }
@@ -164,6 +197,13 @@ body {
     cursor: pointer;
     transition: all 0.2s;
 }
+
+/* SUGESTÃO 1: Feedback visual ao passar o mouse sobre as opções */
+.options li:not(.correct):not(.incorrect):hover {
+    background-color: #f1f1f1;
+    border-color: var(--primary-color);
+}
+
 .options li.correct {
     background-color: var(--success-color);
     color: var(--white);
@@ -187,6 +227,9 @@ body {
     padding-bottom: 20px;
     margin-bottom: 20px;
 }
+.admin-section:last-child {
+    border-bottom: none;
+}
 .admin-table {
     width: 100%;
     border-collapse: collapse;
@@ -197,6 +240,7 @@ body {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
+    vertical-align: middle;
 }
 .admin-table th {
     background-color: var(--light-gray);
@@ -208,6 +252,10 @@ body {
     padding: 5px 10px;
     border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-delete:hover {
+    background-color: #c82333;
 }
 .status-pendente {
     background-color: #ffc107;
@@ -215,6 +263,7 @@ body {
     padding: 3px 8px;
     border-radius: 10px;
     font-size: 0.8em;
+    font-weight: bold;
 }
 .status-corrigido {
     background-color: var(--success-color);
@@ -222,6 +271,7 @@ body {
     padding: 3px 8px;
     border-radius: 10px;
     font-size: 0.8em;
+    font-weight: bold;
 }
 .btn-back {
     color: var(--primary-color);
@@ -237,6 +287,10 @@ body {
     justify-content: space-between;
     align-items: center;
     list-style: none;
+    transition: background-color 0.2s;
+}
+.history-item:hover {
+    background-color: #e2e6ea;
 }
 .btn-review {
     background-color: var(--primary-color);
@@ -245,6 +299,10 @@ body {
     border-radius: 8px;
     text-decoration: none;
     font-size: 0.9em;
+    transition: background-color 0.2s;
+}
+.btn-review:hover {
+    background-color: #0056b3;
 }
 .review-question {
     margin-bottom: 30px;
