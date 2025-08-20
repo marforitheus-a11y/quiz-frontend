@@ -1,0 +1,12 @@
+/* Adicione ao final do seu style.css */
+.admin-section {
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+.status {
+    margin-top: 15px;
+    height: 20px;
+    font-weight: bold;
+}

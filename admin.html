@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Simulado Pro</title>
+    <script src="admin-auth.js"></script> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>Painel Admin</h1>
+            <button id="logout-btn" class="btn-logout">Sair <i class="fa-solid fa-right-from-bracket"></i></button>
+        </header>
+        <main class="quiz-body">
+            <section class="admin-section">
+                <h2>Adicionar Novo Tema (PDF)</h2>
+                <form id="theme-form">
+                    <div class="input-group">
+                        <label for="themeName">Nome do Tema</label>
+                        <input type="text" id="themeName" name="themeName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="pdfFile">Arquivo PDF</label>
+                        <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required>
+                    </div>
+                    <button type="submit" class="btn">Enviar e Gerar Questões</button>
+                    <p id="theme-status" class="status"></p>
+                </form>
+            </section>
+
+            <section class="admin-section">
+                <h2>Adicionar Novo Usuário</h2>
+                <form id="user-form">
+                    <div class="input-group">
+                        <label for="username">Nome do Usuário</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Senha</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="subscription">Validade da Assinatura</label>
+                        <input type="date" id="subscription" name="subscription">
+                    </div>
+                    <button type="submit" class="btn">Criar Usuário</button>
+                    <p id="user-status" class="status"></p>
+                </form>
+            </section>
+        </main>
+    </div>
+    <script src="admin.js"></script>
+</body>
+</html>
