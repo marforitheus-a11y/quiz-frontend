@@ -1,3 +1,132 @@
+/* arquivo: style.css */
+:root {
+    --primary-color: #007bff;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --light-gray: #f8f9fa;
+    --dark-gray: #343a40;
+    --white: #ffffff;
+    --border-radius: 12px;
+    --shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #eef2f5;
+    color: var(--dark-gray);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 420px;
+    height: 100vh;
+    max-height: 880px;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Estilos de Login --- */
+.form-container {
+    padding: 40px 30px;
+    text-align: center;
+}
+.form-container h1 {
+    color: var(--primary-color);
+}
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+.input,
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+.error {
+    color: var(--danger-color);
+    margin-top: 15px;
+    height: 20px;
+}
+
+/* --- Estilos Gerais --- */
+.btn {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1em;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    transition: background-color 0.3s;
+}
+.btn:hover {
+    background-color: #0056b3;
+}
+.btn-logout {
+    background: none;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+/* --- Estilos do Quiz --- */
+.app-header {
+    background-color: var(--white);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    flex-shrink: 0;
+}
+.app-header h1 {
+    font-size: 1.2em;
+    margin: 0;
+    color: var(--primary-color);
+}
+.quiz-body {
+    flex-grow: 1;
+    padding: 25px;
+    overflow-y: auto;
+}
+.theme-option {
+    display: block;
+    background: var(--light-gray);
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.theme-option input {
+    margin-right: 10px;
+}
+.label {
+    font-weight: bold;
+}
 /* Adicione ao final do seu style.css */
 .admin-section {
     border: 1px solid #ddd;
