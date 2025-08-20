@@ -139,3 +139,14 @@ body {
     height: 20px;
     font-weight: bold;
 }
+/* Adicione ao seu style.css */
+.btn-header {
+    background: none;
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    text-decoration: none;
+}
