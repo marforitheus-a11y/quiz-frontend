@@ -313,5 +313,25 @@ body {
     pointer-events: none;
     background-color: #f1f1f1;
 }
+/* Adicione ao final do seu style.css */
+.progress-container {
+    margin-top: 15px;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    height: 10px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%; /* Começa em 0 */
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    transition: width 0.5s ease-in-out;
+}
 .feedback { font-weight: 500; }
 .feedback-correct { color: var(--success-color); font-weight: bold; }

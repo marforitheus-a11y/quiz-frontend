@@ -48,6 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const usersTableBody = document.getElementById('users-table-body');
     const reportsTableBody = document.getElementById('reports-table-body');
     const logoutBtn = document.getElementById('logout-btn');
+    const submitThemeBtn = document.getElementById('submit-theme-btn');
+    const progressContainer = document.getElementById('upload-progress-container');
+    const themeStatus = document.getElementById('theme-status');
+    const progressBarFill = document.getElementById('progress-bar-fill');
 
     // --- CARREGAMENTO INICIAL DOS DADOS DO PAINEL ---
     loadActiveSessions();
@@ -73,32 +77,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Lógica do formulário de criar TEMA
+    // Lógica do formulário de criar TEMA (com barra de carregamento)
     if (themeForm) {
         themeForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Impede o envio padrão que coloca os dados na URL
-            const themeStatus = document.getElementById('theme-status');
-            themeStatus.textContent = 'Enviando PDF e gerando questões...';
+            e.preventDefault();
             
+            // 1. Prepara a UI para o carregamento
+            submitThemeBtn.disabled = true;
+            submitThemeBtn.textContent = 'Processando...';
+            progressContainer.style.display = 'block';
+            themeStatus.textContent = 'Enviando PDF...';
+            progressBarFill.style.width = '20%';
+
             const formData = new FormData();
             formData.append('themeName', e.target.themeName.value);
             formData.append('pdfFile', e.target.pdfFile.files[0]);
 
             try {
+                // 2. Simula o progresso enquanto a API trabalha
+                themeStatus.textContent = 'Analisando o texto e gerando questões com a IA (isso pode levar até 30s)...';
+                progressBarFill.style.width = '60%';
+
                 const response = await fetch(`${API_URL}/admin/themes`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` },
                     body: formData,
                 });
+
                 const result = await response.json();
                 if (!response.ok) throw new Error(result.message);
 
+                // 3. Processo concluído com sucesso
                 themeStatus.textContent = result.message;
                 themeStatus.style.color = 'var(--success-color)';
+                progressBarFill.style.width = '100%';
                 themeForm.reset();
+
             } catch (error) {
+                // 4. Processo falhou
                 themeStatus.textContent = `Erro: ${error.message}`;
                 themeStatus.style.color = 'var(--danger-color)';
+                progressBarFill.style.width = '100%';
+                progressBarFill.style.backgroundColor = 'var(--danger-color)';
+            } finally {
+                // 5. Reabilita o botão após um tempo, independentemente do resultado
+                setTimeout(() => {
+                    submitThemeBtn.disabled = false;
+                    submitThemeBtn.textContent = 'Enviar e Gerar Questões';
+                    progressContainer.style.display = 'none';
+                    progressBarFill.style.width = '0%';
+                    progressBarFill.style.backgroundColor = 'var(--primary-color)'; // Reseta a cor da barra
+                }, 4000); // Espera 4 segundos para o usuário ler a mensagem
             }
         });
     }
@@ -106,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Lógica do formulário de criar USUÁRIO
     if (userForm) {
         userForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Impede o envio padrão
+            e.preventDefault();
             const userStatus = document.getElementById('user-status');
             userStatus.textContent = 'Criando usuário...';
 

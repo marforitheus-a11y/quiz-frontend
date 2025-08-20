@@ -15,20 +15,26 @@
         </header>
         <main class="quiz-body">
             <section class="admin-section">
-                <h2>Adicionar Novo Tema (PDF)</h2>
-                <form id="theme-form">
-                    <div class="input-group">
-                        <label for="themeName">Nome do Tema</label>
-                        <input type="text" id="themeName" name="themeName" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="pdfFile">Arquivo PDF</label>
-                        <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required>
-                    </div>
-                    <button type="submit" class="btn">Enviar e Gerar Questões</button>
-                    <p id="theme-status" class="status"></p>
-                </form>
-            </section>
+    <h2>Adicionar Novo Tema (PDF)</h2>
+    <form id="theme-form">
+        <div class="input-group">
+            <label for="themeName">Nome do Tema</label>
+            <input type="text" id="themeName" name="themeName" required>
+        </div>
+        <div class="input-group">
+            <label for="pdfFile">Arquivo PDF</label>
+            <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required>
+        </div>
+        <button type="submit" class="btn" id="submit-theme-btn">Enviar e Gerar Questões</button>
+        
+        <div id="upload-progress-container" class="progress-container" style="display: none;">
+            <p id="theme-status" class="status"></p>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+            </div>
+        </div>
+    </form>
+</section>
 
             <section class="admin-section">
                 <h2>Adicionar Novo Usuário</h2>
