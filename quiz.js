@@ -1,6 +1,18 @@
-// arquivo: quiz.js (VERSÃO FINAL COMPLETA)
+// arquivo: quiz.js (VERSÃO FINAL SEM CONFLITOS)
+
+// --- FUNÇÃO DE AUTENTICAÇÃO (O que antes estava no auth.js) ---
+// Esta função é chamada imediatamente para proteger a página.
+(function authenticatePage() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        // Se não houver token, redireciona para o login antes de qualquer outra coisa.
+        window.location.href = 'index.html';
+    }
+})(); // Os parênteses no final fazem a função executar a si mesma.
+
 
 // --- CONFIGURAÇÃO E VARIÁVEIS GLOBAIS ---
+// Agora a declaração do token é única e segura.
 const token = localStorage.getItem('token');
 // ⚠️ ATENÇÃO: Verifique se esta é a URL correta da sua API na Render
 const API_URL = 'https://quiz-api.onrender.com'; 
@@ -14,20 +26,17 @@ let score = 0;
 
 // --- FLUXO PRINCIPAL ---
 
-// Gatilho que inicia tudo assim que a página é carregada
-window.onload = loadThemes;
-
-logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('token');
-    window.location.href = 'index.html';
+// O gatilho que inicia o carregamento dos temas.
+document.addEventListener('DOMContentLoaded', () => {
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        });
+    }
+    loadThemes();
 });
 
-// --- FUNÇÕES DE LÓGICA ---
-
-/**
- * 1. Busca os temas na API.
- * 2. Chama a função para desenhar a tela de setup.
- */
 async function loadThemes() {
     try {
         const response = await fetch(`${API_URL}/themes`, {
