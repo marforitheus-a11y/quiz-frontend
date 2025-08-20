@@ -1,47 +1,34 @@
-// ==================================================================
-// ARQUIVO quiz.js (VERSÃO FINAL COMPLETA E CORRIGIDA)
-// ==================================================================
-
-// --- CONFIGURAÇÃO E VARIÁVEIS GLOBAIS ---
+// arquivo: quiz.js (VERSÃO FINAL E CORRIGIDA)
 const token = localStorage.getItem('token');
 const username = localStorage.getItem('username');
-// ⚠️ ATENÇÃO: VERIFIQUE SE ESTA É A URL CORRETA DA SUA API NA RENDER!
-const API_URL = 'https://quiz-api.onrender.com';
+const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SUA URL AQUI
 
-// Proteção da página: se não houver token, volta para o login.
-// Isso é executado imediatamente.
+// Proteção da página: executada imediatamente
 if (!token) {
     window.location.href = 'index.html';
 }
 
-// Seleciona os elementos da página DEPOIS que a página carregar
-let mainContent;
-let logoutBtn;
+// Seletores de elementos
+const mainContent = document.getElementById('main-content');
+const logoutBtn = document.getElementById('logout-btn');
 
-// Variáveis de estado do quiz
+// Variáveis de estado
 let questionsToAsk = [];
 let userAnswers = [];
 let currentQuestionIndex = 0;
 let score = 0;
 
-// --- FLUXO PRINCIPAL ---
-// Espera o HTML ser completamente carregado para executar o script
+// Gatilho que inicia tudo
 document.addEventListener('DOMContentLoaded', () => {
-    // Agora é seguro selecionar os elementos
-    mainContent = document.getElementById('main-content');
-    logoutBtn = document.getElementById('logout-btn');
-
-    // Liga o botão de sair
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
+            // Lógica de logout
             try {
                 await fetch(`${API_URL}/logout`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username: username })
                 });
-            } catch (error) {
-                console.error("Erro ao notificar o logout no back-end:", error);
             } finally {
                 localStorage.removeItem('token');
                 localStorage.removeItem('username');
@@ -49,37 +36,33 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // Carrega os temas para montar a tela de setup
     loadThemes();
 });
 
-
-// --- FUNÇÕES DE LÓGICA ---
-
 async function loadThemes() {
-    console.log("Iniciando carregamento de temas...");
-    mainContent.innerHTML = '<p>Carregando simulado...</p>'; // Garante que a mensagem de loading apareça
+    mainContent.innerHTML = '<p>Carregando simulado...</p>';
     try {
         const response = await fetch(`${API_URL}/themes`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        console.log("Resposta da API de temas recebida, Status:", response.status);
         if (!response.ok) {
-            throw new Error(`Falha ao carregar temas. Status: ${response.status}`);
+            // Se o token for inválido, o status será 401 ou 403
+            if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                window.location.href = 'index.html';
+            }
+            throw new Error(`Erro do servidor: ${response.status}`);
         }
-        
         const themes = await response.json();
-        console.log("Temas recebidos:", themes);
         displaySetupScreen(themes);
-
     } catch (error) {
-        mainContent.innerHTML = `<p class="error">Não foi possível carregar os temas. Verifique se sua API está no ar e se há temas cadastrados no painel de admin.</p>`;
-        console.error("Erro detalhado em loadThemes:", error);
+        mainContent.innerHTML = `<p class="error">Não foi possível carregar os temas.</p>`;
+        console.error("Erro em loadThemes:", error);
     }
 }
 
 function displaySetupScreen(themes = []) {
-    console.log("Desenhando a tela de setup...");
     let themeHTML = themes.length > 0
         ? themes.map(theme => `
             <label class="theme-option" for="theme-${theme.id}">
@@ -101,11 +84,11 @@ function displaySetupScreen(themes = []) {
             <button id="start-btn" class="btn">Iniciar Simulado</button>
         </div>
     `;
-
     document.getElementById('start-btn').addEventListener('click', startQuiz);
-    console.log("Tela de setup desenhada com sucesso.");
 }
 
+// Cole aqui o restante das suas funções: startQuiz, displayQuestion, selectAnswer, showResults
+// Elas continuam as mesmas da versão anterior.
 async function startQuiz() {
     const selectedThemeIds = Array.from(document.querySelectorAll('input[name="theme"]:checked')).map(cb => parseInt(cb.value));
     const numQuestions = parseInt(document.getElementById('question-count').value, 10);
@@ -132,7 +115,7 @@ async function startQuiz() {
         questionsToAsk = await response.json();
 
         if (!response.ok || questionsToAsk.length === 0) {
-            alert('Não foi possível buscar questões para os temas selecionados. Verifique a quantidade ou tente outros temas.');
+            alert('Não foi possível buscar questões para os temas selecionados.');
             return;
         }
 
@@ -205,7 +188,7 @@ function selectAnswer(selectedElement) {
 }
 
 async function showResults() {
-    mainContent.innerHTML = `<h2>Finalizando simulado e salvando resultados...</h2>`;
+    mainContent.innerHTML = `<h2>Finalizando simulado...</h2>`;
     try {
         await fetch(`${API_URL}/quiz/finish`, {
             method: 'POST',
@@ -221,7 +204,7 @@ async function showResults() {
         });
         window.location.href = 'desempenho.html';
     } catch (error) {
-        mainContent.innerHTML = `<p class="error">Não foi possível salvar seu resultado. Tente novamente.</p>`;
+        mainContent.innerHTML = `<p class="error">Não foi possível salvar seu resultado.</p>`;
         console.error(error);
     }
 }

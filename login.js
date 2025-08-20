@@ -1,36 +1,44 @@
-// arquivo: login.js
+// arquivo: login.js (VERSÃO FINAL)
 const loginForm = document.getElementById('login-form');
 const errorMessage = document.getElementById('error-message');
+const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SUA URL AQUI
 
-// A URL da sua API no ar
-const API_URL = 'https://quiz-api-z4ri.onrender.com'; // CONFIRA SE ESTA URL ESTÁ CORRETA
+function parseJwt(token) {
+    try {
+        return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+        return null;
+    }
+}
 
 loginForm.addEventListener('submit', async (event) => {
-    // ESTA LINHA É A MAIS IMPORTANTE!
-    event.preventDefault(); // Impede o navegador de recarregar a página com os dados na URL.
-
+    event.preventDefault();
     errorMessage.textContent = 'Entrando...';
     const username = event.target.username.value;
     const password = event.target.password.value;
 
     try {
-        const response = await fetch(`${API_URL}/login`, { // Usa a URL da API no ar
+        const response = await fetch(`${API_URL}/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
         });
-
         const data = await response.json();
+        if (!response.ok) throw new Error(data.message);
 
-        if (!response.ok) {
-            throw new Error(data.message || 'Erro ao fazer login.');
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+            const payload = parseJwt(data.token);
+            localStorage.setItem('username', payload.username);
+
+            if (payload && payload.role === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'quiz.html';
+            }
+        } else {
+            throw new Error("Servidor não retornou um token.");
         }
-
-        localStorage.setItem('token', data.token);
-        window.location.href = 'quiz.html';
-
     } catch (error) {
         errorMessage.textContent = error.message;
     }
