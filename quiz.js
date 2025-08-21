@@ -23,6 +23,35 @@ let score = 0;
 
 // Gatilho que inicia tudo depois que o HTML da página é carregado
 document.addEventListener('DOMContentLoaded', () => {
+    // Adicione este código dentro do DOMContentLoaded em quiz.js
+
+// --- LÓGICA PARA RECEBER MENSAGENS GLOBAIS ---
+let lastMessageTimestamp = null;
+
+// A cada 15 segundos, verifica se há uma nova mensagem
+setInterval(async () => {
+    try {
+        const response = await fetch(`${API_URL}/message`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        // Se o status for 204, não há mensagem, então não faz nada.
+        if (response.status === 204) {
+            return;
+        }
+
+        const messageData = await response.json();
+        
+        // Verifica se esta é uma mensagem nova que ainda não foi exibida
+        if (messageData.timestamp !== lastMessageTimestamp) {
+            alert(`MENSAGEM DO ADMINISTRADOR:\n\n${messageData.content}`);
+            lastMessageTimestamp = messageData.timestamp;
+        }
+    } catch (error) {
+        // Falha silenciosamente para não interromper o usuário
+        console.error("Erro ao buscar mensagem global:", error);
+    }
+}, 15000); // 15000 milissegundos = 15 segundos
     // Inicializa os seletores de elementos
     mainContent = document.getElementById('main-content');
     logoutBtn = document.getElementById('logout-btn');
