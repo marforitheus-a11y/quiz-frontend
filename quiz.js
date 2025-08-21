@@ -23,60 +23,49 @@ let score = 0;
 
 // Gatilho que inicia tudo depois que o HTML da página é carregado
 document.addEventListener('DOMContentLoaded', () => {
-    // Adicione este código dentro do DOMContentLoaded em quiz.js
+ // Adicione este código dentro do DOMContentLoaded no seu quiz.js
 
-// --- LÓGICA PARA RECEBER MENSAGENS GLOBAIS ---
-let lastMessageTimestamp = null;
+// --- LÓGICA DO NOVO MENU LATERAL ---
+const menuToggleBtn = document.getElementById('menu-toggle-btn');
+const sidebarMenu = document.getElementById('sidebar-menu');
+const menuOverlay = document.getElementById('menu-overlay');
+const logoutBtnMenu = document.getElementById('logout-btn-menu'); // Botão de sair do novo menu
 
-// A cada 15 segundos, verifica se há uma nova mensagem
-setInterval(async () => {
-    try {
-        const response = await fetch(`${API_URL}/message`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
+// Função para abrir o menu
+function openMenu() {
+    sidebarMenu.classList.add('active');
+    menuOverlay.classList.add('active');
+}
 
-        // Se o status for 204, não há mensagem, então não faz nada.
-        if (response.status === 204) {
-            return;
+// Função para fechar o menu
+function closeMenu() {
+    sidebarMenu.classList.remove('active');
+    menuOverlay.classList.remove('active');
+}
+
+// Adiciona os eventos de clique
+if (menuToggleBtn) {
+    menuToggleBtn.addEventListener('click', openMenu);
+}
+if (menuOverlay) {
+    menuOverlay.addEventListener('click', closeMenu);
+}
+
+// Adiciona a mesma lógica de logout ao novo botão
+if (logoutBtnMenu) {
+    logoutBtnMenu.addEventListener('click', async () => {
+        try {
+            await fetch(`${API_URL}/logout`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username })
+            });
+        } finally {
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            window.location.href = 'index.html';
         }
-
-        const messageData = await response.json();
-        
-        // Verifica se esta é uma mensagem nova que ainda não foi exibida
-        if (messageData.timestamp !== lastMessageTimestamp) {
-            alert(`MENSAGEM DO ADMINISTRADOR:\n\n${messageData.content}`);
-            lastMessageTimestamp = messageData.timestamp;
-        }
-    } catch (error) {
-        // Falha silenciosamente para não interromper o usuário
-        console.error("Erro ao buscar mensagem global:", error);
-    }
-}, 15000); // 15000 milissegundos = 15 segundos
-    // Inicializa os seletores de elementos
-    mainContent = document.getElementById('main-content');
-    logoutBtn = document.getElementById('logout-btn');
-
-    // Liga o botão de sair
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await fetch(`${API_URL}/logout`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: username })
-                });
-            } catch (error) {
-                console.error("Erro ao notificar logout no back-end:", error);
-            } finally {
-                localStorage.removeItem('token');
-                localStorage.removeItem('username');
-                window.location.href = 'index.html';
-            }
-        });
-    }
-    // Inicia o processo de carregamento dos temas
-    loadThemes();
-});
+    });
 
 
 async function loadThemes() {
@@ -198,14 +187,15 @@ function selectAnswer(selectedElement) {
     const currentQuestion = questionsToAsk[currentQuestionIndex];
     const isCorrect = selectedOption === currentQuestion.answer;
 
+    // Desabilita todas as opções para evitar múltiplos cliques
+    document.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'none');
+
     if (isCorrect) {
         score++;
         selectedElement.classList.add('correct');
     } else {
         selectedElement.classList.add('incorrect');
-    }
-    
-    if (!isCorrect) {
+        // Procura e destaca a opção correta em verde
         document.querySelectorAll('.option').forEach(opt => {
             if (opt.textContent === currentQuestion.answer) {
                 opt.classList.add('correct');
@@ -231,24 +221,25 @@ function selectAnswer(selectedElement) {
     }, 2000);
 }
 
+// Em quiz.js, substitua a função showResults
 async function showResults() {
-    mainContent.innerHTML = `<h2>Finalizando simulado...</h2>`;
+    mainContent.innerHTML = `<h2>Finalizando e salvando...</h2>`;
     try {
-        await fetch(`${API_URL}/quiz/finish`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                score: score,
-                totalQuestions: questionsToAsk.length,
-                answers: userAnswers
-            })
-        });
-        window.location.href = 'desempenho.html';
+        const response = await fetch(`${API_URL}/quiz/finish`, { /* ... (seu código fetch) ... */ });
+        const result = await response.json();
+        
+        // Salva os dados do quiz recém-finalizado para a próxima página ler
+        sessionStorage.setItem('lastQuizResults', JSON.stringify({
+            score: score,
+            total: questionsToAsk.length,
+            questions: questionsToAsk,
+            userAnswers: userAnswers
+        }));
+
+        window.location.href = 'resultados.html';
     } catch (error) {
         mainContent.innerHTML = `<p class="error">Não foi possível salvar seu resultado.</p>`;
         console.error(error);
     }
 }
+}})
