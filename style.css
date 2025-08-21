@@ -1,4 +1,6 @@
-/* arquivo: style.css (VERSÃO FINAL COM MELHORIAS) */
+/* ================================================================== */
+/* ARQUIVO style.css (VERSÃO FINAL E ADAPTATIVA)                      */
+/* ================================================================== */
 :root {
     --primary-color: #007bff;
     --secondary-color: #6c757d;
@@ -11,98 +13,106 @@
     --shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
+/* Garante que o layout base ocupe a tela toda */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: #eef2f5;
     color: var(--dark-gray);
-    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 20px 0; /* SUGESTÃO 3: Adiciona um respiro em telas maiores */
 }
 
 .container {
     width: 100%;
-    max-width: 420px;
-    height: 100vh;
-    max-height: 880px;
+    height: 100%;
     background-color: var(--white);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
     overflow: hidden;
     display: flex;
     flex-direction: column;
 }
 
-/* SUGESTÃO 3: Media query para telas maiores */
+/* Media query para telas maiores (desktops) */
 @media (min-width: 600px) {
     .container {
-        max-width: 500px; /* Deixa o container um pouco mais largo */
-        height: auto; /* Permite que a altura se ajuste ao conteúdo */
-        max-height: 90vh;
+        width: 100%;
+        max-width: 500px; /* Limita a largura no desktop */
+        height: 95vh;     /* Altura um pouco menor que a tela */
+        max-height: 880px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
     }
 }
 
 
-/* --- ESTILOS DE LOGIN --- */
+/* --- HEADER ADAPTATIVO --- */
+.app-header {
+    background-color: var(--white);
+    padding: 15px; /* Padding ajustado para telas menores */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    flex-shrink: 0;
+    gap: 10px; /* Adiciona um espaçamento entre os itens */
+}
+.app-header h1 {
+    font-size: 1.1em; /* Fonte levemente ajustada */
+    margin: 0;
+    color: var(--primary-color);
+    text-align: center;
+    flex-grow: 1; /* Permite que o título ocupe o espaço restante */
+}
+
+/* --- ESTILOS GERAIS E DE FORMULÁRIO --- */
+.quiz-body {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
 .form-container {
-    padding: 40px 30px;
+    padding: 40px 20px;
     text-align: center;
 }
-.form-container h1 {
-    color: var(--primary-color);
+/* ... (O restante do seu CSS que já estava bom continua aqui) ... */
+.input-group { margin-bottom: 20px; text-align: left; }
+.input-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+.input, .input-group input, .input-group textarea {
+    width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc;
+    font-size: 1em; box-sizing: border-box; font-family: inherit;
 }
-.input-group {
-    margin-bottom: 20px;
-    text-align: left;
-}
-.input-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-}
-.input,
-.input-group input,
-.input-group textarea {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+.error, .status { margin-top: 15px; height: 20px; font-weight: bold; }
+.error { color: var(--danger-color); }
+
+/* --- BOTÕES --- */
+.btn, .btn-logout, .btn-header, .btn-secondary, .btn-delete, .btn-review {
+    padding: 12px 15px;
     font-size: 1em;
-    box-sizing: border-box;
-    font-family: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s; /* SUGESTÃO 2: Transição suave para o foco */
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap; /* Impede que o texto do botão quebre linha */
 }
-
-/* SUGESTÃO 2: Melhora a acessibilidade para navegação com teclado */
-.input:focus-visible,
-.input-group input:focus-visible,
-.input-group textarea:focus-visible,
-.btn:focus-visible,
-.btn-logout:focus-visible,
-.btn-header:focus-visible,
-.btn-delete:focus-visible,
-.btn-review:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+.btn {
+    background-color: var(--primary-color);
+    color: var(--white);
     border-color: var(--primary-color);
+    width: 100%;
+    margin-top: 10px;
 }
-
-
-.error {
-    color: var(--danger-color);
-    margin-top: 15px;
-    height: 20px;
+.btn-logout, .btn-header {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+    background: none;
 }
-.status {
-    margin-top: 15px;
-    height: 20px;
-    font-weight: bold;
-}
-
 /* --- ESTILOS GERAIS --- */
 .btn {
     background-color: var(--primary-color);
@@ -332,6 +342,19 @@ body {
     background-color: var(--primary-color);
     border-radius: 4px;
     transition: width 0.5s ease-in-out;
+}
+.status-icon {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 8px;
+}
+.status-icon.active {
+    background-color: var(--success-color);
+}
+.status-icon.inactive {
+    background-color: #ccc;
 }
 .feedback { font-weight: 500; }
 .feedback-correct { color: var(--success-color); font-weight: bold; }
