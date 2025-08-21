@@ -1,19 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
+    <!-- A LINHA MAIS IMPORTANTE PARA O DESIGN ADAPTATIVO E PARA TRAVAR O ZOOM -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Simulado Pro - Quiz</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <a href="conta.html" class="btn-header">Minha Conta</a>
+    <!-- Overlay para escurecer o fundo quando o menu estiver aberto -->
+    <div id="menu-overlay" class="menu-overlay"></div>
+
+    <!-- O Novo Menu Lateral (começa escondido) -->
+    <nav id="sidebar-menu" class="sidebar-menu">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="conta.html"><i class="fa-solid fa-user"></i> Minha Conta</a></li>
+            <li><a href="desempenho.html"><i class="fa-solid fa-chart-line"></i> Meu Desempenho</a></li>
+        </ul>
+        <button id="logout-btn-menu" class="btn-logout-menu">Sair <i class="fa-solid fa-right-from-bracket"></i></button>
+    </nav>
+
     <div class="container">
         <header class="app-header">
-            <a href="desempenho.html" class="btn-header">Meu Desempenho</a>
+            <!-- Ícone de Menu (3 barrinhas) -->
+            <button id="menu-toggle-btn" class="menu-toggle-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
             <h1>Simulado Pro</h1>
-            <button id="logout-btn" class="btn-logout">Sair <i class="fa-solid fa-right-from-bracket"></i></button>
+            <!-- Espaçador para manter o título perfeitamente centralizado -->
+            <div style="width: 40px;"></div> 
         </header>
         <main class="quiz-body" id="main-content">
             <p>Carregando simulado...</p>

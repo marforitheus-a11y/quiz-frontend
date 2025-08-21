@@ -1,19 +1,15 @@
 // ==================================================================
-// ARQUIVO quiz.js (VERSÃO FINAL COMPLETA E CORRIGIDA)
+// ARQUIVO quiz.js (VERSÃO FINAL COM MENU E CORREÇÕES)
 // ==================================================================
 
 const token = localStorage.getItem('token');
 const username = localStorage.getItem('username');
-const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SE ESTA É SUA URL CORRETA
+const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SUA URL AQUI
 
 // Proteção da página: executada imediatamente
 if (!token) {
     window.location.href = 'index.html';
 }
-
-// Seletores de elementos que serão inicializados após o carregamento da página
-let mainContent;
-let logoutBtn;
 
 // Variáveis de estado do quiz
 let questionsToAsk = [];
@@ -21,83 +17,79 @@ let userAnswers = [];
 let currentQuestionIndex = 0;
 let score = 0;
 
-// Gatilho que inicia tudo depois que o HTML da página é carregado
+// O CÓDIGO ABAIXO SÓ EXECUTA DEPOIS QUE O HTML DA PÁGINA ESTIVER PRONTO
 document.addEventListener('DOMContentLoaded', () => {
- // Adicione este código dentro do DOMContentLoaded no seu quiz.js
+    // --- SELETORES DE ELEMENTOS ---
+    const mainContent = document.getElementById('main-content');
+    const menuToggleBtn = document.getElementById('menu-toggle-btn');
+    const sidebarMenu = document.getElementById('sidebar-menu');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const logoutBtnMenu = document.getElementById('logout-btn-menu');
 
-// --- LÓGICA DO NOVO MENU LATERAL ---
-const menuToggleBtn = document.getElementById('menu-toggle-btn');
-const sidebarMenu = document.getElementById('sidebar-menu');
-const menuOverlay = document.getElementById('menu-overlay');
-const logoutBtnMenu = document.getElementById('logout-btn-menu'); // Botão de sair do novo menu
+    // --- LÓGICA DO MENU LATERAL ---
+    function openMenu() {
+        if (sidebarMenu) sidebarMenu.classList.add('active');
+        if (menuOverlay) menuOverlay.classList.add('active');
+    }
 
-// Função para abrir o menu
-function openMenu() {
-    sidebarMenu.classList.add('active');
-    menuOverlay.classList.add('active');
-}
+    function closeMenu() {
+        if (sidebarMenu) sidebarMenu.classList.remove('active');
+        if (menuOverlay) menuOverlay.classList.remove('active');
+    }
 
-// Função para fechar o menu
-function closeMenu() {
-    sidebarMenu.classList.remove('active');
-    menuOverlay.classList.remove('active');
-}
+    if (menuToggleBtn) {
+        menuToggleBtn.addEventListener('click', openMenu);
+    }
+    if (menuOverlay) {
+        menuOverlay.addEventListener('click', closeMenu);
+    }
 
-// Adiciona os eventos de clique
-if (menuToggleBtn) {
-    menuToggleBtn.addEventListener('click', openMenu);
-}
-if (menuOverlay) {
-    menuOverlay.addEventListener('click', closeMenu);
-}
+    if (logoutBtnMenu) {
+        logoutBtnMenu.addEventListener('click', async () => {
+            try {
+                await fetch(`${API_URL}/logout`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username })
+                });
+            } finally {
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                window.location.href = 'index.html';
+            }
+        });
+    }
 
-// Adiciona a mesma lógica de logout ao novo botão
-if (logoutBtnMenu) {
-    logoutBtnMenu.addEventListener('click', async () => {
-        try {
-            await fetch(`${API_URL}/logout`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: username })
-            });
-        } finally {
-            localStorage.removeItem('token');
-            localStorage.removeItem('username');
-            window.location.href = 'index.html';
-        }
-    });
+    // --- CARREGAMENTO INICIAL DO CONTEÚDO ---
+    loadThemes(mainContent);
+});
 
 
-async function loadThemes() {
+// --- FUNÇÕES DE LÓGICA DO QUIZ ---
+
+async function loadThemes(mainContent) {
     mainContent.innerHTML = '<p>Carregando simulado...</p>';
     try {
         const response = await fetch(`${API_URL}/themes`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            headers: { 'Authorization': `Bearer ${token}` }
         });
-
-        if (response.status === 401 || response.status === 403) {
-            // Token inválido ou expirado, força o logout
-            localStorage.removeItem('token');
-            localStorage.removeItem('username');
-            window.location.href = 'index.html';
-            return;
-        }
         if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                window.location.href = 'index.html';
+            }
             throw new Error(`Erro do servidor: ${response.status}`);
         }
-        
         const themes = await response.json();
-        displaySetupScreen(themes);
-
+        displaySetupScreen(mainContent, themes);
     } catch (error) {
         mainContent.innerHTML = `<p class="error">Não foi possível carregar os temas. Verifique se a API está no ar e se há temas cadastrados.</p>`;
         console.error("Erro em loadThemes:", error);
     }
 }
 
-function displaySetupScreen(themes = []) {
+function displaySetupScreen(mainContent, themes = []) {
     let themeHTML = themes.length > 0
         ? themes.map(theme => `
             <label class="theme-option" for="theme-${theme.id}">
@@ -119,10 +111,10 @@ function displaySetupScreen(themes = []) {
             <button id="start-btn" class="btn">Iniciar Simulado</button>
         </div>
     `;
-    document.getElementById('start-btn').addEventListener('click', startQuiz);
+    document.getElementById('start-btn').addEventListener('click', () => startQuiz(mainContent));
 }
 
-async function startQuiz() {
+async function startQuiz(mainContent) {
     const selectedThemeIds = Array.from(document.querySelectorAll('input[name="theme"]:checked')).map(cb => parseInt(cb.value));
     const numQuestions = parseInt(document.getElementById('question-count').value, 10);
 
@@ -155,7 +147,7 @@ async function startQuiz() {
         currentQuestionIndex = 0;
         score = 0;
         userAnswers = [];
-        displayQuestion();
+        displayQuestion(mainContent);
 
     } catch (error) {
         alert('Erro ao buscar questões.');
@@ -163,7 +155,7 @@ async function startQuiz() {
     }
 }
 
-function displayQuestion() {
+function displayQuestion(mainContent) {
     const currentQuestion = questionsToAsk[currentQuestionIndex];
     const optionsHTML = currentQuestion.options.map(option => 
         `<li class="option">${option}</li>`
@@ -178,16 +170,15 @@ function displayQuestion() {
     `;
 
     document.querySelectorAll('.option').forEach(optionElement => {
-        optionElement.addEventListener('click', (e) => selectAnswer(e.target));
+        optionElement.addEventListener('click', (e) => selectAnswer(e.target, mainContent));
     });
 }
 
-function selectAnswer(selectedElement) {
+function selectAnswer(selectedElement, mainContent) {
     const selectedOption = selectedElement.textContent;
     const currentQuestion = questionsToAsk[currentQuestionIndex];
     const isCorrect = selectedOption === currentQuestion.answer;
 
-    // Desabilita todas as opções para evitar múltiplos cliques
     document.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'none');
 
     if (isCorrect) {
@@ -195,15 +186,12 @@ function selectAnswer(selectedElement) {
         selectedElement.classList.add('correct');
     } else {
         selectedElement.classList.add('incorrect');
-        // Procura e destaca a opção correta em verde
         document.querySelectorAll('.option').forEach(opt => {
             if (opt.textContent === currentQuestion.answer) {
                 opt.classList.add('correct');
             }
         });
     }
-
-    document.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'none');
 
     userAnswers.push({
         questionId: currentQuestion.id,
@@ -214,32 +202,39 @@ function selectAnswer(selectedElement) {
     setTimeout(() => {
         currentQuestionIndex++;
         if (currentQuestionIndex < questionsToAsk.length) {
-            displayQuestion();
+            displayQuestion(mainContent);
         } else {
-            showResults();
+            showResults(mainContent);
         }
     }, 2000);
 }
 
-// Em quiz.js, substitua a função showResults
-async function showResults() {
-    mainContent.innerHTML = `<h2>Finalizando e salvando...</h2>`;
+async function showResults(mainContent) {
+    mainContent.innerHTML = `<h2>Finalizando simulado...</h2>`;
     try {
-        const response = await fetch(`${API_URL}/quiz/finish`, { /* ... (seu código fetch) ... */ });
+        const response = await fetch(`${API_URL}/quiz/finish`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                score: score,
+                totalQuestions: questionsToAsk.length,
+                answers: userAnswers
+            })
+        });
         const result = await response.json();
         
-        // Salva os dados do quiz recém-finalizado para a próxima página ler
         sessionStorage.setItem('lastQuizResults', JSON.stringify({
             score: score,
             total: questionsToAsk.length,
             questions: questionsToAsk,
             userAnswers: userAnswers
         }));
-
         window.location.href = 'resultados.html';
     } catch (error) {
         mainContent.innerHTML = `<p class="error">Não foi possível salvar seu resultado.</p>`;
         console.error(error);
     }
 }
-}})
