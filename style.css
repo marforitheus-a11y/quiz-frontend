@@ -1204,6 +1204,32 @@ h1 {
   width: 80px;
   margin-bottom: 20px;
 }
+/* Logo SVG branco */
+.logo-img {
+  width: 80px;
+  height: auto;
+  filter: brightness(0) invert(1); /* deixa o SVG branco */
+  margin-bottom: 10px;
+}
+
+/* Fade-in dos campos extras */
+.fade-field {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.fade-field.show {
+  opacity: 1;
+  max-height: 100px; /* suficiente para caber o input */
+  margin-top: 10px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
 
 .feedback { font-weight: 500; }
 .feedback-correct { color: var(--success-color); font-weight: bold; }
