@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Concursando</title>
+  <title>Bem-vindo ao Concursando</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -29,8 +29,10 @@
     }
 
     .auth-logo {
-      width: 60px;
-      margin-bottom: 20px;
+      width: 45px;
+      margin-bottom: 18px;
+      background: transparent;
+      mix-blend-mode: multiply; /* ajuda a eliminar fundo branco */
     }
 
     h1 {
@@ -96,11 +98,11 @@
     }
 
     .separator:not(:empty)::before {
-      margin-right: 30px;
+      margin-right: 10px;
     }
 
     .separator:not(:empty)::after {
-      margin-left: 30px;
+      margin-left: 10px;
     }
 
     form {
@@ -152,11 +154,11 @@
   <div class="auth-container">
     <div class="auth-box">
       <!-- Logo -->
-      <img src="./a212705a-8951-474c-bf5e-c4fa68780392.svg" alt="Logo GeoSpy" class="auth-logo">
+      <img src="./a212705a-8951-474c-bf5e-c4fa68780392.svg" alt="Logo Concursando" class="auth-logo">
 
       <!-- Título -->
-      <h1>Concursando</h1>
-      <p class="subtitle">A Melhor Plataforma de Treinamento para Concursos do Brasil!</p>
+      <h1>Bem-vindo ao Concursando</h1>
+      <p class="subtitle">Uma plataforma de resolução de questões por IA</p>
 
       <!-- Botões Entrar/Cadastrar -->
       <div class="toggle-buttons">
@@ -175,20 +177,3 @@
 
       <!-- Formulário -->
       <form>
-        <input type="text" placeholder="Usuário" required>
-        <input type="password" placeholder="Senha" required>
-        <a href="#" class="forgot">Forgot Password?</a>
-        <button type="submit" class="login-btn">Login</button>
-      </form>
-
-      <!-- Termos -->
-      <p class="legal">
-        Ao se cadastrar, você concorda com os 
-        <a href="#">Termos de Uso</a>, 
-        <a href="#">Aviso de Privacidade</a>, e 
-        <a href="#">Aviso de Cookies</a>.
-      </p>
-    </div>
-  </div>
-</body>
-</html>
