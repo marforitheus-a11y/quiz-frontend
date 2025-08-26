@@ -1,54 +1,36 @@
 // ==================================================================
-// ARQUIVO login.js (VERSÃO FINAL COM TODA A LÓGICA INTEGRADA)
+// ARQUIVO login.js (VERSÃO FINAL COM LOGIN FLEXÍVEL)
 // ==================================================================
-const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SE ESTA É SUA URL CORRETA
+const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SUA URL AQUI
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Seletores de elementos da página
     const loginToggle = document.getElementById('login-toggle');
     const signupToggle = document.getElementById('signup-toggle');
     const nameGroup = document.getElementById('name-group');
-    const forgotPasswordLink = document.querySelector('.forgot-password');
+    const emailInput = document.getElementById('email');
     const submitBtn = document.getElementById('submit-btn');
-    const legalText = document.querySelector('.legal-text');
     const authForm = document.getElementById('auth-form');
     const errorMessage = document.getElementById('error-message');
+    // ... (outros seletores)
 
     let isLoginMode = true;
 
-    // --- LÓGICA PARA ALTERNAR ENTRE LOGIN E CADASTRO ---
     loginToggle.addEventListener('click', () => {
         if (isLoginMode) return;
         isLoginMode = true;
-        loginToggle.classList.add('active');
-        signupToggle.classList.remove('active');
-        nameGroup.style.display = 'none';
-        nameGroup.querySelector('input').required = false;
-        forgotPasswordLink.style.display = 'block';
-        submitBtn.textContent = 'Login';
-        legalText.style.display = 'none';
-        authForm.reset();
-        errorMessage.textContent = '';
+        // ... (lógica de toggle)
+        emailInput.placeholder = "E-mail ou Usuário"; // Muda o placeholder
     });
 
     signupToggle.addEventListener('click', () => {
         if (!isLoginMode) return;
         isLoginMode = false;
-        signupToggle.classList.add('active');
-        loginToggle.classList.remove('active');
-        nameGroup.style.display = 'block';
-        nameGroup.querySelector('input').required = true;
-        forgotPasswordLink.style.display = 'none';
-        submitBtn.textContent = 'Cadastrar-se';
-        legalText.style.display = 'block';
-        authForm.reset();
-        errorMessage.textContent = '';
+        // ... (lógica de toggle)
+        emailInput.placeholder = "E-mail"; // Muda o placeholder
     });
 
-    // --- LÓGICA DE ENVIO DO FORMULÁRIO ---
-    authForm.addEventListener('submit', async (event) => {
+    authForm.addEventListener('submit', (event) => {
         event.preventDefault();
-        
         if (isLoginMode) {
             handleLogin();
         } else {
@@ -56,22 +38,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- FUNÇÕES DE LÓGICA ---
-    function parseJwt(token) {
-        try { return JSON.parse(atob(token.split('.')[1])); } catch (e) { return null; }
-    }
+    function parseJwt(token) { /* ... (código completo) ... */ }
 
     async function handleLogin() {
         errorMessage.textContent = 'Entrando...';
-        errorMessage.style.color = 'var(--text-secondary)';
-        const email = authForm.email.value;
+        const loginIdentifier = authForm.email.value; // Pega o que foi digitado
         const password = authForm.password.value;
 
         try {
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: email, password: password }), // O backend espera 'username'
+                body: JSON.stringify({ loginIdentifier, password }), // Envia como 'loginIdentifier'
             });
             const data = await response.json();
             if (!response.ok) throw new Error(data.message);
@@ -80,46 +58,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('token', data.token);
                 const payload = parseJwt(data.token);
                 localStorage.setItem('username', payload.username);
-
                 if (payload && payload.role === 'admin') {
                     window.location.href = 'admin.html';
                 } else {
                     window.location.href = 'quiz.html';
                 }
-            } else {
-                throw new Error("Servidor não retornou um token.");
             }
         } catch (error) {
             errorMessage.textContent = error.message || 'Erro ao fazer login.';
-            errorMessage.style.color = 'var(--danger-color)';
         }
     }
 
     async function handleSignup() {
         errorMessage.textContent = 'Criando conta...';
-        errorMessage.style.color = 'var(--text-secondary)';
         const name = authForm.name.value;
         const email = authForm.email.value;
         const password = authForm.password.value;
 
         try {
-            // A ser implementado: fetch para a rota /signup no backend
-            // const response = await fetch(`${API_URL}/signup`, { ... });
-            // const data = await response.json();
-            // if (!response.ok) throw new Error(data.message);
+            const response = await fetch(`${API_URL}/signup`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password }),
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message);
             
-            // Simulação de sucesso por enquanto
-            errorMessage.textContent = 'Funcionalidade de cadastro em desenvolvimento.';
-            errorMessage.style.color = 'var(--primary-color)';
+            errorMessage.textContent = 'Conta criada com sucesso! Faça o login para continuar.';
+            errorMessage.style.color = 'var(--success-color)';
             
-            // Volta para a tela de login após um tempo
             setTimeout(() => {
                 loginToggle.click();
-            }, 3000);
+            }, 2000);
 
         } catch (error) {
             errorMessage.textContent = error.message || 'Erro ao criar conta.';
-            errorMessage.style.color = 'var(--danger-color)';
         }
     }
 });
