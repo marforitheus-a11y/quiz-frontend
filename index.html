@@ -2,52 +2,55 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Bem-vindo ao Concursando</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Concursando - Login</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="auth-container">
-    <div class="auth-box">
-      <!-- Logo SVG externo -->
-      <img src="./a212705a-8951-474c-bf5e-c4fa68780392.svg" alt="Logo Concursando" class="auth-logo">
+  <div class="login-container">
+    <!-- Logo -->
+    <div class="logo">
+      <!-- Usa o SVG fornecido -->
+      <img src="a212705a-8951-474c-bf5e-c4fa68780392.svg" alt="Concursando" class="logo-img">
+      <h1>Concursando</h1>
+      <p>Uma plataforma de resolução de questões por IA</p>
+    </div>
 
-      <!-- Título -->
-      <h1>Bem-vindo ao Concursando</h1>
-      <p class="subtitle">A melhor ferramenta de estudos por IA do Brasil</p>
+    <!-- Alternar Login / Cadastro -->
+    <div class="login-header">
+      <button type="button" id="login-toggle" class="toggle-btn active">Entrar</button>
+      <button type="button" id="signup-toggle" class="toggle-btn">Cadastrar</button>
+    </div>
 
-      <!-- Botões Entrar/Cadastrar -->
-      <div class="toggle-buttons">
-        <button class="toggle-btn active">Entrar</button>
-        <button class="toggle-btn">Cadastrar-se</button>
+    <!-- Formulário -->
+    <form id="auth-form">
+      <!-- Campo Nome (só aparece no cadastro) -->
+      <div id="name-group" class="fade-field hidden">
+        <input type="text" id="name" placeholder="Nome completo">
       </div>
 
-      <!-- Google Login -->
-      <button class="google-btn">
-        <i class="fab fa-google"></i>
-        Continuar com Google
-      </button>
+      <!-- Usuário ou Email -->
+      <input type="text" id="username" placeholder="Usuário ou E-mail" required>
 
-      <!-- Separador -->
-      <div class="separator">Ou</div>
+      <!-- Email separado (usado no cadastro) -->
+      <div id="email-group" class="fade-field hidden">
+        <input type="email" id="email" placeholder="E-mail">
+      </div>
 
-      <!-- Formulário -->
-      <form>
-        <input type="email" placeholder="E-mail" required>
-        <input type="password" placeholder="Senha" required>
-        <a href="#" class="forgot">Esqueceu a senha?</a>
-        <button type="submit" class="login-btn">Login</button>
-      </form>
+      <!-- Senha -->
+      <input type="password" id="password" placeholder="Senha" required>
 
-      <!-- Termos -->
-      <p class="legal">
-        Ao se cadastrar, você concorda com os 
-        <a href="#">Termos de Uso</a>, 
-        <a href="#">Aviso de Privacidade</a> e 
-        <a href="#">Aviso de Cookies</a>.
-      </p>
-    </div>
+      <!-- Link esqueceu a senha -->
+      <a href="#" class="forgot">Esqueceu a senha?</a>
+
+      <!-- Botão -->
+      <button type="submit" id="submit-btn" class="login-btn">Entrar</button>
+    </form>
+
+    <!-- Mensagem de erro -->
+    <p id="error-message" class="error-message"></p>
   </div>
+
+  <script src="login.js"></script>
 </body>
 </html>
