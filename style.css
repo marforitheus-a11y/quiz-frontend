@@ -1,1235 +1,236 @@
-/* ================================================================== */
-/* ARQUIVO style.css (VERSÃO FINAL E ADAPTATIVA)                      */
-/* ================================================================== */
-:root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --danger-color: #dc3545;
-    --light-gray: #f8f9fa;
-    --dark-gray: #343a40;
-    --white: #ffffff;
-    --border-radius: 12px;
-    --shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-/* Garante que o layout base ocupe a tela toda */
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #eef2f5;
-    color: var(--dark-gray);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.container {
-    width: 100%;
-    height: 100%;
-    background-color: var(--white);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Media query para telas maiores (desktops) */
-@media (min-width: 600px) {
-    .container {
-        width: 100%;
-        max-width: 500px; /* Limita a largura no desktop */
-        height: 95vh;     /* Altura um pouco menor que a tela */
-        max-height: 880px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow);
-    }
-}
-
-
-/* --- HEADER ADAPTATIVO --- */
-.app-header {
-    background-color: var(--white);
-    padding: 15px; /* Padding ajustado para telas menores */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    flex-shrink: 0;
-    gap: 10px; /* Adiciona um espaçamento entre os itens */
-}
-.app-header h1 {
-    font-size: 1.1em; /* Fonte levemente ajustada */
-    margin: 0;
-    color: var(--primary-color);
-    text-align: center;
-    flex-grow: 1; /* Permite que o título ocupe o espaço restante */
-}
-
-/* --- ESTILOS GERAIS E DE FORMULÁRIO --- */
-.quiz-body {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto;
-}
-.form-container {
-    padding: 40px 20px;
-    text-align: center;
-}
-/* ... (O restante do seu CSS que já estava bom continua aqui) ... */
-.input-group { margin-bottom: 20px; text-align: left; }
-.input-group label { display: block; margin-bottom: 5px; font-weight: 500; }
-.input, .input-group input, .input-group textarea {
-    width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc;
-    font-size: 1em; box-sizing: border-box; font-family: inherit;
-}
-.error, .status { margin-top: 15px; height: 20px; font-weight: bold; }
-.error { color: var(--danger-color); }
-
-/* --- BOTÕES --- */
-.btn, .btn-logout, .btn-header, .btn-secondary, .btn-delete, .btn-review {
-    padding: 12px 15px;
-    font-size: 1em;
-    border-radius: 8px;
-    cursor: pointer;
-    text-decoration: none;
-    border: 1px solid transparent;
-    transition: all 0.2s;
-    white-space: nowrap; /* Impede que o texto do botão quebre linha */
-}
-.btn {
-    background-color: var(--primary-color);
-    color: var(--white);
-    border-color: var(--primary-color);
-    width: 100%;
-    margin-top: 10px;
-}
-.btn-logout, .btn-header {
-    border-color: var(--secondary-color);
-    color: var(--secondary-color);
-    background: none;
-}
-/* --- ESTILOS GERAIS --- */
-.btn {
-    background-color: var(--primary-color);
-    color: var(--white);
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.1em;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
-    transition: background-color 0.3s, transform 0.2s;
-}
-.btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px); /* SUGESTÃO 1: Efeito sutil ao passar o mouse */
-}
-.btn-logout, .btn-header {
-    background: none;
-    border: 1px solid var(--secondary-color);
-    color: var(--secondary-color);
-    padding: 8px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9em;
-    text-decoration: none;
-    transition: all 0.2s;
-}
-.btn-logout:hover, .btn-header:hover {
-    background-color: var(--secondary-color);
-    color: var(--white);
-}
-
-/* --- ESTILOS DO QUIZ --- */
-.app-header {
-    background-color: var(--white);
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    flex-shrink: 0;
-}
-.app-header h1 {
-    font-size: 1.2em;
-    margin: 0;
-    color: var(--primary-color);
-}
-.quiz-body {
-    flex-grow: 1;
-    padding: 25px;
-    overflow-y: auto;
-}
-.theme-option {
-    display: block;
-    background: var(--light-gray);
-    padding: 12px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-/* SUGESTÃO 1: Feedback visual ao passar o mouse sobre os temas */
-.theme-option:hover {
-    background-color: #e2e6ea;
-}
-
-.theme-option input {
-    margin-right: 10px;
-}
-.label {
-    font-weight: bold;
-}
-.question-text {
-    font-size: 1.2em;
-    margin-bottom: 25px;
-    line-height: 1.5;
-    font-weight: 500;
-}
-.options {
-    list-style: none;
-    padding: 0;
-}
-.options li {
-    background-color: var(--white);
-    border: 1px solid #ddd;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-/* SUGESTÃO 1: Feedback visual ao passar o mouse sobre as opções */
-.options li:not(.correct):not(.incorrect):hover {
-    background-color: #f1f1f1;
-    border-color: var(--primary-color);
-}
-
-.options li.correct {
-    background-color: var(--success-color);
-    color: var(--white);
-    border-color: #1e7e34;
-}
-.options li.incorrect {
-    background-color: var(--danger-color);
-    color: var(--white);
-    border-color: #b21f2d;
-}
-.progress-text {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 1em;
-    color: var(--secondary-color);
-}
-
-/* --- ESTILOS DO ADMIN E DESEMPENHO --- */
-.admin-section {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-}
-.admin-section:last-child {
-    border-bottom: none;
-}
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 0.9em;
-}
-.admin-table th, .admin-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-    vertical-align: middle;
-}
-.admin-table th {
-    background-color: var(--light-gray);
-}
-.btn-delete {
-    background-color: var(--danger-color);
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.btn-delete:hover {
-    background-color: #c82333;
-}
-.status-pendente {
-    background-color: #ffc107;
-    color: black;
-    padding: 3px 8px;
-    border-radius: 10px;
-    font-size: 0.8em;
-    font-weight: bold;
-}
-.status-corrigido {
-    background-color: var(--success-color);
-    color: white;
-    padding: 3px 8px;
-    border-radius: 10px;
-    font-size: 0.8em;
-    font-weight: bold;
-}
-.btn-back {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-}
-.history-item {
-    background-color: var(--light-gray);
-    border-radius: var(--border-radius);
-    padding: 15px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    list-style: none;
-    transition: background-color 0.2s;
-}
-.history-item:hover {
-    background-color: #e2e6ea;
-}
-.btn-review {
-    background-color: var(--primary-color);
-    color: var(--white);
-    padding: 10px 15px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 0.9em;
-    transition: background-color 0.2s;
-}
-.btn-review:hover {
-    background-color: #0056b3;
-}
-.review-question {
-    margin-bottom: 30px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 20px;
-}
-.review-question .options li {
-    pointer-events: none;
-    background-color: #f1f1f1;
-}
-/* Adicione ao final do seu style.css */
-.progress-container {
-    margin-top: 15px;
-}
-
-.progress-bar {
-    width: 100%;
-    background-color: #e0e0e0;
-    border-radius: 4px;
-    height: 10px;
-    overflow: hidden;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    width: 0%; /* Começa em 0 */
-    background-color: var(--primary-color);
-    border-radius: 4px;
-    transition: width 0.5s ease-in-out;
-}
-.status-icon {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-left: 8px;
-}
-.status-icon.active {
-    background-color: var(--success-color);
-}
-.status-icon.inactive {
-    background-color: #ccc;
-}
-/* ================================================================== */
-/* CSS PARA O NOVO MENU LATERAL                                       */
-/* ================================================================== */
-
-/* Ícone do Menu (Hamburger) */
-.menu-toggle-btn {
-    background: none;
-    border: none;
-    font-size: 1.5em;
-    color: var(--dark-gray);
-    cursor: pointer;
-    padding: 0;
-    width: 40px;
-    text-align: left;
-}
-
-/* O Menu Lateral */
-.sidebar-menu {
-    position: fixed;
-    top: 0;
-    left: -300px; /* Começa escondido para a esquerda */
-    width: 280px;
-    height: 100%;
-    background-color: var(--white);
-    box-shadow: 4px 0px 15px rgba(0,0,0,0.2);
-    z-index: 1001; /* Fica acima de tudo, exceto o overlay */
-    transition: left 0.3s ease-in-out;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Classe que será adicionada via JS para mostrar o menu */
-.sidebar-menu.active {
-    left: 0;
-}
-
-.sidebar-menu h2 {
-    margin-top: 0;
-    color: var(--primary-color);
-    border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
-}
-
-.sidebar-menu ul {
-    list-style: none;
-    padding: 0;
-    flex-grow: 1; /* Empurra o botão de sair para o final */
-}
-
-.sidebar-menu ul li a {
-    display: block;
-    padding: 15px 10px;
-    color: var(--dark-gray);
-    text-decoration: none;
-    font-size: 1.1em;
-    border-radius: 8px;
-    transition: background-color 0.2s;
-}
-
-.sidebar-menu ul li a:hover {
-    background-color: var(--light-gray);
-}
-
-.sidebar-menu ul li a i {
-    margin-right: 15px;
-    width: 20px; /* Alinha os ícones */
-    text-align: center;
-}
-
-/* Botão de Sair dentro do menu */
-.btn-logout-menu {
-    background-color: var(--danger-color);
-    color: var(--white);
-    border: none;
-    padding: 15px;
-    width: 100%;
-    border-radius: 8px;
-    font-size: 1.1em;
-    cursor: pointer;
-    text-align: center;
-}
-
-/* O fundo escurecido */
-.menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-}
-
-/* Classe que será adicionada via JS para mostrar o fundo */
-.menu-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-/* ================================================================== */
-/* CSS PARA O NOVO MENU LATERAL                                       */
-/* ================================================================== */
-
-/* Ícone do Menu (Hamburger) */
-.menu-toggle-btn {
-    background: none;
-    border: none;
-    font-size: 1.5em;
-    color: var(--dark-gray);
-    cursor: pointer;
-    padding: 0;
-    width: 40px;
-    text-align: left;
-}
-
-/* O Menu Lateral */
-.sidebar-menu {
-    position: fixed;
-    top: 0;
-    left: -300px; /* Começa escondido para a esquerda */
-    width: 280px;
-    height: 100%;
-    background-color: var(--white);
-    box-shadow: 4px 0px 15px rgba(0,0,0,0.2);
-    z-index: 1001; /* Fica acima de tudo, exceto o overlay */
-    transition: left 0.3s ease-in-out;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-}
-
-/* Classe que será adicionada via JS para mostrar o menu */
-.sidebar-menu.active {
-    left: 0;
-}
-
-.sidebar-menu h2 {
-    margin-top: 0;
-    color: var(--primary-color);
-    border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
-}
-
-.sidebar-menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    flex-grow: 1; /* Empurra o botão de sair para o final */
-}
-
-.sidebar-menu ul li a {
-    display: flex;
-    align-items: center;
-    padding: 15px 10px;
-    color: var(--dark-gray);
-    text-decoration: none;
-    font-size: 1.1em;
-    border-radius: 8px;
-    transition: background-color 0.2s;
-}
-
-.sidebar-menu ul li a:hover {
-    background-color: var(--light-gray);
-}
-
-.sidebar-menu ul li a i {
-    margin-right: 15px;
-    width: 20px; /* Alinha os ícones */
-    text-align: center;
-    color: var(--secondary-color);
-}
-
-/* Botão de Sair dentro do menu */
-.btn-logout-menu {
-    background-color: var(--danger-color);
-    color: var(--white);
-    border: none;
-    padding: 15px;
-    width: 100%;
-    border-radius: 8px;
-    font-size: 1.1em;
-    cursor: pointer;
-    text-align: center;
-}
-
-/* O fundo escurecido */
-.menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-}
-
-/* Classe que será adicionada via JS para mostrar o fundo */
-.menu-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-/* ================================================================== */
-/* ARQUIVO style.css (NOVO TEMA DARK)                                 */
-/* ================================================================== */
-:root {
-    --primary-color: #007bff;
-    --background-color: #121212; /* Preto quase puro */
-    --surface-color: #1E1E1E; /* Cor de fundo para elementos */
-    --text-primary: #FFFFFF;
-    --text-secondary: #B0B0B0;
-    --border-color: #333333;
-    --border-radius: 12px;
-}
-
-/* Reset Básico */
+/* ===========================
+   RESET & BASE
+   =========================== */
 * {
-    box-sizing: border-box;
-}
-
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-primary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-/* Container Principal */
-.auth-container {
-    width: 100%;
-    max-width: 400px;
-    background-color: var(--surface-color);
-    border-radius: var(--border-radius);
-    padding: 40px 30px;
-    text-align: center;
+/* ===========================
+   CONTAINER PRINCIPAL
+   =========================== */
+.login-container {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
 }
 
-.auth-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Logo */
-.auth-logo {
-    max-width: 250px;
-    height: auto;
-    margin-bottom: 24px;
-}
-
-/* Tipografia */
-h1 {
-    font-size: 1.8em;
-    margin: 0 0 8px 0;
-}
-.subtitle {
-    color: var(--text-secondary);
-    margin: 0 0 24px 0;
-    font-size: 1.1em;
-}
-
-/* Botões de Ação (Entrar / Cadastrar) */
-.action-buttons {
-    display: flex;
-    width: 100%;
-    background-color: #2a2a2a;
-    border-radius: var(--border-radius);
-    margin-bottom: 24px;
-    padding: 4px;
-}
-.btn-toggle {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    background-color: transparent;
-    color: var(--text-secondary);
-    font-size: 1em;
-    font-weight: 600;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
-.btn-toggle.active {
-    background-color: #444444;
-    color: var(--text-primary);
-}
-
-/* Botão Social */
-.btn-social {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 14px;
-    border: 1px solid var(--border-color);
-    background-color: transparent;
-    color: var(--text-primary);
-    font-size: 1em;
-    font-weight: 600;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.btn-social:hover {
-    background-color: #2a2a2a;
-}
-.btn-social .fab {
-    margin-right: 12px;
-    font-size: 1.2em;
-}
-
-/* Separador */
-.separator {
-    width: 100%;
-    text-align: center;
-    color: var(--text-secondary);
-    margin: 24px 0;
-    position: relative;
-}
-.separator::before, .separator::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: 40%;
-    height: 1px;
-    background-color: var(--border-color);
-}
-.separator::before { left: 0; }
-.separator::after { right: 0; }
-
-/* Formulário */
-#auth-form {
-    width: 100%;
-}
-.input-group {
-    margin-bottom: 16px;
-}
-.input-group input {
-    width: 100%;
-    padding: 16px;
-    background-color: #2a2a2a;
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    font-size: 1em;
-    border-radius: var(--border-radius);
-}
-.input-group input::placeholder {
-    color: var(--text-secondary);
-}
-.input-group input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
-}
-
-.forgot-password {
-    display: block;
-    text-align: right;
-    color: var(--primary-color);
-    text-decoration: none;
-    font-size: 0.9em;
-    margin-bottom: 24px;
-}
-
-/* Botão Principal */
-.btn-main {
-    width: 100%;
-    padding: 16px;
-    background-color: var(--primary-color);
-    color: var(--white);
-    border: none;
-    font-size: 1.1em;
-    font-weight: 600;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.btn-main:hover {
-    background-color: #0056b3;
-}
-
-/* Texto Legal */
-.legal-text {
-    font-size: 0.8em;
-    color: var(--text-secondary);
-    margin-top: 24px;
-}
-.legal-text a {
-    color: var(--text-secondary);
-    text-decoration: underline;
-}
-/* ================================================================== */
-/* ARQUIVO style.css (VERSÃO FINAL COM TEMA DARK)                     */
-/* ================================================================== */
-:root {
-    --primary-color: #0d6efd;
-    --logo-color: #009245; /* Verde da logo */
-    --background-color: #121212;
-    --surface-color: #1E1E1E;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B0B0B0;
-    --border-color: #383838;
-    --border-radius: 12px;
-    --success-color: #198754;
-    --danger-color: #dc3545;
-}
-
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; padding: 0; }
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-primary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-/* --- ESTILOS DA PÁGINA DE LOGIN/CADASTRO --- */
-.auth-container {
-    width: 100%;
-    max-width: 400px;
-    background-color: var(--surface-color);
-    border-radius: var(--border-radius);
-    padding: 40px 30px;
-    text-align: center;
-}
-.auth-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.auth-logo-svg {
-    width: 100%;
-    max-width: 280px;
-    height: auto;
-    margin-bottom: 24px;
-}
-.auth-logo-svg path, .auth-logo-svg text {
-    fill: var(--logo-color); /* Aplica a cor verde do CSS */
-}
-h1 {
-    font-size: 1.8em;
-    margin: 0 0 8px 0;
-}
-.subtitle {
-    color: var(--text-secondary);
-    margin: 0 0 24px 0;
-    font-size: 1.1em;
-}
-.action-buttons {
-    display: flex;
-    width: 100%;
-    background-color: #2a2a2a;
-    border-radius: var(--border-radius);
-    margin-bottom: 24px;
-    padding: 4px;
-}
-.btn-toggle {
-    flex: 1; padding: 12px; border: none; background-color: transparent;
-    color: var(--text-secondary); font-size: 1em; font-weight: 600;
-    border-radius: 10px; cursor: pointer; transition: all 0.2s ease-in-out;
-}
-.btn-toggle.active {
-    background-color: #444444;
-    color: var(--text-primary);
-}
-.btn-social {
-    display: flex; align-items: center; justify-content: center; width: 100%;
-    padding: 14px; border: 1px solid var(--border-color); background-color: transparent;
-    color: var(--text-primary); font-size: 1em; font-weight: 600;
-    border-radius: var(--border-radius); cursor: pointer; transition: background-color 0.2s;
-}
-.btn-social:hover { background-color: #2a2a2a; }
-.btn-social .fab { margin-right: 12px; font-size: 1.2em; }
-.separator {
-    width: 100%; text-align: center; color: var(--text-secondary);
-    margin: 24px 0; position: relative;
-}
-.separator::before, .separator::after {
-    content: ''; position: absolute; top: 50%;
-    width: 40%; height: 1px; background-color: var(--border-color);
-}
-.separator::before { left: 0; }
-.separator::after { right: 0; }
-#auth-form { width: 100%; }
-.input-group { margin-bottom: 16px; }
-.input-group input {
-    width: 100%; padding: 16px; background-color: #2a2a2a;
-    border: 1px solid var(--border-color); color: var(--text-primary);
-    font-size: 1em; border-radius: var(--border-radius);
-}
-.input-group input::placeholder { color: var(--text-secondary); }
-.input-group input:focus {
-    outline: none; border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.3);
-}
-.forgot-password {
-    display: block; text-align: right; color: var(--primary-color);
-    text-decoration: none; font-size: 0.9em; margin-bottom: 24px;
-}
-.btn-main {
-    width: 100%; padding: 16px; background-color: var(--primary-color);
-    color: var(--white); border: none; font-size: 1.1em; font-weight: 600;
-    border-radius: var(--border-radius); cursor: pointer; transition: background-color 0.2s;
-}
-/* ================================================================== */
-/* ARQUIVO style.css (VERSÃO FINAL COM TEMA DARK E RESPONSIVO)        */
-/* ================================================================== */
-:root {
-    --primary-color: #0d6efd;
-    --logo-color: #009245;
-    --background-color: #121212;
-    --surface-color: #1E1E1E;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B0B0B0;
-    --border-color: #383838;
-    --border-radius: 12px;
-    --success-color: #198754;
-    --danger-color: #dc3545;
-}
-
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; padding: 0; }
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-primary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-/* --- ESTILOS DA PÁGINA DE LOGIN/CADASTRO --- */
-.auth-container {
-    width: 100%;
-    max-width: 400px;
-    background-color: var(--surface-color);
-    border-radius: var(--border-radius);
-    padding: 40px 25px;
-    text-align: center;
-}
-.auth-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.auth-logo-svg {
-    width: 100%;
-    max-width: 280px;
-    height: auto;
-    margin-bottom: 24px;
-}
-.auth-logo-svg path {
-    fill: var(--logo-color);
-}
-.auth-logo-svg .logo-text {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 50px;
-    font-weight: 600;
-    fill: var(--text-primary);
-}
-h1 {
-    font-size: 1.8em;
-    margin: 0 0 8px 0;
-}
-.subtitle {
-    color: var(--text-secondary);
-    margin: 0 0 24px 0;
-    font-size: 1.1em;
-}
-.action-buttons {
-    display: flex;
-    width: 100%;
-    background-color: #2a2a2a;
-    border-radius: var(--border-radius);
-    margin-bottom: 24px;
-    padding: 4px;
-}
-.btn-toggle {
-    flex: 1; padding: 12px; border: none; background-color: transparent;
-    color: var(--text-secondary); font-size: 1em; font-weight: 600;
-    border-radius: 10px; cursor: pointer; transition: all 0.2s ease-in-out;
-}
-.btn-toggle.active {
-    background-color: #444444;
-    color: var(--text-primary);
-}
-.btn-social {
-    display: flex; align-items: center; justify-content: center; width: 100%;
-    padding: 14px; border: 1px solid var(--border-color); background-color: transparent;
-    color: var(--text-primary); font-size: 1em; font-weight: 600;
-    border-radius: var(--border-radius); cursor: pointer; transition: background-color 0.2s;
-}
-.btn-social:hover { background-color: #2a2a2a; }
-.btn-social .fab { margin-right: 12px; font-size: 1.2em; }
-.separator {
-    width: 100%; text-align: center; color: var(--text-secondary);
-    margin: 24px 0; position: relative;
-}
-.separator::before, .separator::after {
-    content: ''; position: absolute; top: 50%;
-    width: 40%; height: 1px; background-color: var(--border-color);
-}
-.separator::before { left: 0; }
-.separator::after { right: 0; }
-#auth-form { width: 100%; }
-.input-group { margin-bottom: 16px; }
-.input-group input {
-    width: 100%; padding: 16px; background-color: #2a2a2a;
-    border: 1px solid var(--border-color); color: var(--text-primary);
-    font-size: 1em; border-radius: var(--border-radius);
-}
-.input-group input::placeholder { color: var(--text-secondary); }
-.input-group input:focus {
-    outline: none; border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.3);
-}
-.forgot-password {
-    display: block; text-align: right; color: var(--primary-color);
-    text-decoration: none; font-size: 0.9em; margin-bottom: 24px;
-}
-.btn-main {
-    width: 100%; padding: 16px; background-color: var(--primary-color);
-    color: #fff; border: none; font-size: 1.1em; font-weight: 600;
-    border-radius: var(--border-radius); cursor: pointer; transition: background-color 0.2s;
-}
-.btn-main:hover { background-color: #0b5ed7; }
-.legal-text { font-size: 0.8em; color: var(--text-secondary); margin-top: 24px; }
-.legal-text a { color: var(--text-secondary); text-decoration: underline; }
-.error { color: var(--danger-color); margin-top: 15px; height: 20px; font-weight: 500; }
-
-/* --- ESTILOS DAS OUTRAS PÁGINAS (PARA CONSISTÊNCIA) --- */
-.container {
-    width: 100%; max-width: 500px; height: 100%;
-    background-color: var(--surface-color); overflow: hidden;
-    display: flex; flex-direction: column;
-}
-@media (min-width: 600px) {
-    .container {
-        height: 95vh; max-height: 880px; border-radius: var(--border-radius);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-}
-.app-header {
-    background-color: var(--surface-color); padding: 15px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px solid var(--border-color); flex-shrink: 0;
-}
-.app-header h1 { font-size: 1.1em; margin: 0; color: var(--text-primary); }
-.quiz-body { flex-grow: 1; padding: 20px; overflow-y: auto; }
-
-.btn-main:hover { background-color: #0b5ed7; }
-.legal-text { font-size: 0.8em; color: var(--text-secondary); margin-top: 24px; }
-.legal-text a { color: var(--text-secondary); text-decoration: underline; }
-.error { color: var(--danger-color); margin-top: 15px; height: 20px; }
-/* ================================================================== */
-/* ARQUIVO style.css (VERSÃO FINAL COM TEMA DARK E RESPONSIVO)        */
-/* ================================================================== */
-:root {
-    --primary-color: #0d6efd;
-    --logo-color: #009245;
-    --background-color: #121212;
-    --surface-color: #1E1E1E;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B0B0B0;
-    --border-color: #383838;
-    --border-radius: 12px;
-    --success-color: #198754;
-    --danger-color: #dc3545;
-}
-
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; padding: 0; }
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-primary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-/* --- ESTILOS DA PÁGINA DE LOGIN/CADASTRO --- */
-.auth-container {
-    width: 100%;
-    max-width: 400px;
-    background-color: var(--surface-color);
-    border-radius: var(--border-radius);
-    padding: 40px 25px;
-    text-align: center;
-}
-.auth-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.auth-logo-svg {
-    width: 100%;
-    max-width: 280px;
-    height: auto;
-    margin-bottom: 24px;
-}
-.auth-logo-svg path {
-    fill: var(--logo-color);
-}
-.auth-logo-svg .logo-text {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 50px;
-    font-weight: 600;
-    fill: var(--text-primary);
-}
-h1 {
-    font-size: 1.8em;
-    margin: 0 0 8px 0;
-}
-.subtitle {
-    color: var(--text-secondary);
-    margin: 0 0 24px 0;
-    font-size: 1.1em;
-}
-.action-buttons {
-    display: flex;
-    width: 100%;
-    background-color: #2a2a2a;
-    border-radius: var(--border-radius);
-    margin-bottom: 24px;
-    padding: 4px;
-}
-.btn-toggle {
-    flex: 1; padding: 12px; border: none; background-color: transparent;
-    color: var(--text-secondary); font-size: 1em; font-weight: 600;
-    border-radius: 10px; cursor: pointer; transition: all 0.2s ease-in-out;
-}
-.btn-toggle.active {
-    background-color: #444444;
-    color: var(--text-primary);
-}
-.btn-social {
-    display: flex; align-items: center; justify-content: center; width: 100%;
-    padding: 14px; border: 1px solid var(--border-color); background-color: transparent;
-    color: var(--text-primary); font-size: 1em; font-weight: 600;
-    border-radius: var(--border-radius); cursor: pointer; transition: background-color 0.2s;
-}
-.btn-social:hover { background-color: #2a2a2a; }
-.btn-social .fab { margin-right: 12px; font-size: 1.2em; }
-.separator {
-    width: 100%; text-align: center; color: var(--text-secondary);
-    margin: 24px 0; position: relative;
-}
-.separator::before, .separator::after {
-    content: ''; position: absolute; top: 50%;
-    width: 40%; height: 1px; background-color: var(--border-color);
-}
-.separator::before { left: 0; }
-.separator::after { right: 0; }
-#auth-form { width: 100%; }
-.input-group { margin-bottom: 16px; }
-.input-group input {
-    width: 100%; padding: 16px; background-color: #2a2a2a;
-    border: 1px solid var(--border-color); color: var(--text-primary);
-    font-size: 1em; border-radius: var(--border-radius);
-}
-.input-group input::placeholder { color: var(--text-secondary); }
-.input-group input:focus {
-    outline: none; border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.3);
-}
-.forgot-password {
-    display: block; text-align: right; color: var(--primary-color);
-    text-decoration: none; font-size: 0.9em; margin-bottom: 24px;
-}
-.btn-main {
-    width: 100%; padding: 16px; background-color: var(--primary-color);
-    color: #fff; border: none; font-size: 1.1em; font-weight: 600;
-    border-radius: var(--border-radius); cursor: pointer; transition: background-color 0.2s;
-}
-.btn-main:hover { background-color: #0b5ed7; }
-.legal-text { font-size: 0.8em; color: var(--text-secondary); margin-top: 24px; }
-.legal-text a { color: var(--text-secondary); text-decoration: underline; }
-.error { color: var(--danger-color); margin-top: 15px; height: 20px; font-weight: 500; }
-
-/* --- ESTILOS DAS OUTRAS PÁGINAS (PARA CONSISTÊNCIA) --- */
-.container {
-    width: 100%; max-width: 500px; height: 100%;
-    background-color: var(--surface-color); overflow: hidden;
-    display: flex; flex-direction: column;
-}
-@media (min-width: 600px) {
-    .container {
-        height: 95vh; max-height: 880px; border-radius: var(--border-radius);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-}
-.app-header {
-    background-color: var(--surface-color); padding: 15px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px solid var(--border-color); flex-shrink: 0;
-}
-.app-header h1 { font-size: 1.1em; margin: 0; color: var(--text-primary); }
-.quiz-body { flex-grow: 1; padding: 20px; overflow-y: auto; }
-
-
-/* --- ESTILOS DAS OUTRAS PÁGINAS (PARA CONSISTÊNCIA) --- */
-.container {
-    width: 100%; max-width: 500px; height: 100%;
-    background-color: var(--surface-color); overflow: hidden;
-    display: flex; flex-direction: column;
-}
-@media (min-width: 600px) {
-    .container {
-        height: 95vh; max-height: 880px; border-radius: var(--border-radius);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-}
-.app-header {
-    background-color: var(--surface-color); padding: 15px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px solid var(--border-color); flex-shrink: 0;
-}
-.app-header h1 { font-size: 1.1em; margin: 0; color: var(--text-primary); }
-.quiz-body { flex-grow: 1; padding: 20px; overflow-y: auto; }
-
-.auth-logo {
-  width: 80px;
+/* ===========================
+   LOGO & TÍTULO
+   =========================== */
+.logo {
   margin-bottom: 20px;
 }
-/* Logo SVG branco */
+
 .logo-img {
   width: 80px;
-  height: auto;
-  filter: brightness(0) invert(1); /* deixa o SVG branco */
+  height: 80px;
   margin-bottom: 10px;
+  filter: brightness(0) invert(1); /* deixa branco */
 }
 
-/* Fade-in dos campos extras */
+.logo h1 {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.logo p {
+  font-size: 0.9rem;
+  color: #ddd;
+  margin-top: 5px;
+}
+
+/* ===========================
+   TOGGLE BUTTONS (Login/Cadastro)
+   =========================== */
+.login-header {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 20px;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #bbb;
+  cursor: pointer;
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.3s ease;
+}
+
+.toggle-btn:hover {
+  color: #fff;
+}
+
+/* Linha animada abaixo do botão */
+.toggle-btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0;
+  height: 2px;
+  background: #fff;
+  transition: width 0.3s ease;
+}
+
+.toggle-btn.active {
+  color: #fff;
+}
+
+.toggle-btn.active::after {
+  width: 100%;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.7); /* glow suave */
+}
+
+/* ===========================
+   FORMULÁRIO
+   =========================== */
+#auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#auth-form input {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+#auth-form input::placeholder {
+  color: #ccc;
+}
+
+#auth-form input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+}
+
+/* Botão de login/cadastro */
+.login-btn {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #00b4db;
+  background: linear-gradient(135deg, #00b4db, #0083b0);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 180, 219, 0.4);
+}
+
+/* Esqueceu a senha */
+.forgot {
+  font-size: 0.85rem;
+  color: #ccc;
+  text-decoration: none;
+  text-align: right;
+  transition: color 0.3s;
+}
+
+.forgot:hover {
+  color: #fff;
+}
+
+/* ===========================
+   MENSAGEM DE ERRO
+   =========================== */
+.error-message {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #ff6b6b;
+  font-weight: 500;
+}
+
+/* ===========================
+   ANIMAÇÕES (fade-in dos campos extras)
+   =========================== */
 .fade-field {
   opacity: 0;
   max-height: 0;
   overflow: hidden;
-  transition: all 0.4s ease;
+  transform: translateY(-10px);
+  transition: opacity 0.4s ease, max-height 0.4s ease, transform 0.4s ease;
 }
 
 .fade-field.show {
   opacity: 1;
-  max-height: 100px; /* suficiente para caber o input */
-  margin-top: 10px;
+  max-height: 100px;
+  transform: translateY(0);
 }
 
-.error-message {
-  color: red;
-  margin-top: 10px;
+.hidden {
+  display: none;
 }
 
-.feedback { font-weight: 500; }
-.feedback-correct { color: var(--success-color); font-weight: bold; }
+/* ===========================
+   KEYFRAMES
+   =========================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================
+   RESPONSIVIDADE
+   =========================== */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 25px;
+    max-width: 95%;
+  }
+
+  .logo h1 {
+    font-size: 1.5rem;
+  }
+
+  .toggle-btn {
+    font-size: 1rem;
+  }
+
+  #auth-form input {
+    font-size: 0.95rem;
+  }
+
+  .login-btn {
+    font-size: 1rem;
+  }
+}
