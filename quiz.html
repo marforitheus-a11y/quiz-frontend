@@ -2,40 +2,56 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <!-- A LINHA MAIS IMPORTANTE PARA O DESIGN ADAPTATIVO E PARA TRAVAR O ZOOM -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Simulado Pro - Quiz</title>
+    <title>Bem-vindo ao Concursando</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Overlay para escurecer o fundo quando o menu estiver aberto -->
-    <div id="menu-overlay" class="menu-overlay"></div>
+    <div class="auth-container">
+        <div class="auth-content">
+            <!-- Logo -->
+            <img src="https://i.imgur.com/K074K8y.png" alt="Logo Concursando" class="auth-logo">
 
-    <!-- O Novo Menu Lateral (começa escondido) -->
-    <nav id="sidebar-menu" class="sidebar-menu">
-        <h2>Menu</h2>
-        <ul>
-            <li><a href="conta.html"><i class="fa-solid fa-user"></i> Minha Conta</a></li>
-            <li><a href="desempenho.html"><i class="fa-solid fa-chart-line"></i> Meu Desempenho</a></li>
-        </ul>
-        <button id="logout-btn-menu" class="btn-logout-menu">Sair <i class="fa-solid fa-right-from-bracket"></i></button>
-    </nav>
+            <!-- Títulos -->
+            <h1>Bem-vindo ao Concursando</h1>
+            <p class="subtitle">A melhor ferramenta de estudos por IA do Brasil</p>
 
-    <div class="container">
-        <header class="app-header">
-            <!-- Ícone de Menu (3 barrinhas) -->
-            <button id="menu-toggle-btn" class="menu-toggle-btn">
-                <i class="fa-solid fa-bars"></i>
+            <!-- Botões de Ação -->
+            <div class="action-buttons">
+                <button class="btn-toggle active" id="login-toggle">Entrar</button>
+                <button class="btn-toggle" id="signup-toggle">Cadastrar-se</button>
+            </div>
+
+            <!-- Login Social -->
+            <button class="btn-social">
+                <i class="fab fa-google"></i>
+                Continuar com Google
             </button>
-            <h1>Simulado Pro</h1>
-            <!-- Espaçador para manter o título perfeitamente centralizado -->
-            <div style="width: 40px;"></div> 
-        </header>
-        <main class="quiz-body" id="main-content">
-            <p>Carregando simulado...</p>
-        </main>
+
+            <div class="separator">Ou</div>
+
+            <!-- Formulário -->
+            <form id="auth-form">
+                <!-- Campo de nome, escondido por padrão -->
+                <div class="input-group" id="name-group" style="display: none;">
+                    <input type="text" id="name" name="name" placeholder="Nome Completo" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="email" name="email" placeholder="E-mail" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" name="password" placeholder="Senha" required>
+                </div>
+                <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                <button type="submit" class="btn-main" id="submit-btn">Login</button>
+            </form>
+
+            <p class="legal-text" style="display: none;">
+                Ao se cadastrar, você concorda com os <a href="#">Termos de Uso</a>, <a href="#">Aviso de Privacidade</a>, e <a href="#">Aviso de Cookies</a>.
+            </p>
+        </div>
     </div>
-    <script src="quiz.js"></script>
+    <script src="login.js"></script>
 </body>
 </html>
