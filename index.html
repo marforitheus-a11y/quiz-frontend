@@ -2,27 +2,54 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Simulado Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bem-vindo ao Concursando</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="form-container">
-            <h1>Simulado Pro</h1>
-            <p>Faça login para iniciar seu simulado.</p>
-            <form id="login-form">
-                <div class="input-group">
-                    <label for="username">Usuário</label>
-                    <input type="text" id="username" name="username" required>
+    <div class="auth-container">
+        <div class="auth-content">
+            <!-- Logo -->
+            <img src="https://i.ibb.co/39t6Dgnv/9d95b883-85c2-4fd6-ae4f-dcd4e63dd127-removalai-preview-1.png" alt="Logo Concursando" class="auth-logo">
+
+            <!-- Títulos -->
+            <h1>Bem-vindo ao Concursando</h1>
+            <p class="subtitle">A melhor ferramenta de estudos por IA do Brasil</p>
+
+            <!-- Botões de Ação -->
+            <div class="action-buttons">
+                <button class="btn-toggle active" id="login-toggle">Entrar</button>
+                <button class="btn-toggle" id="signup-toggle">Cadastrar-se</button>
+            </div>
+
+            <!-- Login Social -->
+            <button class="btn-social">
+                <i class="fab fa-google"></i>
+                Continuar com Google
+            </button>
+
+            <div class="separator">Ou</div>
+
+            <!-- Formulário -->
+            <form id="auth-form">
+                <!-- Campo de nome, escondido por padrão -->
+                <div class="input-group" id="name-group" style="display: none;">
+                    <input type="text" id="name" name="name" placeholder="Nome Completo" required>
                 </div>
                 <div class="input-group">
-                    <label for="password">Senha</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="email" id="email" name="email" placeholder="E-mail" required>
                 </div>
-                <button type="submit" class="btn">Entrar</button>
-                <p id="error-message" class="error"></p>
+                <div class="input-group">
+                    <input type="password" id="password" name="password" placeholder="Senha" required>
+                </div>
+                <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                <button type="submit" class="btn-main" id="submit-btn">Login</button>
             </form>
+
+            <p class="legal-text" style="display: none;">
+                Ao se cadastrar, você concorda com os <a href="#">Termos de Uso</a>, <a href="#">Aviso de Privacidade</a>, e <a href="#">Aviso de Cookies</a>.
+            </p>
         </div>
     </div>
     <script src="login.js"></script>
