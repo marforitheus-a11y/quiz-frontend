@@ -1,11 +1,8 @@
 <html lang="pt-BR" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
-  <title>Concursando - Questões</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Simulado Pro - Quiz</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link
     rel="stylesheet"
@@ -18,89 +15,151 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background: #f9fafb;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
       margin: 0;
       min-height: 100vh;
       overflow-x: hidden;
+      color: #1e293b; /* slate-800 */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     /* Container */
     .container {
       max-width: 7xl;
-      margin: 0 auto;
-      padding: 1.5rem 1rem 3rem;
+      margin: 2rem auto 3rem;
+      padding: 2rem 1.5rem;
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 25px 50px -12px rgb(59 130 246 / 0.25);
+      min-height: 75vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
     }
     /* Header */
     .app-header {
-      @apply flex items-center justify-between bg-white rounded-3xl shadow-md px-6 py-4 mb-8 sticky top-4 z-30;
+      @apply flex items-center justify-between rounded-3xl px-8 py-5 mb-10 sticky top-6 z-30 bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg;
+      color: white;
+      user-select: none;
     }
     .app-header h1 {
-      @apply text-3xl font-extrabold text-gray-900 select-none;
+      @apply text-3xl font-extrabold select-none;
       flex: 1;
       text-align: center;
+      letter-spacing: 0.05em;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
     /* Menu toggle button */
     #menu-toggle-btn {
-      @apply text-gray-700 text-2xl p-2 rounded-xl hover:bg-gray-200 transition focus:outline-none focus:ring-4 focus:ring-blue-300;
+      @apply text-white text-3xl p-3 rounded-xl hover:bg-blue-500 transition focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg;
       flex-shrink: 0;
+      user-select: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      backdrop-filter: saturate(180%) blur(10px);
+      background-color: rgba(59, 130, 246, 0.7);
+    }
+    #menu-toggle-btn:hover {
+      background-color: rgba(59, 130, 246, 0.9);
     }
     /* Spacer to keep title centered */
     .app-header > div {
-      width: 40px;
+      width: 48px;
       flex-shrink: 0;
     }
     /* Sidebar menu */
     #sidebar-menu {
-      @apply fixed top-0 left-0 h-full w-64 bg-white shadow-lg rounded-r-3xl p-6 transform -translate-x-full transition-transform duration-300 ease-in-out z-40;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
+      @apply fixed top-0 left-0 h-full w-72 bg-white shadow-2xl rounded-r-3xl p-8 transform -translate-x-full transition-transform duration-300 ease-in-out z-40 flex flex-col gap-8;
+      user-select: none;
+      box-shadow:
+        0 10px 15px -3px rgb(59 130 246 / 0.3),
+        0 4px 6px -2px rgb(59 130 246 / 0.2);
     }
     #sidebar-menu.open {
       transform: translateX(0);
     }
     #sidebar-menu h2 {
-      @apply text-2xl font-bold text-gray-900 select-none;
-      margin-bottom: 1rem;
+      @apply text-3xl font-extrabold text-gray-900 select-none tracking-wide;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     #sidebar-menu ul {
-      @apply flex flex-col gap-4 list-none p-0 m-0;
+      @apply flex flex-col gap-6 list-none p-0 m-0;
       flex-grow: 1;
     }
     #sidebar-menu ul li a {
-      @apply flex items-center gap-3 text-gray-800 font-semibold text-lg rounded-xl px-4 py-3 hover:bg-blue-100 transition;
+      @apply flex items-center gap-4 text-gray-800 font-semibold text-lg rounded-2xl px-5 py-3 hover:bg-blue-100 transition shadow-sm;
       text-decoration: none;
+      box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+      user-select: none;
+      border-left: 4px solid transparent;
+      transition-property: background-color, border-color, box-shadow;
+      transition-duration: 300ms;
+    }
+    #sidebar-menu ul li a:hover,
+    #sidebar-menu ul li a:focus {
+      @apply bg-blue-100 border-blue-600 shadow-md outline-none;
+      border-left-width: 4px;
+      box-shadow: 0 4px 12px rgb(59 130 246 / 0.3);
     }
     #sidebar-menu ul li a i {
-      @apply text-blue-600;
-      min-width: 20px;
-      text-align: center;
+      @apply text-blue-600 text-xl min-w-[28px] text-center;
     }
     /* Logout button in sidebar */
     #logout-btn-menu {
-      @apply mt-auto bg-red-600 text-white font-semibold rounded-xl py-3 shadow-md hover:bg-red-700 transition focus:outline-none focus:ring-4 focus:ring-red-300 flex items-center justify-center gap-2;
+      @apply mt-auto bg-red-600 text-white font-semibold rounded-3xl py-3 shadow-lg hover:bg-red-700 transition focus:outline-none focus:ring-4 focus:ring-red-300 flex items-center justify-center gap-3 cursor-pointer text-lg;
       border: none;
-      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 6px 15px rgb(220 38 38 / 0.4);
+      letter-spacing: 0.03em;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
     #logout-btn-menu i {
-      @apply text-lg;
+      @apply text-2xl;
+    }
+    #logout-btn-menu:hover {
+      box-shadow: 0 8px 20px rgb(220 38 38 / 0.6);
     }
     /* Overlay */
     #menu-overlay {
-      @apply fixed inset-0 bg-black bg-opacity-40 hidden z-30;
+      @apply fixed inset-0 bg-black bg-opacity-50 hidden z-30 backdrop-blur-sm;
+      transition: opacity 0.3s ease;
     }
     #menu-overlay.active {
       @apply block;
     }
     /* Main content */
     main.quiz-body {
-      @apply bg-white rounded-3xl shadow-md p-8 min-h-[60vh] text-gray-800;
+      @apply rounded-3xl p-10 flex-grow overflow-auto shadow-xl;
       font-size: 1.125rem;
-      line-height: 1.6;
+      line-height: 1.7;
+      color: #334155; /* slate-700 */
+      user-select: text;
+      background: #f1f5f9;
+      box-shadow:
+        inset 0 0 20px rgb(59 130 246 / 0.1),
+        0 20px 40px rgb(59 130 246 / 0.15);
+      border-radius: 2rem;
+      min-height: 60vh;
+      scroll-behavior: smooth;
+    }
+    /* Scrollbar for main content */
+    main.quiz-body::-webkit-scrollbar {
+      width: 10px;
+    }
+    main.quiz-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    main.quiz-body::-webkit-scrollbar-thumb {
+      background-color: #3b82f6;
+      border-radius: 6px;
+      border: 2px solid transparent;
+      background-clip: content-box;
     }
     /* Responsive adjustments */
     @media (min-width: 768px) {
       #sidebar-menu {
-        @apply static transform-none w-72 rounded-3xl shadow-none p-0 bg-transparent flex-row items-center gap-8 h-auto;
+        @apply static transform-none w-80 rounded-3xl shadow-none p-0 bg-transparent flex-row items-center gap-10 h-auto;
         height: auto !important;
         box-shadow: none !important;
         padding: 0 !important;
@@ -112,15 +171,24 @@
         display: none;
       }
       #sidebar-menu ul {
-        @apply flex-row gap-6;
+        @apply flex-row gap-8;
         flex-grow: 0 !important;
       }
       #sidebar-menu ul li a {
-        @apply bg-transparent hover:bg-blue-50 rounded-md px-2 py-1 text-base;
+        @apply bg-transparent hover:bg-blue-50 rounded-lg px-3 py-2 text-base shadow-none;
+        border-left: none !important;
+        box-shadow: none !important;
+      }
+      #sidebar-menu ul li a:hover,
+      #sidebar-menu ul li a:focus {
+        @apply bg-blue-100 outline-none;
+        box-shadow: none !important;
+        border-left: none !important;
       }
       #logout-btn-menu {
-        @apply bg-red-600 px-4 py-2 rounded-md shadow-none hover:bg-red-700;
-        font-size: 0.875rem;
+        @apply bg-red-600 px-5 py-2 rounded-lg shadow-none hover:bg-red-700;
+        font-size: 0.9rem;
+        box-shadow: none !important;
       }
       #menu-toggle-btn {
         display: none;
@@ -140,20 +208,20 @@
 </head>
 <body>
   <!-- Overlay para escurecer o fundo quando o menu estiver aberto -->
-  <div id="menu-overlay" class="menu-overlay"></div>
+  <div id="menu-overlay" class="menu-overlay" tabindex="-1" aria-hidden="true"></div>
 
   <!-- O Novo Menu Lateral (começa escondido) -->
-  <nav id="sidebar-menu" class="sidebar-menu" aria-label="Menu lateral principal">
+  <nav id="sidebar-menu" class="sidebar-menu" aria-label="Menu lateral principal" role="navigation">
     <h2>Menu</h2>
     <ul>
       <li>
-        <a href="conta.html" tabindex="0">
+        <a href="conta.html" tabindex="0" role="link" aria-label="Minha Conta">
           <i class="fa-solid fa-user" aria-hidden="true"></i>
           Minha Conta
         </a>
       </li>
       <li>
-        <a href="desempenho.html" tabindex="0">
+        <a href="desempenho.html" tabindex="0" role="link" aria-label="Meu Desempenho">
           <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
           Meu Desempenho
         </a>
@@ -164,18 +232,18 @@
     </button>
   </nav>
 
-  <div class="container">
+  <div class="container" role="main" aria-live="polite" aria-busy="true">
     <header class="app-header">
       <!-- Ícone de Menu (3 barrinhas) -->
-      <button id="menu-toggle-btn" class="menu-toggle-btn" aria-label="Abrir menu lateral" aria-expanded="false" aria-controls="sidebar-menu">
+      <button id="menu-toggle-btn" class="menu-toggle-btn" aria-label="Abrir menu lateral" aria-expanded="false" aria-controls="sidebar-menu" aria-haspopup="true" aria-pressed="false">
         <i class="fa-solid fa-bars"></i>
       </button>
       <h1>Simulado Pro</h1>
       <!-- Espaçador para manter o título perfeitamente centralizado -->
       <div></div>
     </header>
-    <main class="quiz-body" id="main-content" tabindex="0" aria-live="polite" aria-busy="true">
-      <p>Carregando simulado...</p>
+    <main class="quiz-body" id="main-content" tabindex="0">
+      <p class="text-center text-lg text-gray-600 select-none">Carregando simulado...</p>
     </main>
   </div>
 
@@ -190,13 +258,17 @@
       sidebarMenu.classList.add('open');
       menuOverlay.classList.add('active');
       menuToggleBtn.setAttribute('aria-expanded', 'true');
-      // Trap focus inside menu if needed (optional)
+      menuToggleBtn.setAttribute('aria-pressed', 'true');
+      menuToggleBtn.focus();
+      // Optionally trap focus inside menu here
     }
 
     function closeMenu() {
       sidebarMenu.classList.remove('open');
       menuOverlay.classList.remove('active');
       menuToggleBtn.setAttribute('aria-expanded', 'false');
+      menuToggleBtn.setAttribute('aria-pressed', 'false');
+      menuToggleBtn.focus();
     }
 
     menuToggleBtn.addEventListener('click', () => {
@@ -213,7 +285,6 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && sidebarMenu.classList.contains('open')) {
         closeMenu();
-        menuToggleBtn.focus();
       }
     });
   </script>
