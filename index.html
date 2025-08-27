@@ -1,56 +1,135 @@
-<html class="scroll-smooth" lang="pt-BR">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>
-   Concursando - Login
-  </title>
-  <script src="https://cdn.tailwindcss.com">
-  </script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Concursando - Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
   <style>
-   body {
+    body {
       font-family: 'Inter', sans-serif;
       background: #f9fafb;
     }
+    .toggle-btn.active {
+      @apply bg-blue-600 text-white;
+    }
+    .toggle-btn {
+      @apply cursor-pointer px-6 py-2 rounded-xl border border-blue-600 text-blue-600 font-semibold transition;
+    }
   </style>
- </head>
- <body class="min-h-screen flex items-center justify-center px-4 py-12">
-  <main class="bg-white max-w-md w-full rounded-3xl shadow-lg p-10 sm:p-12 md:p-14">
-   <div class="flex flex-col items-center mb-10">
-    <img alt="Logo da plataforma Concursando, um símbolo moderno com letras estilizadas em azul e verde" class="w-24 h-24 object-contain mb-4" height="96" loading="lazy" src="https://storage.googleapis.com/a1aa/image/6740bc31-edff-499e-3c02-11617c80ac17.jpg" width="96"/>
-    <h1 class="text-3xl font-semibold text-gray-900 select-none">
-     Concursando
-    </h1>
-    <p class="mt-1 text-gray-600 text-center text-sm sm:text-base max-w-xs">
-     Uma plataforma de resolução de questões por IA
-    </p>
-   </div>
-   <form class="space-y-6" id="auth-form" novalidate="">
-    <div>
-     <label class="block text-sm font-medium text-gray-700 mb-1" for="username">
-      Usuário ou E-mail
-     </label>
-     <input autocomplete="username" class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" id="username" name="username" placeholder="Digite seu usuário ou e-mail" required="" type="text"/>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4 py-12">
+  <main
+    class="bg-white max-w-md w-full rounded-3xl shadow-lg p-10 sm:p-12 md:p-14"
+  >
+    <div class="flex flex-col items-center mb-10">
+      <img
+        src="https://storage.googleapis.com/a1aa/image/6740bc31-edff-499e-3c02-11617c80ac17.jpg"
+        alt="Logo da plataforma Concursando, um símbolo moderno com letras estilizadas em azul e verde"
+        class="w-24 h-24 object-contain mb-4"
+        width="96"
+        height="96"
+        loading="lazy"
+      />
+      <h1 class="text-3xl font-semibold text-gray-900 select-none">Concursando</h1>
+      <p class="mt-1 text-gray-600 text-center text-sm sm:text-base max-w-xs">
+        Uma plataforma de resolução de questões por IA
+      </p>
     </div>
-    <div>
-     <label class="block text-sm font-medium text-gray-700 mb-1" for="password">
-      Senha
-     </label>
-     <input autocomplete="current-password" class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" id="password" name="password" placeholder="Digite sua senha" required="" type="password"/>
+
+    <div class="flex justify-center gap-4 mb-8">
+      <button type="button" class="toggle-btn active" id="login-toggle">Entrar</button>
+      <button type="button" class="toggle-btn" id="signup-toggle">Cadastrar</button>
     </div>
-    <div class="flex justify-between items-center text-sm">
-     <a class="text-blue-600 hover:text-blue-700 font-medium transition" href="#">
-      Esqueceu a senha?
-     </a>
-    </div>
-    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-3 shadow-md transition focus:outline-none focus:ring-4 focus:ring-blue-300" id="submit-btn" type="submit">
-     Entrar
-    </button>
-   </form>
-   <p class="mt-4 text-center text-red-600 font-medium min-h-[1.5rem]" id="error-message">
-   </p>
+
+    <form id="auth-form" class="space-y-6" novalidate>
+      <div id="name-group" class="hidden">
+        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nome completo</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Digite seu nome completo"
+          autocomplete="name"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+        />
+      </div>
+
+      <div>
+        <label
+          for="username"
+          class="block text-sm font-medium text-gray-700 mb-1"
+          >Usuário ou E-mail</label
+        >
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Usuário ou E-mail"
+          required
+          autocomplete="username"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+        />
+      </div>
+
+      <div id="email-group" class="hidden">
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Digite seu e-mail"
+          autocomplete="email"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+        />
+      </div>
+
+      <div>
+        <label
+          for="password"
+          class="block text-sm font-medium text-gray-700 mb-1"
+          >Senha</label
+        >
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Digite sua senha"
+          required
+          autocomplete="current-password"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+        />
+      </div>
+
+      <div class="flex justify-between items-center text-sm">
+        <a
+          href="#"
+          class="text-blue-600 hover:text-blue-700 font-medium transition"
+          >Esqueceu a senha?</a
+        >
+      </div>
+
+      <button
+        type="submit"
+        id="submit-btn"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-3 shadow-md transition focus:outline-none focus:ring-4 focus:ring-blue-300"
+      >
+        Entrar
+      </button>
+    </form>
+    <p
+      id="error-message"
+      class="mt-4 text-center text-red-600 font-medium min-h-[1.5rem]"
+    ></p>
   </main>
- </body>
+
+  <script src="login.js"></script>
+</body>
 </html>
