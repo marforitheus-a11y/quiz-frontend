@@ -17,242 +17,172 @@
       font-family: 'Inter', sans-serif;
       background: #f9fafb;
       min-height: 100vh;
+      margin: 0;
+      padding: 0;
     }
-    .container {
-      max-width: 7xl;
-      margin: 0 auto;
-      padding: 1.5rem 1rem 3rem;
+    /* Scrollbar for tables */
+    tbody::-webkit-scrollbar {
+      height: 8px;
     }
-    .app-header {
-      @apply flex flex-col sm:flex-row justify-between items-center mb-10 gap-4;
-    }
-    .app-header h1 {
-      @apply text-3xl font-semibold text-gray-900 select-none;
-    }
-    .btn-header {
-      @apply bg-blue-600 text-white px-5 py-2 rounded-xl font-semibold shadow-md hover:bg-blue-700 transition;
-    }
-    #logout-btn {
-      @apply flex items-center gap-2 bg-red-600 text-white px-5 py-2 rounded-xl font-semibold shadow-md hover:bg-red-700 transition focus:outline-none focus:ring-4 focus:ring-red-300;
-    }
-    #logout-btn i {
-      @apply text-lg;
-    }
-    main.quiz-body {
-      @apply space-y-12;
-    }
-    .admin-section h2 {
-      @apply text-xl font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2;
-    }
-    table.admin-table {
-      @apply w-full border-collapse text-left text-gray-800;
-    }
-    table.admin-table thead tr {
-      @apply bg-blue-600 text-white;
-    }
-    table.admin-table thead th {
-      @apply px-4 py-3 font-semibold;
-    }
-    table.admin-table tbody tr:nth-child(even) {
-      @apply bg-gray-50;
-    }
-    table.admin-table tbody tr:hover {
-      @apply bg-blue-50;
-    }
-    table.admin-table tbody td {
-      @apply px-4 py-3 border border-gray-200 align-middle;
-    }
-    .input-group {
-      @apply mb-4 flex flex-col;
-    }
-    .input-group label {
-      @apply mb-1 font-medium text-gray-700;
-    }
-    .input-group input[type="text"],
-    .input-group input[type="password"],
-    .input-group input[type="number"],
-    .input-group input[type="date"],
-    .input-group input[type="file"] {
-      @apply rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition;
-    }
-    .btn {
-      @apply bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-blue-700 transition focus:outline-none focus:ring-4 focus:ring-blue-300;
-    }
-    .btn-secondary {
-      @apply bg-gray-200 text-gray-800 px-5 py-2 rounded-xl font-semibold shadow-sm hover:bg-gray-300 transition focus:outline-none focus:ring-4 focus:ring-gray-300;
-    }
-    .progress-container {
-      @apply mt-4;
-    }
-    .status {
-      @apply text-center font-medium mt-2 min-h-[1.5rem];
-    }
-    .progress-bar {
-      @apply w-full h-3 bg-gray-200 rounded-full overflow-hidden mt-1;
-    }
-    .progress-bar-fill {
-      @apply h-full bg-blue-600 rounded-full transition-all duration-300 ease-in-out;
-      width: 0%;
-    }
-    /* Modal */
-    .modal-overlay {
-      @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
-    }
-    .modal-content {
-      @apply bg-white rounded-3xl p-8 max-w-lg w-full shadow-lg relative;
-    }
-    .modal-content h2 {
-      @apply text-2xl font-semibold mb-4 text-gray-900;
-    }
-    .modal-actions {
-      @apply flex justify-end gap-4 mt-6;
-    }
-    .modal-actions .btn-secondary {
-      @apply bg-gray-300 hover:bg-gray-400 text-gray-900;
-    }
-    .modal-actions .btn {
-      @apply bg-blue-600 hover:bg-blue-700 text-white;
-    }
-    @media (max-width: 640px) {
-      .app-header {
-        @apply flex-col items-start gap-3;
-      }
-      .app-header > div {
-        @apply flex gap-3 w-full justify-start;
-      }
-      .btn-header, #logout-btn {
-        @apply flex-1 text-center;
-      }
+    tbody::-webkit-scrollbar-thumb {
+      background-color: #3b82f6;
+      border-radius: 4px;
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <header class="app-header">
-      <h1>Painel Admin</h1>
-      <div class="flex gap-3">
-        <a href="broadcast.html" class="btn-header" role="button" tabindex="0">Mensagem Global</a>
-        <button id="logout-btn" class="btn-logout" type="button" aria-label="Sair do painel admin">
-          Sair <i class="fa-solid fa-right-from-bracket"></i>
+<body class="min-h-screen bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <header class="flex flex-col sm:flex-row justify-between items-center mb-12 gap-6">
+      <h1 class="text-4xl font-extrabold text-gray-900 select-none">Painel Admin</h1>
+      <div class="flex gap-4 w-full sm:w-auto">
+        <a href="broadcast.html" class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold shadow-md hover:bg-blue-700 transition focus:outline-none focus:ring-4 focus:ring-blue-300" role="button" tabindex="0">
+          Mensagem Global
+        </a>
+        <button id="logout-btn" type="button" aria-label="Sair do painel admin" class="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold shadow-md hover:bg-red-700 transition focus:outline-none focus:ring-4 focus:ring-red-300">
+          Sair <i class="fa-solid fa-right-from-bracket text-lg"></i>
         </button>
       </div>
     </header>
 
-    <main class="quiz-body">
-      <section class="admin-section" aria-labelledby="manage-themes-title">
-        <h2 id="manage-themes-title">Gerenciar Temas</h2>
-        <table class="admin-table" role="table" aria-describedby="themes-desc">
-          <thead>
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Nome</th>
-              <th scope="col">Ações</th>
-            </tr>
-          </thead>
-          <tbody id="themes-table-body">
-            <tr><td colspan="3" class="text-center py-4">Carregando temas...</td></tr>
-          </tbody>
-        </table>
+    <main class="space-y-16">
+      <!-- Gerenciar Temas -->
+      <section aria-labelledby="manage-themes-title">
+        <h2 id="manage-themes-title" class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-300 pb-2">Gerenciar Temas</h2>
+        <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200">
+          <table class="min-w-full table-auto border-collapse text-left text-gray-800">
+            <thead class="bg-blue-600 text-white select-none">
+              <tr>
+                <th class="px-5 py-3 font-semibold">ID</th>
+                <th class="px-5 py-3 font-semibold">Nome</th>
+                <th class="px-5 py-3 font-semibold">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="themes-table-body" class="bg-white">
+              <tr>
+                <td colspan="3" class="text-center py-6 text-gray-500">Carregando temas...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
-      <section class="admin-section" aria-labelledby="add-theme-title">
-        <h2 id="add-theme-title">Adicionar Novo Tema (PDF)</h2>
-        <form id="theme-form" class="space-y-6" novalidate>
-          <div class="input-group">
-            <label for="themeName">Nome do Tema</label>
-            <input type="text" id="themeName" name="themeName" required autocomplete="off" />
+      <!-- Adicionar Novo Tema -->
+      <section aria-labelledby="add-theme-title">
+        <h2 id="add-theme-title" class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-300 pb-2">Adicionar Novo Tema (PDF)</h2>
+        <form id="theme-form" class="space-y-6 bg-white p-6 rounded-3xl shadow-md border border-gray-200" novalidate>
+          <div class="flex flex-col">
+            <label for="themeName" class="mb-2 font-medium text-gray-700">Nome do Tema</label>
+            <input type="text" id="themeName" name="themeName" required autocomplete="off" class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
           </div>
-          <div class="input-group">
-            <label for="questionCount">Quantidade de Questões a Gerar</label>
-            <input type="number" id="questionCount" name="questionCount" value="5" min="1" required />
+          <div class="flex flex-col">
+            <label for="questionCount" class="mb-2 font-medium text-gray-700">Quantidade de Questões a Gerar</label>
+            <input type="number" id="questionCount" name="questionCount" value="5" min="1" required class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
           </div>
-          <div class="input-group">
-            <label for="pdfFile">Arquivo PDF</label>
-            <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required />
+          <div class="flex flex-col">
+            <label for="pdfFile" class="mb-2 font-medium text-gray-700">Arquivo PDF</label>
+            <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required class="rounded-xl border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
           </div>
-          <button type="submit" class="btn" id="submit-theme-btn">Enviar e Gerar Questões</button>
-          <div id="upload-progress-container" class="progress-container hidden">
-            <p id="theme-status" class="status"></p>
-            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-              <div class="progress-bar-fill" id="progress-bar-fill"></div>
+          <button type="submit" id="submit-theme-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-3 shadow-md transition focus:outline-none focus:ring-4 focus:ring-blue-300">
+            Enviar e Gerar Questões
+          </button>
+          <div id="upload-progress-container" class="mt-4 hidden">
+            <p id="theme-status" class="text-center font-medium text-gray-700 min-h-[1.5rem]"></p>
+            <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden mt-1" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div id="progress-bar-fill" class="h-full bg-blue-600 rounded-full transition-all duration-300 ease-in-out" style="width: 0%;"></div>
             </div>
           </div>
         </form>
       </section>
 
-      <section class="admin-section" aria-labelledby="manage-users-title">
-        <h2 id="manage-users-title">Gerenciar Usuários</h2>
-        <button id="reload-users-btn" class="btn-secondary mb-4">Atualizar Lista</button>
-        <table class="admin-table" role="table" aria-describedby="users-desc">
-          <thead>
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Usuário</th>
-              <th scope="col">Status</th>
-              <th scope="col">Ação</th>
-            </tr>
-          </thead>
-          <tbody id="users-table-body">
-            <tr><td colspan="4" class="text-center py-4">Carregando usuários...</td></tr>
-          </tbody>
-        </table>
+      <!-- Gerenciar Usuários -->
+      <section aria-labelledby="manage-users-title">
+        <h2 id="manage-users-title" class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-300 pb-2">Gerenciar Usuários</h2>
+        <button id="reload-users-btn" class="mb-4 px-5 py-2 bg-gray-200 text-gray-800 rounded-xl font-semibold shadow-sm hover:bg-gray-300 transition focus:outline-none focus:ring-4 focus:ring-gray-300">
+          Atualizar Lista
+        </button>
+        <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200">
+          <table class="min-w-full table-auto border-collapse text-left text-gray-800">
+            <thead class="bg-blue-600 text-white select-none">
+              <tr>
+                <th class="px-5 py-3 font-semibold">ID</th>
+                <th class="px-5 py-3 font-semibold">Usuário</th>
+                <th class="px-5 py-3 font-semibold">Status</th>
+                <th class="px-5 py-3 font-semibold">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body" class="bg-white">
+              <tr>
+                <td colspan="4" class="text-center py-6 text-gray-500">Carregando usuários...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
-      <section class="admin-section" aria-labelledby="add-user-title">
-        <h2 id="add-user-title">Adicionar Novo Usuário</h2>
-        <form id="user-form" class="space-y-6" novalidate>
-          <div class="input-group">
-            <label for="username">Nome do Usuário</label>
-            <input type="text" id="username" name="username" required autocomplete="off" />
+      <!-- Adicionar Novo Usuário -->
+      <section aria-labelledby="add-user-title">
+        <h2 id="add-user-title" class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-300 pb-2">Adicionar Novo Usuário</h2>
+        <form id="user-form" class="space-y-6 bg-white p-6 rounded-3xl shadow-md border border-gray-200" novalidate>
+          <div class="flex flex-col">
+            <label for="username" class="mb-2 font-medium text-gray-700">Nome do Usuário</label>
+            <input type="text" id="username" name="username" required autocomplete="off" class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
           </div>
-          <div class="input-group">
-            <label for="password">Senha</label>
-            <input type="password" id="password" name="password" required autocomplete="new-password" />
+          <div class="flex flex-col">
+            <label for="password" class="mb-2 font-medium text-gray-700">Senha</label>
+            <input type="password" id="password" name="password" required autocomplete="new-password" class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
           </div>
-          <div class="input-group">
-            <label for="subscription">Validade da Assinatura</label>
-            <input type="date" id="subscription" name="subscription" />
+          <div class="flex flex-col">
+            <label for="subscription" class="mb-2 font-medium text-gray-700">Validade da Assinatura</label>
+            <input type="date" id="subscription" name="subscription" class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
           </div>
-          <button type="submit" class="btn">Criar Usuário</button>
-          <p id="user-status" class="status"></p>
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-3 shadow-md transition focus:outline-none focus:ring-4 focus:ring-blue-300">
+            Criar Usuário
+          </button>
+          <p id="user-status" class="mt-2 text-center font-medium min-h-[1.5rem] text-red-600"></p>
         </form>
       </section>
 
-      <section class="admin-section" aria-labelledby="error-reports-title">
-        <h2 id="error-reports-title">Últimos Reportes de Erro</h2>
-        <table class="admin-table" role="table" aria-describedby="reports-desc">
-          <thead>
-            <tr>
-              <th scope="col">Status</th>
-              <th scope="col">Questão</th>
-              <th scope="col">Reportado Por</th>
-              <th scope="col">Tipo</th>
-            </tr>
-          </thead>
-          <tbody id="reports-table-body">
-            <tr><td colspan="4" class="text-center py-4">Carregando reportes...</td></tr>
-          </tbody>
-        </table>
+      <!-- Últimos Reportes de Erro -->
+      <section aria-labelledby="error-reports-title">
+        <h2 id="error-reports-title" class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-300 pb-2">Últimos Reportes de Erro</h2>
+        <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200">
+          <table class="min-w-full table-auto border-collapse text-left text-gray-800">
+            <thead class="bg-blue-600 text-white select-none">
+              <tr>
+                <th class="px-5 py-3 font-semibold">Status</th>
+                <th class="px-5 py-3 font-semibold">Questão</th>
+                <th class="px-5 py-3 font-semibold">Reportado Por</th>
+                <th class="px-5 py-3 font-semibold">Tipo</th>
+              </tr>
+            </thead>
+            <tbody id="reports-table-body" class="bg-white">
+              <tr>
+                <td colspan="4" class="text-center py-6 text-gray-500">Carregando reportes...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </main>
   </div>
 
+  <!-- Modal Resetar Tema -->
   <div
     id="reset-modal"
-    class="modal-overlay hidden"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
     role="dialog"
     aria-modal="true"
     aria-labelledby="reset-modal-title"
   >
-    <div class="modal-content">
-      <h2 id="reset-modal-title">Resetar Tema</h2>
-      <p class="mb-4">
+    <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-lg relative">
+      <h2 id="reset-modal-title" class="text-2xl font-bold text-gray-900 mb-4">Resetar Tema</h2>
+      <p class="mb-6 text-gray-700">
         Para gerar novas questões, por favor, envie novamente o arquivo PDF original e defina a nova quantidade de questões.
       </p>
       <form id="reset-theme-form" class="space-y-6" novalidate>
         <input type="hidden" id="reset-theme-id" />
-        <div class="input-group">
-          <label for="resetQuestionCount">Nova Quantidade de Questões</label>
+        <div class="flex flex-col">
+          <label for="resetQuestionCount" class="mb-2 font-medium text-gray-700">Nova Quantidade de Questões</label>
           <input
             type="number"
             id="resetQuestionCount"
@@ -260,17 +190,29 @@
             value="5"
             min="1"
             required
+            class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
           />
         </div>
-        <div class="input-group">
-          <label for="resetPdfFile">Arquivo PDF Original</label>
-          <input type="file" id="resetPdfFile" name="pdfFile" accept=".pdf" required />
+        <div class="flex flex-col">
+          <label for="resetPdfFile" class="mb-2 font-medium text-gray-700">Arquivo PDF Original</label>
+          <input
+            type="file"
+            id="resetPdfFile"
+            name="pdfFile"
+            accept=".pdf"
+            required
+            class="rounded-xl border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+          />
         </div>
-        <div class="modal-actions">
-          <button type="button" class="btn-secondary" id="cancel-reset">Cancelar</button>
-          <button type="submit" class="btn">Resetar Questões</button>
+        <div class="flex justify-end gap-4 mt-6">
+          <button type="button" id="cancel-reset" class="px-5 py-2 rounded-xl bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold shadow-sm transition focus:outline-none focus:ring-4 focus:ring-gray-300">
+            Cancelar
+          </button>
+          <button type="submit" class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md transition focus:outline-none focus:ring-4 focus:ring-blue-300">
+            Resetar Questões
+          </button>
         </div>
-        <p id="reset-status" class="status"></p>
+        <p id="reset-status" class="mt-2 text-center font-medium min-h-[1.5rem] text-red-600"></p>
       </form>
     </div>
   </div>
