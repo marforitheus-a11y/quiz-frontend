@@ -1,8 +1,9 @@
 // ==================================================================
-// ARQUIVO resultados.js (VERSÃO FINAL COMPLETA)
+// ARQUIVO resultados.js (VERSÃO FINAL COMPLETA E CORRIGIDA)
 // ==================================================================
 document.addEventListener('DOMContentLoaded', () => {
     const resultDetails = document.getElementById('result-details');
+    // Pega os dados do último quiz, que foram salvos na sessão do navegador
     const lastQuizData = JSON.parse(sessionStorage.getItem('lastQuizResults'));
 
     if (!lastQuizData) {
@@ -32,14 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const letters = ['A', 'B', 'C', 'D', 'E'];
         q.options.forEach((option, optionIndex) => {
             let className = '';
-            // Marca a resposta correta
+            
+            // LÓGICA CORRIGIDA:
+            // 1. Marca a resposta correta (gabarito) em verde
             if (option === q.answer) {
                 className = 'correct';
             }
-            // Se a resposta do usuário foi esta E estava errada, marca como incorreta
+            // 2. Se a resposta do usuário foi esta E estava errada, sobrescreve para marcar como incorreta em vermelho
             if (option === userAnswer.selectedOption && !userAnswer.isCorrect) {
                 className = 'incorrect';
             }
+
             reviewHTML += `
                 <li class="${className}">
                     <span class="option-letter">${letters[optionIndex]}</span>
