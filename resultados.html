@@ -2,18 +2,25 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Resultado do Simulado</title>
+    <!-- Meta tag para otimização mobile e para travar o zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Resultado do Simulado - Concursando</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header class="app-header">
-            <a href="quiz.html" class="btn-header">Novo Simulado</a>
-            <h1>Resultado Final</h1>
-            <a href="desempenho.html" class="btn-header">Meu Desempenho</a>
+            <a href="quiz.html" class="btn-header">
+                <i class="fa-solid fa-pencil"></i> Novo Simulado
+            </a>
+            <a href="desempenho.html" class="btn-header">
+                <i class="fa-solid fa-chart-line"></i> Meu Desempenho
+            </a>
         </header>
         <main class="quiz-body" id="result-details">
-            </main>
+            <p>Carregando resultados...</p>
+        </main>
     </div>
     <script src="resultados.js"></script>
 </body>
