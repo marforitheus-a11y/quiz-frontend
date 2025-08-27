@@ -1,41 +1,221 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <!-- A LINHA MAIS IMPORTANTE PARA O DESIGN ADAPTATIVO E PARA TRAVAR O ZOOM -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Simulado Pro - Quiz</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+  <title>Concursando - Questões</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    /* Container */
+    .container {
+      max-width: 7xl;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+    /* Header */
+    .app-header {
+      @apply flex items-center justify-between bg-white rounded-3xl shadow-md px-6 py-4 mb-8 sticky top-4 z-30;
+    }
+    .app-header h1 {
+      @apply text-3xl font-extrabold text-gray-900 select-none;
+      flex: 1;
+      text-align: center;
+    }
+    /* Menu toggle button */
+    #menu-toggle-btn {
+      @apply text-gray-700 text-2xl p-2 rounded-xl hover:bg-gray-200 transition focus:outline-none focus:ring-4 focus:ring-blue-300;
+      flex-shrink: 0;
+    }
+    /* Spacer to keep title centered */
+    .app-header > div {
+      width: 40px;
+      flex-shrink: 0;
+    }
+    /* Sidebar menu */
+    #sidebar-menu {
+      @apply fixed top-0 left-0 h-full w-64 bg-white shadow-lg rounded-r-3xl p-6 transform -translate-x-full transition-transform duration-300 ease-in-out z-40;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    #sidebar-menu.open {
+      transform: translateX(0);
+    }
+    #sidebar-menu h2 {
+      @apply text-2xl font-bold text-gray-900 select-none;
+      margin-bottom: 1rem;
+    }
+    #sidebar-menu ul {
+      @apply flex flex-col gap-4 list-none p-0 m-0;
+      flex-grow: 1;
+    }
+    #sidebar-menu ul li a {
+      @apply flex items-center gap-3 text-gray-800 font-semibold text-lg rounded-xl px-4 py-3 hover:bg-blue-100 transition;
+      text-decoration: none;
+    }
+    #sidebar-menu ul li a i {
+      @apply text-blue-600;
+      min-width: 20px;
+      text-align: center;
+    }
+    /* Logout button in sidebar */
+    #logout-btn-menu {
+      @apply mt-auto bg-red-600 text-white font-semibold rounded-xl py-3 shadow-md hover:bg-red-700 transition focus:outline-none focus:ring-4 focus:ring-red-300 flex items-center justify-center gap-2;
+      border: none;
+      cursor: pointer;
+    }
+    #logout-btn-menu i {
+      @apply text-lg;
+    }
+    /* Overlay */
+    #menu-overlay {
+      @apply fixed inset-0 bg-black bg-opacity-40 hidden z-30;
+    }
+    #menu-overlay.active {
+      @apply block;
+    }
+    /* Main content */
+    main.quiz-body {
+      @apply bg-white rounded-3xl shadow-md p-8 min-h-[60vh] text-gray-800;
+      font-size: 1.125rem;
+      line-height: 1.6;
+    }
+    /* Responsive adjustments */
+    @media (min-width: 768px) {
+      #sidebar-menu {
+        @apply static transform-none w-72 rounded-3xl shadow-none p-0 bg-transparent flex-row items-center gap-8 h-auto;
+        height: auto !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        width: auto !important;
+        flex-grow: 0;
+      }
+      #sidebar-menu h2 {
+        display: none;
+      }
+      #sidebar-menu ul {
+        @apply flex-row gap-6;
+        flex-grow: 0 !important;
+      }
+      #sidebar-menu ul li a {
+        @apply bg-transparent hover:bg-blue-50 rounded-md px-2 py-1 text-base;
+      }
+      #logout-btn-menu {
+        @apply bg-red-600 px-4 py-2 rounded-md shadow-none hover:bg-red-700;
+        font-size: 0.875rem;
+      }
+      #menu-toggle-btn {
+        display: none;
+      }
+      #menu-overlay {
+        display: none !important;
+      }
+      .app-header > div {
+        width: 0;
+      }
+      .app-header h1 {
+        text-align: left;
+        flex: none;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Overlay para escurecer o fundo quando o menu estiver aberto -->
-    <div id="menu-overlay" class="menu-overlay"></div>
+  <!-- Overlay para escurecer o fundo quando o menu estiver aberto -->
+  <div id="menu-overlay" class="menu-overlay"></div>
 
-    <!-- O Novo Menu Lateral (começa escondido) -->
-    <nav id="sidebar-menu" class="sidebar-menu">
-        <h2>Menu</h2>
-        <ul>
-            <li><a href="conta.html"><i class="fa-solid fa-user"></i> Minha Conta</a></li>
-            <li><a href="desempenho.html"><i class="fa-solid fa-chart-line"></i> Meu Desempenho</a></li>
-        </ul>
-        <button id="logout-btn-menu" class="btn-logout-menu">Sair <i class="fa-solid fa-right-from-bracket"></i></button>
-    </nav>
+  <!-- O Novo Menu Lateral (começa escondido) -->
+  <nav id="sidebar-menu" class="sidebar-menu" aria-label="Menu lateral principal">
+    <h2>Menu</h2>
+    <ul>
+      <li>
+        <a href="conta.html" tabindex="0">
+          <i class="fa-solid fa-user" aria-hidden="true"></i>
+          Minha Conta
+        </a>
+      </li>
+      <li>
+        <a href="desempenho.html" tabindex="0">
+          <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+          Meu Desempenho
+        </a>
+      </li>
+    </ul>
+    <button id="logout-btn-menu" class="btn-logout-menu" type="button" aria-label="Sair do sistema">
+      Sair <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+    </button>
+  </nav>
 
-    <div class="container">
-        <header class="app-header">
-            <!-- Ícone de Menu (3 barrinhas) -->
-            <button id="menu-toggle-btn" class="menu-toggle-btn">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <h1>Simulado Pro</h1>
-            <!-- Espaçador para manter o título perfeitamente centralizado -->
-            <div style="width: 40px;"></div> 
-        </header>
-        <main class="quiz-body" id="main-content">
-            <p>Carregando simulado...</p>
-        </main>
-    </div>
-    <script src="quiz.js"></script>
+  <div class="container">
+    <header class="app-header">
+      <!-- Ícone de Menu (3 barrinhas) -->
+      <button id="menu-toggle-btn" class="menu-toggle-btn" aria-label="Abrir menu lateral" aria-expanded="false" aria-controls="sidebar-menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <h1>Simulado Pro</h1>
+      <!-- Espaçador para manter o título perfeitamente centralizado -->
+      <div></div>
+    </header>
+    <main class="quiz-body" id="main-content" tabindex="0" aria-live="polite" aria-busy="true">
+      <p>Carregando simulado...</p>
+    </main>
+  </div>
+
+  <script src="quiz.js"></script>
+  <script>
+    // Menu toggle logic
+    const menuToggleBtn = document.getElementById('menu-toggle-btn');
+    const sidebarMenu = document.getElementById('sidebar-menu');
+    const menuOverlay = document.getElementById('menu-overlay');
+
+    function openMenu() {
+      sidebarMenu.classList.add('open');
+      menuOverlay.classList.add('active');
+      menuToggleBtn.setAttribute('aria-expanded', 'true');
+      // Trap focus inside menu if needed (optional)
+    }
+
+    function closeMenu() {
+      sidebarMenu.classList.remove('open');
+      menuOverlay.classList.remove('active');
+      menuToggleBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    menuToggleBtn.addEventListener('click', () => {
+      if (sidebarMenu.classList.contains('open')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    menuOverlay.addEventListener('click', closeMenu);
+
+    // Close menu on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sidebarMenu.classList.contains('open')) {
+        closeMenu();
+        menuToggleBtn.focus();
+      }
+    });
+  </script>
 </body>
 </html>
