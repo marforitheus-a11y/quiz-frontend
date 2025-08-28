@@ -15,17 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isLoginMode = true;
 
-    // Alternar entre Entrar e Cadastrar-se
+    // Alternar entre Login Modificado pelo Assistente AI e Cadastrar-se
     toggleButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             toggleButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            if (btn.textContent.includes('Entrar')) {
+            if (btn.textContent.includes('Login Modificado pelo Assistente AI')) {
                 isLoginMode = true;
                 nameGroup.style.display = 'none';
                 usernameInput.placeholder = "Usuário ou E-mail";
-                submitBtn.textContent = "Entrar";
+                submitBtn.textContent = "Login Modificado pelo Assistente AI";
             } else {
                 isLoginMode = false;
                 nameGroup.style.display = 'block';
