@@ -357,3 +357,127 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+/* ===========================
+   RESULTADOS DO QUIZ
+   =========================== */
+.header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-header {
+  background: rgba(99,102,241,0.2);
+  border: 1px solid #6366F1;
+  color: #E5E7EB;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s;
+}
+.btn-header:hover {
+  background: rgba(99,102,241,0.35);
+  transform: translateY(-2px);
+}
+
+.score-summary {
+  text-align: center;
+  margin-bottom: 25px;
+  background: rgba(31,41,55,.65);
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 10px 25px rgba(0,0,0,.25);
+}
+.score-summary h1 {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+  color: #fff;
+}
+.score-summary p {
+  font-size: 1rem;
+  color: #E5E7EB;
+}
+.score-summary .percentage {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #A5B4FC;
+  margin-top: 6px;
+}
+
+.review-title {
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.review-question {
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(17,24,39,.6);
+  border: 1px solid rgba(255,255,255,.08);
+  animation: fadeIn .4s ease;
+}
+.review-question h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #A5B4FC;
+}
+.review-question .question-text {
+  font-size: .95rem;
+  margin-bottom: 12px;
+  color: #E5E7EB;
+}
+
+.review-question .options {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.review-question .option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(17,24,39,.6);
+  border: 1px solid rgba(255,255,255,.08);
+}
+.review-question .option.correct {
+  background: rgba(34,197,94,0.18);
+  border-color: #22c55e;
+  color: #22c55e;
+}
+.review-question .option.incorrect {
+  background: rgba(239,68,68,0.18);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.feedback {
+  margin-top: 10px;
+  font-size: .9rem;
+  color: #F87171;
+}
+
+.error-card {
+  text-align: center;
+  background: rgba(31,41,55,.65);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 40px auto;
+}
+.error-card p {
+  margin-bottom: 12px;
+  color: #E5E7EB;
+}
