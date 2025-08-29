@@ -1,5 +1,5 @@
 // ==================================================================
-// ARQUIVO quiz.js (ATUALIZADO COM FEEDBACK VISUAL CORRETO/INCORRETO)
+// ARQUIVO quiz.js (ATUALIZADO COM FEEDBACK VISUAL E GRID DE TEMAS)
 // ==================================================================
 
 const token = localStorage.getItem('token');
@@ -27,8 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.getElementById('close-modal-btn');
 
     // --- LÓGICA DO MENU LATERAL ---
-    if (menuToggleBtn) menuToggleBtn.addEventListener('click', () => { sidebarMenu.classList.add('active'); menuOverlay.classList.add('active'); });
-    if (menuOverlay) menuOverlay.addEventListener('click', () => { sidebarMenu.classList.remove('active'); menuOverlay.classList.remove('active'); });
+    if (menuToggleBtn) menuToggleBtn.addEventListener('click', () => { 
+        sidebarMenu.classList.add('active'); 
+        menuOverlay.classList.add('active'); 
+    });
+    if (menuOverlay) menuOverlay.addEventListener('click', () => { 
+        sidebarMenu.classList.remove('active'); 
+        menuOverlay.classList.remove('active'); 
+    });
     if (logoutBtnMenu) {
         logoutBtnMenu.addEventListener('click', async () => {
             try {
@@ -79,12 +85,12 @@ async function loadThemes(mainContent) {
 
 function displaySetupScreen(mainContent, themes = []) {
     let themeHTML = themes.length > 0
-        ? themes.map(theme => `
+        ? `<div class="theme-grid">` + themes.map(theme => `
             <label class="theme-option" for="theme-${theme.id}">
                 <input type="checkbox" id="theme-${theme.id}" name="theme" value="${theme.id}">
                 <span>${theme.name}</span>
             </label>
-        `).join('')
+        `).join('') + `</div>`
         : '<p>Nenhum tema encontrado. Adicione um tema no Painel de Admin.</p>';
 
     mainContent.innerHTML = `
@@ -94,9 +100,10 @@ function displaySetupScreen(mainContent, themes = []) {
                 <h3>1. Selecione os Temas</h3>
                 ${themeHTML}
             </div>
-            <label for="question-count" class="label"><h3>2. Número de Questões</h3></label>
-            <input type="number" id="question-count" value="5" min="1" class="input">
-            <button id="start-btn" class="btn-main">Iniciar Simulado</button>
+            <div class="controls-row">
+              <input type="number" id="question-count" value="5" min="1" class="input">
+              <button id="start-btn" class="btn-main">Iniciar Simulado</button>
+            </div>
         </div>
     `;
     document.getElementById('start-btn').addEventListener('click', () => startQuiz(mainContent));
@@ -203,7 +210,7 @@ async function showResults(mainContent) {
                 answers: userAnswers
             })
         });
-        const result = await response.json();
+        await response.json();
         
         sessionStorage.setItem('lastQuizResults', JSON.stringify({
             score: score,
