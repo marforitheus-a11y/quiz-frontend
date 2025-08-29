@@ -11,8 +11,8 @@
 }
 
 body {
-  background: linear-gradient(135deg, #111827, #1F2937); /* Gradiente de cinza escuro */
-  color: #E5E7EB; /* Cinza claro para melhor leitura */
+  background: linear-gradient(135deg, #B3E5FC, #E1F5FE 60%, #fff 100%);
+  color: #333;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,17 +23,18 @@ body {
 /* ===========================
    CONTAINER PRINCIPAL (EFEITO GLASSMORPHISM)
    =========================== */
+/* Container principal com fundo branco e sombra azul bebê */
 .login-container {
-  background: rgba(31, 41, 55, 0.5); /* Fundo semi-transparente escuro */
-  backdrop-filter: blur(10px); /* Efeito de vidro fosco */
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda sutil */
-  padding: 40px;
-  border-radius: 16px;
+  background: #fff;
+  border: 1.5px solid #B3E5FC;
+  box-shadow: 0 4px 24px 0 rgba(129, 212, 250, 0.12);
+  border-radius: 18px;
   width: 100%;
-  max-width: 420px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 370px;
+  padding: 40px 32px 32px 32px;
   text-align: center;
   animation: fadeIn 0.8s ease-in-out;
+  }
 }
 
 /* ===========================
@@ -44,22 +45,26 @@ body {
 }
 
 .logo-img {
-  width: 70px;
-  height: 70px;
-  margin-bottom: 15px;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2)); /* Brilho sutil no logo */
+  width: 64px;
+  height: 64px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 8px rgba(129, 212, 250, 0.15));
+  }
 }
 
 .logo h1 {
-  font-size: 2rem;
+  color: #81D4FA;
+  font-size: 2.2rem;
+  margin: 0 0 4px 0;
   font-weight: 600;
-  color: #FFF;
+  }
 }
 
 .logo p {
-  font-size: 0.9rem;
-  color: #9CA3AF; /* Tom de cinza mais suave */
-  margin-top: 5px;
+  color: #B3E5FC;
+  margin: 0 0 16px 0;
+  font-size: 1rem;
+  }
 }
 
 /* ===========================
@@ -67,35 +72,37 @@ body {
    =========================== */
 .login-header {
   display: flex;
+  width: 100%;
+  margin-bottom: 24px;
   justify-content: center;
-  margin-bottom: 30px;
-  background: rgba(17, 24, 39, 0.4);
-  padding: 5px;
-  border-radius: 10px;
+  }
 }
 
 .toggle-btn {
-  background: none;
+  background: #E1F5FE;
+  color: #333;
   border: none;
+  border-radius: 8px 8px 0 0;
+  padding: 10px 32px;
   font-size: 1rem;
   font-weight: 500;
-  color: #9CA3AF;
   cursor: pointer;
-  padding: 8px 16px;
-  flex: 1;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  transition: background 0.2s, color 0.2s;
+}
 }
 
 .toggle-btn:hover {
-  color: #fff;
+  background: #B3E5FC;
+  color: #333;
+}
 }
 
 .toggle-btn.active {
-  background-color: #6366F1; /* Roxo vibrante */
+  background: #81D4FA;
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 10px rgba(129, 212, 250, 0.18);
+}
 }
 
 /* ===========================
@@ -107,57 +114,60 @@ body {
   gap: 18px; /* Aumenta o espaçamento */
 }
 
-#auth-form input {
-  padding: 14px;
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  background: #F5F5F5;
+  border: 1px solid #B3E5FC;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  outline: none;
+  padding: 12px;
   font-size: 1rem;
-  background: rgba(17, 24, 39, 0.5); /* Fundo mais escuro */
-  color: #E5E7EB;
-  transition: all 0.3s ease;
+  color: #333;
+  outline: none;
+  transition: border 0.2s;
+}
 }
 
-#auth-form input::placeholder {
-  color: #6B7280;
+input::placeholder {
+  color: #81D4FA;
+}
 }
 
-#auth-form input:focus {
-  border-color: #6366F1; /* Destaque roxo no foco */
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+input:focus {
+  border: 1.5px solid #81D4FA;
+}
 }
 
 /* Botão de login/cadastro */
 .login-btn {
-  padding: 14px;
-  border-radius: 8px;
-  border: none;
-  background: #6366F1;
+  background: #81D4FA;
   color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 10px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 8px;
+  transition: background 0.2s;
 }
-
 .login-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.5); /* Sombra roxa mais forte */
+  background: #B3E5FC;
+}
 }
 
 /* Esqueceu a senha */
 .forgot {
-  font-size: 0.85rem;
-  color: #9CA3AF;
-  text-decoration: none;
+  color: #81D4FA;
   text-align: right;
-  transition: color 0.3s;
+  font-size: 0.95rem;
+  text-decoration: none;
+  margin-bottom: 8px;
+  display: block;
 }
-
 .forgot:hover {
-  color: #fff;
   text-decoration: underline;
+}
 }
 
 /* ===========================
