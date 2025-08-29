@@ -2,37 +2,47 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Simulado Pro - Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Concursando - Login</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="menu-overlay" class="menu-overlay"></div>
+  <div class="login-container">
+    <div class="logo">
+      <img src="a212705a-8951-474c-bf5e-c4fa68780392.svg" alt="Concursando" class="logo-img">
+      <h1>Concursando</h1>
+      <p>Sua plataforma de questões por IA</p>
+    </div>
 
-  <nav id="sidebar-menu" class="sidebar-menu">
-    <h2>Menu</h2>
-    <ul>
-      <li><a href="conta.html"><i class="fa-solid fa-user"></i> Minha Conta</a></li>
-      <li><a href="desempenho.html"><i class="fa-solid fa-chart-line"></i> Meu Desempenho</a></li>
-    </ul>
-    <button id="logout-btn-menu" class="btn-logout-menu">Sair <i class="fa-solid fa-right-from-bracket"></i></button>
-  </nav>
+    <div class="login-header">
+      <button type="button" id="login-toggle" class="toggle-btn active">Entrar</button>
+      <button type="button" id="signup-toggle" class="toggle-btn">Cadastrar</button>
+    </div>
 
-  <div class="container">
-    <header class="app-header">
-      <button id="menu-toggle-btn" class="menu-toggle-btn">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-      <h1>Simulado Pro</h1>
-    </header>
-    <main class="quiz-body" id="main-content">
-      <p>Carregando simulado...</p>
-    </main>
+    <form id="auth-form">
+      <div id="name-group" class="fade-field hidden">
+        <input type="text" id="name" placeholder="Nome completo">
+      </div>
+
+      <input type="text" id="username" placeholder="Seu melhor e-mail" required>
+
+      <div id="email-group" class="fade-field hidden">
+        <input type="email" id="email" placeholder="E-mail">
+      </div>
+
+      <input type="password" id="password" placeholder="Senha" required>
+
+      <a href="#" class="forgot">Esqueceu a senha?</a>
+
+      <button type="submit" id="submit-btn" class="login-btn">Entrar</button>
+    </form>
+
+    <p id="error-message" class="error-message"></p>
   </div>
-  <script src="quiz.js"></script>
+
+  <script src="login.js"></script>
 </body>
 </html>
