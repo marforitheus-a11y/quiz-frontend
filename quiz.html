@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Simulado Pro - Quiz</title>
+  <title>Concursando - Quiz</title>
 
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,7 +41,13 @@
       <button id="menu-toggle-btn" class="menu-toggle-btn" aria-label="Abrir menu">
         <i class="fa-solid fa-bars"></i>
       </button>
-      <h1>Simulado Pro</h1>
+
+      <!-- Logo centralizada -->
+      <div class="logo-header">
+        <img src="logo.png" alt="Concursando" class="logo-img-header">
+        <h1 class="brand-title">Concursando</h1>
+      </div>
+
       <div class="header-space"></div>
     </header>
 
@@ -53,7 +59,7 @@
       </div>
     </section>
 
-    <!-- Onde o JS injeta o conteúdo (seleção de temas / perguntas / resultados) -->
+    <!-- Onde o JS injeta o conteúdo -->
     <main id="main-content" class="quiz-body">
       <div class="loading-card">
         <div class="spinner"></div>
@@ -62,7 +68,7 @@
     </main>
   </div>
 
-  <!-- Modal de mensagem global (usado pelo quiz.js) -->
+  <!-- Modal de mensagem global -->
   <div id="global-message-modal" class="global-modal">
     <div class="global-modal-card">
       <button id="close-modal-btn" class="modal-close" aria-label="Fechar">
@@ -76,9 +82,8 @@
   <!-- Script do Quiz -->
   <script src="quiz.js"></script>
 
-  <!-- Acessórios pequenos -->
+  <!-- Acessório para fechar menu -->
   <script>
-    // fecha menu pelo X também
     const closeSidebar = document.getElementById('close-sidebar');
     const sidebarMenu = document.getElementById('sidebar-menu');
     const menuOverlay = document.getElementById('menu-overlay');
