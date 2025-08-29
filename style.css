@@ -1,7 +1,19 @@
 /* ===========================
-   RESET & BASE (VISUAL MODERNO)
+   RESET & VARIÁVEIS DE TEMA
    =========================== */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* paleta pastel azul bebê */
+  --baby-blue-50: #F5FBFF;
+  --baby-blue-100: #E1F5FE;
+  --baby-blue-200: #B3E5FC;
+  --baby-blue-300: #81D4FA;
+  --white: #FFFFFF;
+  --muted: #6B7280;
+  --text: #222;
+  --shadow: rgba(129, 212, 250, 0.12);
+}
 
 * {
   margin: 0;
@@ -11,265 +23,102 @@
 }
 
 body {
-  background: linear-gradient(135deg, #B3E5FC, #E1F5FE 60%, #fff 100%);
-  color: #333;
+  background: linear-gradient(135deg, var(--baby-blue-200), var(--baby-blue-100) 60%, var(--white) 100%);
+  color: var(--text);
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ===========================
-   CONTAINER PRINCIPAL (EFEITO GLASSMORPHISM)
+   LAYOUT: CONTAINER DE LOGIN
    =========================== */
-/* Container principal com fundo branco e sombra azul bebê */
 .login-container {
-  background: #fff;
-  border: 1.5px solid #B3E5FC;
-  box-shadow: 0 4px 24px 0 rgba(129, 212, 250, 0.12);
-  border-radius: 18px;
   width: 100%;
-  max-width: 370px;
-  padding: 40px 32px 32px 32px;
+  max-width: 420px;
+  background: var(--white);
+  border-radius: 16px;
+  padding: 36px 28px;
+  box-shadow: 0 8px 30px var(--shadow);
+  border: 1px solid var(--baby-blue-100);
   text-align: center;
-  animation: fadeIn 0.8s ease-in-out;
-  }
 }
 
 /* ===========================
-   LOGO & TÍTULO
+   LOGO & HEADER
    =========================== */
-.logo {
-  margin-bottom: 25px;
-}
+.logo { margin-bottom: 18px; }
+.logo-img { width: 64px; height: 64px; margin: 0 auto 8px; display: block; }
+.logo h1 { color: var(--baby-blue-300); font-size: 1.9rem; margin: 6px 0 2px; }
+.logo p { color: var(--muted); font-size: 0.95rem; margin: 0 0 12px; }
 
-.logo-img {
-  width: 64px;
-  height: 64px;
-  margin-bottom: 8px;
-  filter: drop-shadow(0 0 8px rgba(129, 212, 250, 0.15));
-  }
-}
-
-.logo h1 {
-  color: #81D4FA;
-  font-size: 2.2rem;
-  margin: 0 0 4px 0;
-  font-weight: 600;
-  }
-}
-
-.logo p {
-  color: #B3E5FC;
-  margin: 0 0 16px 0;
-  font-size: 1rem;
-  }
-}
-
-/* ===========================
-   BOTÕES DE NAVEGAÇÃO (Login/Cadastro)
-   =========================== */
-.login-header {
-  display: flex;
-  width: 100%;
-  margin-bottom: 24px;
-  justify-content: center;
-  }
-}
-
+.login-header { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
 .toggle-btn {
-  background: #E1F5FE;
-  color: #333;
+  background: var(--baby-blue-100);
   border: none;
-  border-radius: 8px 8px 0 0;
-  padding: 10px 32px;
-  font-size: 1rem;
-  font-weight: 500;
+  padding: 8px 20px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  color: var(--text);
+  font-weight: 500;
 }
-}
-
-.toggle-btn:hover {
-  background: #B3E5FC;
-  color: #333;
-}
-}
-
-.toggle-btn.active {
-  background: #81D4FA;
-  color: #fff;
-  font-weight: 600;
-  box-shadow: 0 4px 10px rgba(129, 212, 250, 0.18);
-}
-}
+.toggle-btn.active { background: var(--baby-blue-300); color: var(--white); box-shadow: 0 6px 18px rgba(129,212,250,0.14); }
 
 /* ===========================
    FORMULÁRIO
    =========================== */
-#auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px; /* Aumenta o espaçamento */
-}
+#auth-form { display: flex; flex-direction: column; gap: 14px; }
 
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-  background: #F5F5F5;
-  border: 1px solid #B3E5FC;
-  border-radius: 8px;
-  padding: 12px;
+input[type="text"], input[type="email"], input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--baby-blue-200);
+  background: #FAFBFC;
+  color: var(--text);
   font-size: 1rem;
-  color: #333;
-  outline: none;
-  transition: border 0.2s;
 }
-}
+input::placeholder { color: var(--baby-blue-300); }
+input:focus { outline: none; border-color: var(--baby-blue-300); box-shadow: 0 6px 18px rgba(129,212,250,0.12); }
 
-input::placeholder {
-  color: #81D4FA;
-}
-}
-
-input:focus {
-  border: 1.5px solid #81D4FA;
-}
-}
-
-/* Botão de login/cadastro */
 .login-btn {
-  background: #81D4FA;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
+  background: var(--baby-blue-300);
+  color: var(--white);
   padding: 12px;
-  font-size: 1.1rem;
   font-weight: 600;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: background 0.2s;
-}
-.login-btn:hover {
-  background: #B3E5FC;
-}
-}
-
-/* Esqueceu a senha */
-.forgot {
-  color: #81D4FA;
-  text-align: right;
-  font-size: 0.95rem;
-  text-decoration: none;
-  margin-bottom: 8px;
-  display: block;
-}
-.forgot:hover {
-  text-decoration: underline;
-}
-}
-
-/* ===========================
-   PÁGINA DO QUIZ
-   =========================== */
-.container {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 25px;
-  width: 100%;
-  background: rgba(31, 41, 55, 0.6);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  margin-bottom: 25px;
-}
-
-.app-header h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #fff;
-}
-
-.menu-toggle-btn {
-  background: none;
+  border-radius: 10px;
   border: none;
-  color: #E5E7EB;
-  font-size: 1.5rem;
   cursor: pointer;
-  transition: color 0.3s;
 }
+.login-btn:hover { background: var(--baby-blue-200); }
 
-.menu-toggle-btn:hover {
-  color: #6366F1;
-}
+.forgot { color: var(--baby-blue-300); font-size: 0.95rem; text-align: right; display: block; text-decoration: none; }
+.forgot:hover { text-decoration: underline; }
 
-.sidebar-menu {
-  position: fixed;
-  top: 0;
-  left: -300px; /* Escondido */
-  width: 280px;
-  height: 100%;
-  background: #1F2937;
-  padding: 25px;
-  box-shadow: 5px 0 25px rgba(0, 0, 0, 0.3);
-  z-index: 100;
-  transition: left 0.4s ease;
-}
-
-/* Estilos para o menu lateral... */
+.error-message { color: #e53935; min-height: 20px; margin-top: 6px; text-align: center; }
 
 /* ===========================
-   ANIMAÇÕES E UTILITÁRIOS
+   APP / QUIZ LAYOUT (BÁSICO)
    =========================== */
-.fade-field {
-  opacity: 0;
-  max-height: 0;
-  overflow: hidden;
-  transform: translateY(-10px);
-  transition: all 0.4s ease-in-out;
-}
+.container { width: 100%; max-width: 960px; margin: 0 auto; padding: 20px; }
+.app-header { display:flex; justify-content:space-between; align-items:center; padding: 12px 18px; border-radius: 10px; background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.04); }
+.app-header h1 { font-size: 1.25rem; color: var(--text); }
 
-.fade-field.show {
-  opacity: 1;
-  max-height: 100px;
-  transform: translateY(0);
-}
+/* ===========================
+   UTILITÁRIOS E ANIMAÇÕES
+   =========================== */
+.fade-field { opacity:0; max-height:0; overflow:hidden; transform:translateY(-8px); transition: all 0.32s ease; }
+.fade-field.show { opacity:1; max-height:160px; transform:none; }
+.hidden { display:none; }
 
-.hidden {
-  display: none;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95) translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
+@keyframes fadeIn { from{ opacity:0; transform:scale(.98) translateY(-6px) } to{ opacity:1; transform:none } }
 
 /* ===========================
    RESPONSIVIDADE
    =========================== */
-@media (max-width: 480px) {
-  .login-container {
-    padding: 25px;
-    max-width: 95%;
-    border: none; /* Remove a borda em telas pequenas para um visual mais limpo */
-  }
-
-  .logo h1 {
-    font-size: 1.8rem;
-  }
+@media (max-width: 600px) {
+  .login-container { padding: 22px; max-width: 92%; }
+  .logo h1 { font-size: 1.6rem; }
 }
