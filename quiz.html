@@ -1,38 +1,98 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Simulado Pro - Quiz</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Concursando - Quiz</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="menu-overlay" class="menu-overlay"></div>
+  <!-- Overlay para o menu lateral -->
+  <div id="menu-overlay" class="menu-overlay"></div>
 
-    <nav id="sidebar-menu" class="sidebar-menu">
-        <h2>Menu</h2>
-        <ul>
-            <li><a href="conta.html"><i class="fa-solid fa-user"></i> Minha Conta</a></li>
-            <li><a href="desempenho.html"><i class="fa-solid fa-chart-line"></i> Meu Desempenho</a></li>
-        </ul>
-        <button id="logout-btn-menu" class="btn-logout-menu">Sair <i class="fa-solid fa-right-from-bracket"></i></button>
-    </nav>
-
-    <div class="container">
-        <header class="app-header">
-            <button id="menu-toggle-btn" class="menu-toggle-btn">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <h1>Simulado Pro</h1>
-            </header>
-        <main class="quiz-body" id="main-content">
-            <p>Carregando simulado...</p>
-        </main>
+  <!-- Menu lateral -->
+  <nav id="sidebar-menu" class="sidebar-menu">
+    <div class="sidebar-header">
+      <h2>Menu</h2>
+      <button id="close-sidebar" class="close-sidebar" aria-label="Fechar menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
     </div>
-    <script src="quiz.js"></script>
+    <ul class="sidebar-links">
+      <li><a href="conta.html"><i class="fa-solid fa-user"></i> Minha Conta</a></li>
+      <li><a href="desempenho.html"><i class="fa-solid fa-chart-line"></i> Meu Desempenho</a></li>
+    </ul>
+    <button id="logout-btn-menu" class="btn-logout-menu">
+      Sair <i class="fa-solid fa-right-from-bracket"></i>
+    </button>
+  </nav>
+
+  <!-- Container principal -->
+  <div class="container">
+  <header class="app-header" role="banner">
+      <button id="menu-toggle-btn" class="menu-toggle-btn" aria-label="Abrir menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <!-- Logo centralizada -->
+      <div class="logo-header" style="text-align:center;">
+        <img src="a212705a-8951-474c-bf5e-c4fa68780392.svg" alt="Concursando" class="logo-img-header" style="width:56px;height:56px;">
+        <h1 class="brand-title">Concursando</h1>
+      </div>
+
+      <div class="header-space"></div>
+    </header>
+
+    <!-- Hero / título da página -->
+    <section class="page-hero">
+      <div class="hero-title">
+        <h2>Crie seu Simulado</h2>
+        <p>Escolha os temas, defina a quantidade de questões e comece.</p>
+      </div>
+    </section>
+
+    <!-- Onde o JS injeta o conteúdo -->
+    <main id="main-content" class="quiz-body">
+      <div class="loading-card">
+        <div class="spinner"></div>
+        <p>Carregando simulado...</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal de mensagem global -->
+  <div id="global-message-modal" class="global-modal">
+    <div class="global-modal-card">
+      <button id="close-modal-btn" class="modal-close" aria-label="Fechar">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <img id="global-message-image" alt="" class="global-modal-image" />
+      <p id="global-message-content" class="global-modal-text"></p>
+    </div>
+  </div>
+
+  <!-- Script do Quiz -->
+  <script src="quiz.js"></script>
+
+  <!-- Acessório para fechar menu -->
+  <script>
+    const closeSidebar = document.getElementById('close-sidebar');
+    const sidebarMenu = document.getElementById('sidebar-menu');
+    const menuOverlay = document.getElementById('menu-overlay');
+    if (closeSidebar) {
+      closeSidebar.addEventListener('click', () => {
+        sidebarMenu.classList.remove('active');
+        menuOverlay.classList.remove('active');
+      });
+    }
+  </script>
 </body>
 </html>
