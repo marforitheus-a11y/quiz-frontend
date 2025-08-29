@@ -17,21 +17,9 @@
       <p>Sua plataforma de questões por IA</p>
     </div>
 
-    <div class="login-header">
-      <button type="button" id="login-toggle" class="toggle-btn active">Entrar</button>
-      <button type="button" id="signup-toggle" class="toggle-btn">Cadastrar</button>
-    </div>
-
+    <!-- Simplified login form: only username + password (signup removed) -->
     <form id="auth-form">
-      <div id="name-group" class="fade-field hidden">
-        <input type="text" id="name" placeholder="Nome completo">
-      </div>
-
-      <input type="text" id="username" placeholder="Seu melhor e-mail" required>
-
-      <div id="email-group" class="fade-field hidden">
-        <input type="email" id="email" placeholder="E-mail">
-      </div>
+      <input type="text" id="username" placeholder="Seu usuário ou e-mail" required>
 
       <input type="password" id="password" placeholder="Senha" required>
 
@@ -43,6 +31,41 @@
     <p id="error-message" class="error-message"></p>
   </div>
 
-  <script src="login.js"></script>
+</body>
+
+  <script>
+    // Inline login handler (test credentials provided by user)
+    (function () {
+      const TEST_USER = 'gegeamor';
+      const TEST_PASS = 'gegeamor';
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const authForm = document.getElementById('auth-form');
+        const errorMessage = document.getElementById('error-message');
+        if (!authForm) return;
+
+        authForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          if (errorMessage) errorMessage.textContent = '';
+
+          const username = document.getElementById('username').value.trim();
+          const password = document.getElementById('password').value;
+
+          if (!username || !password) {
+            if (errorMessage) errorMessage.textContent = 'Por favor preencha usuário e senha.';
+            return;
+          }
+
+          if ((username === TEST_USER || username === TEST_USER + '@example.com') && password === TEST_PASS) {
+            try { sessionStorage.setItem('loggedIn', 'true'); } catch (err) { /* ignore */ }
+            window.location.href = 'quiz.html';
+          } else {
+            if (errorMessage) errorMessage.textContent = 'Usuário ou senha inválidos.';
+          }
+        });
+      });
+    })();
+  </script>
+
 </body>
 </html>
