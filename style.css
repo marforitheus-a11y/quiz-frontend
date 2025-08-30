@@ -199,6 +199,37 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
   .option.selected{background:linear-gradient(90deg, rgba(11,110,246,0.12), rgba(77,163,255,0.05));border-color:rgba(11,110,246,0.28);box-shadow:0 18px 44px rgba(11,110,246,0.06)}
 }
 
+/* Ensure correct/incorrect states override the 'selected' state visuals */
+.option.selected.correct,
+.option.correct.selected,
+.option.correct {
+  background: #ecfdf5 !important; /* soft green background */
+  border-color: rgba(5,150,105,0.16) !important;
+  box-shadow: 0 12px 30px rgba(16,185,129,0.06) !important;
+  transform: none !important;
+}
+.option.selected.correct .option-letter,
+.option.correct .option-letter {
+  background: #10b981 !important; /* green */
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+.option.selected.incorrect,
+.option.incorrect.selected,
+.option.incorrect {
+  background: #fff5f5 !important; /* soft red */
+  border-color: rgba(220,38,38,0.12) !important;
+  box-shadow: 0 12px 30px rgba(220,38,38,0.04) !important;
+  transform: none !important;
+}
+.option.selected.incorrect .option-letter,
+.option.incorrect .option-letter {
+  background: #ef4444 !important; /* red */
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
 /* Mobile: center login container and hero spacing */
 @media (max-width:700px){
   .logo-svg{width:72px;height:72px;transform:translateX(-50%) translateY(-6%);opacity:0.14}
