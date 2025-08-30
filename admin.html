@@ -100,8 +100,20 @@
             </select>
           </div>
           <div class="flex flex-col">
+            <label for="sourceType" class="mb-2 font-medium text-gray-700">Fonte</label>
+            <select id="sourceType" name="sourceType" class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="pdf">Arquivo PDF</option>
+              <option value="web">Busca na Web</option>
+            </select>
+          </div>
+          <div id="pdf-input" class="flex flex-col">
             <label for="pdfFile" class="mb-2 font-medium text-gray-700">Arquivo PDF</label>
-            <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required class="rounded-xl border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+            <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" class="rounded-xl border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+          </div>
+          <div id="web-input" class="flex flex-col" style="display:none;">
+            <label for="searchQuery" class="mb-2 font-medium text-gray-700">Pesquisar na Web (termo ou tópico)</label>
+            <input type="text" id="searchQuery" name="searchQuery" placeholder="Ex: Ensino público em escolas oficiais" autocomplete="off" class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+            <p class="mt-2 text-sm text-gray-500">Ao usar a Busca na Web, o sistema buscará páginas públicas sobre o tema e a IA gerará as questões a partir dos textos coletados.</p>
           </div>
           <button type="submit" id="submit-theme-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-3 shadow-md transition focus:outline-none focus:ring-4 focus:ring-blue-300">
             Enviar e Gerar Questões

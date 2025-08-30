@@ -50,6 +50,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     const catSel = document.getElementById('categorySelect');
     const subSel = document.getElementById('subcategorySelect');
     if (catSel) catSel.addEventListener('change', () => populateSubcategorySelect(catSel.value));
+    // wire source type (pdf or web) toggle
+    const sourceType = document.getElementById('sourceType');
+    const pdfInput = document.getElementById('pdf-input');
+    const webInput = document.getElementById('web-input');
+    if (sourceType) {
+        sourceType.addEventListener('change', () => {
+            if (sourceType.value === 'web') {
+                pdfInput.style.display = 'none';
+                webInput.style.display = 'flex';
+                document.getElementById('pdfFile').required = false;
+                document.getElementById('searchQuery').required = true;
+            } else {
+                pdfInput.style.display = 'flex';
+                webInput.style.display = 'none';
+                document.getElementById('pdfFile').required = true;
+                document.getElementById('searchQuery').required = false;
+            }
+        });
+    }
 
     // --- EVENT LISTENERS ---
     if (logoutBtn) {
@@ -123,7 +142,10 @@ async function handleThemeFormSubmit(e) {
     const formData = new FormData();
     formData.append('themeName', e.target.themeName.value);
     formData.append('questionCount', e.target.questionCount.value);
-    formData.append('pdfFile', e.target.pdfFile.files[0]);
+    const source = document.getElementById('sourceType') ? document.getElementById('sourceType').value : 'pdf';
+    formData.append('sourceType', source);
+    if (source === 'pdf') formData.append('pdfFile', e.target.pdfFile.files[0]);
+    else formData.append('searchQuery', e.target.searchQuery.value || '');
     // include selected category and subcategory id if present
     const categorySelect = document.getElementById('categorySelect');
     let chosenCategoryId = categorySelect && categorySelect.value ? categorySelect.value : null;
