@@ -595,64 +595,48 @@ function renderCategories(container, categories) {
         container.innerHTML = '<div class="text-gray-500">Nenhuma categoria criada.</div>';
         return;
     }
+
+    // build HTML table for categories and subcategories
+    const wrapper = document.createElement('div');
+    wrapper.className = 'scroll-table';
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    thead.innerHTML = `<tr><th>Categoria</th><th>Subcategorias</th><th style="width:140px;text-align:right">Ações</th></tr>`;
+    table.appendChild(thead);
+    const tbody = document.createElement('tbody');
+
     categories.forEach(cat => {
-        const div = document.createElement('div');
-        div.className = 'category-item';
-    const breadcrumb = document.createElement('div');
-    breadcrumb.className = 'category-breadcrumb no-break';
-    breadcrumb.textContent = cat.name;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td class="cat-name">${cat.name}</td><td class="cat-sub">${cat.children && cat.children.length ? cat.children.map(c=>c.name).join(', ') : '<span class="text-gray-500">—</span>'}</td>`;
+        const actionTd = document.createElement('td');
+        actionTd.style.textAlign = 'right';
+        actionTd.style.padding = '8px 12px';
+        const addBtn = document.createElement('button'); addBtn.className='btn-small'; addBtn.textContent='+'; addBtn.title='Adicionar subcategoria'; addBtn.addEventListener('click', ()=>openCreateCategoryModal(cat.id));
+        const delBtn = document.createElement('button'); delBtn.className='btn-delete'; delBtn.textContent='Apagar'; delBtn.addEventListener('click', ()=>deleteCategory(cat.id));
+        actionTd.appendChild(addBtn); actionTd.appendChild(document.createTextNode(' ')); actionTd.appendChild(delBtn);
+        tr.appendChild(actionTd);
+        tbody.appendChild(tr);
 
-        const actions = document.createElement('div');
-        actions.className = 'category-actions';
-        const addBtn = document.createElement('button');
-        addBtn.className = 'btn-small';
-        addBtn.textContent = '+';
-        addBtn.title = 'Adicionar subcategoria (máx 2 níveis abaixo)';
-        addBtn.addEventListener('click', () => openCreateCategoryModal(cat.id));
-
-        const delBtn = document.createElement('button');
-        delBtn.className = 'btn-small';
-        delBtn.textContent = 'Apagar';
-        delBtn.addEventListener('click', () => deleteCategory(cat.id));
-
-        actions.appendChild(addBtn);
-        actions.appendChild(delBtn);
-
-        div.appendChild(breadcrumb);
-        div.appendChild(actions);
-        container.appendChild(div);
-
-        // render children inline (one level deep) without repeating root name
+        // also add rows for children (indented)
         if (cat.children && cat.children.length) {
-            const childList = document.createElement('div');
-            childList.style.marginLeft = '12px';
-            childList.style.marginTop = '8px';
             cat.children.forEach(child => {
-                const childDiv = document.createElement('div');
-                childDiv.className = 'category-item';
-                childDiv.style.background = 'transparent';
-                childDiv.style.border = '1px dashed rgba(0,0,0,0.04)';
-                childDiv.innerHTML = `<div class="category-breadcrumb no-break">${child.name}${(child.children && child.children.length)? ' › ' + child.children.map(c=>c.name).join(' • '):''}</div>`;
-                const chActions = document.createElement('div');
-                chActions.className = 'category-actions';
-                const addSub = document.createElement('button');
-                addSub.className='btn-small';
-                addSub.textContent = '+';
-                addSub.title = 'Adicionar sub-subcategoria (nível máximo)';
-                addSub.addEventListener('click', () => openCreateCategoryModal(child.id));
-                const delCh = document.createElement('button');
-                delCh.className='btn-small';
-                delCh.textContent='Apagar';
-                delCh.addEventListener('click', ()=>deleteCategory(child.id));
-                chActions.appendChild(addSub); chActions.appendChild(delCh);
-                childDiv.appendChild(chActions);
-                childList.appendChild(childDiv);
-
-                // third level omitted in list (kept in breadcrumb only)
+                const ctr = document.createElement('tr');
+                ctr.innerHTML = `<td class="cat-sub">↳ ${child.name}</td><td class="cat-sub">${child.children && child.children.length ? child.children.map(c=>c.name).join(', ') : '<span class="text-gray-500">—</span>'}</td>`;
+                const cActionTd = document.createElement('td');
+                cActionTd.style.textAlign = 'right';
+                cActionTd.style.padding = '8px 12px';
+                const addS = document.createElement('button'); addS.className='btn-small'; addS.textContent='+'; addS.title='Adicionar subcategoria'; addS.addEventListener('click', ()=>openCreateCategoryModal(child.id));
+                const delS = document.createElement('button'); delS.className='btn-delete'; delS.textContent='Apagar'; delS.addEventListener('click', ()=>deleteCategory(child.id));
+                cActionTd.appendChild(addS); cActionTd.appendChild(document.createTextNode(' ')); cActionTd.appendChild(delS);
+                ctr.appendChild(cActionTd);
+                tbody.appendChild(ctr);
             });
-            container.appendChild(childList);
         }
     });
+
+    table.appendChild(tbody);
+    wrapper.appendChild(table);
+    container.appendChild(wrapper);
 }
 
 function openCreateCategoryModal(parentId) {
