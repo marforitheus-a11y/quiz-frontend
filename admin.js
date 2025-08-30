@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadThemes();
     loadUsers();
     loadReports();
+    loadCategories();
 
     // --- EVENT LISTENERS ---
     if (logoutBtn) {
@@ -56,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (reloadUsersBtn) {
         reloadUsersBtn.addEventListener('click', loadUsers);
     }
+
+    const createRootBtn = document.getElementById('create-root-category');
+    if (createRootBtn) createRootBtn.addEventListener('click', () => openCreateCategoryModal(null));
 
     if (themeForm) {
         themeForm.addEventListener('submit', handleThemeFormSubmit);
@@ -228,8 +232,9 @@ async function loadUsers() {
             const row = `
                 <tr>
                     <td>${user.id}</td>
-                    <td>${user.username}</td>
+                    <td class="no-break">${user.username}</td>
                     <td>${activeIcon}</td>
+                    <td>${expirationDate}</td>
                     <td><button class="btn-delete" onclick="deleteUser(${user.id})">Apagar</button></td>
                 </tr>
             `;
@@ -277,4 +282,168 @@ async function deleteUser(userId) {
 function openResetModal(themeId) {
     document.getElementById('reset-theme-id').value = themeId;
     document.getElementById('reset-modal').style.display = 'flex';
+}
+
+// ---------------- CATEGORIAS ----------------
+async function loadCategories() {
+    const list = document.getElementById('categories-list');
+    if (!list) return;
+    list.innerHTML = '<div class="text-gray-500">Carregando categorias...</div>';
+    try {
+        // Try backend first; fall back to localStorage
+        let categories = null;
+        try {
+            const resp = await fetch(`${API_URL}/admin/categories`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (resp.ok) categories = await resp.json();
+        } catch (err) { /* ignore */ }
+
+        if (!categories) {
+            const raw = localStorage.getItem('local_categories');
+            categories = raw ? JSON.parse(raw) : [];
+        }
+        renderCategories(list, categories);
+    } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
+        list.innerHTML = '<div class="text-red-600">Erro ao carregar categorias</div>';
+    }
+}
+
+function renderCategories(container, categories) {
+    container.innerHTML = '';
+    if (!categories || categories.length === 0) {
+        container.innerHTML = '<div class="text-gray-500">Nenhuma categoria criada.</div>';
+        return;
+    }
+    categories.forEach(cat => {
+        const div = document.createElement('div');
+        div.className = 'category-item';
+        const breadcrumb = document.createElement('div');
+        breadcrumb.className = 'category-breadcrumb no-break';
+        breadcrumb.textContent = `${cat.name}` + (cat.children && cat.children.length ? ` › ${cat.children.map(c=>c.name).join(' • ')}` : '');
+
+        const actions = document.createElement('div');
+        actions.className = 'category-actions';
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn-small';
+        addBtn.textContent = '+';
+        addBtn.title = 'Adicionar subcategoria (máx 2 níveis abaixo)';
+        addBtn.addEventListener('click', () => openCreateCategoryModal(cat.id));
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn-small';
+        delBtn.textContent = 'Apagar';
+        delBtn.addEventListener('click', () => deleteCategory(cat.id));
+
+        actions.appendChild(addBtn);
+        actions.appendChild(delBtn);
+
+        div.appendChild(breadcrumb);
+        div.appendChild(actions);
+        container.appendChild(div);
+
+        // render children inline (one level deep)
+        if (cat.children && cat.children.length) {
+            const childList = document.createElement('div');
+            childList.style.marginLeft = '12px';
+            childList.style.marginTop = '8px';
+            cat.children.forEach(child => {
+                const childDiv = document.createElement('div');
+                childDiv.className = 'category-item';
+                childDiv.style.background = 'transparent';
+                childDiv.style.border = '1px dashed rgba(0,0,0,0.04)';
+                childDiv.innerHTML = `<div class="category-breadcrumb no-break">${cat.name} › ${child.name}${(child.children && child.children.length)? ' › ' + child.children.map(c=>c.name).join(' • '):''}</div>`;
+                const chActions = document.createElement('div');
+                chActions.className = 'category-actions';
+                const addSub = document.createElement('button');
+                addSub.className='btn-small';
+                addSub.textContent = '+';
+                addSub.title = 'Adicionar sub-subcategoria (nível máximo)';
+                addSub.addEventListener('click', () => openCreateCategoryModal(child.id));
+                const delCh = document.createElement('button');
+                delCh.className='btn-small';
+                delCh.textContent='Apagar';
+                delCh.addEventListener('click', ()=>deleteCategory(child.id));
+                chActions.appendChild(addSub); chActions.appendChild(delCh);
+                childDiv.appendChild(chActions);
+                childList.appendChild(childDiv);
+
+                // third level omitted in list (kept in breadcrumb only)
+            });
+            container.appendChild(childList);
+        }
+    });
+}
+
+function openCreateCategoryModal(parentId) {
+    const name = prompt(parentId ? 'Nome da nova subcategoria (até 2 níveis abaixo):' : 'Nome da nova categoria:');
+    if (!name) return;
+    createCategory({ name: name.trim(), parentId });
+}
+
+async function createCategory({ name, parentId = null }) {
+    // try backend
+    try {
+        const resp = await fetch(`${API_URL}/admin/categories`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ name, parentId })
+        });
+        if (resp.ok) { await loadCategories(); return; }
+    } catch (err) { /* continue to fallback */ }
+
+    // fallback to localStorage implementation
+    const raw = localStorage.getItem('local_categories');
+    const categories = raw ? JSON.parse(raw) : [];
+
+    // helper to find and insert with depth limit
+    if (!parentId) {
+        categories.push({ id: Date.now(), name, children: [] });
+    } else {
+        const inserted = insertIntoCategories(categories, parentId, { id: Date.now(), name, children: [] });
+        if (!inserted) return alert('Não foi possível inserir: profundidade máxima ou id não encontrado.');
+    }
+    localStorage.setItem('local_categories', JSON.stringify(categories));
+    await loadCategories();
+}
+
+function insertIntoCategories(list, targetId, node) {
+    for (let item of list) {
+        if (item.id === targetId) {
+            // only allow up to 2 nested levels (root -> child -> grandchild)
+            const depth = computeDepth(item);
+            if (depth >= 2) return false;
+            item.children = item.children || [];
+            item.children.push(node);
+            return true;
+        }
+        if (item.children && item.children.length) {
+            const ok = insertIntoCategories(item.children, targetId, node);
+            if (ok) return true;
+        }
+    }
+    return false;
+}
+
+function computeDepth(node) {
+    if (!node || !node.children || node.children.length === 0) return 0;
+    return 1 + Math.max(...node.children.map(computeDepth));
+}
+
+async function deleteCategory(catId) {
+    if (!confirm('Apagar categoria e todas as subcategorias?')) return;
+    try {
+        const resp = await fetch(`${API_URL}/admin/categories/${catId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        if (resp.ok) { await loadCategories(); return; }
+    } catch (err) { /* fallback below */ }
+
+    // fallback localStorage delete
+    const raw = localStorage.getItem('local_categories');
+    const categories = raw ? JSON.parse(raw) : [];
+    const newList = removeFromCategories(categories, catId);
+    localStorage.setItem('local_categories', JSON.stringify(newList));
+    await loadCategories();
+}
+
+function removeFromCategories(list, targetId) {
+    return list.filter(item => item.id !== targetId).map(item => ({ ...item, children: item.children ? removeFromCategories(item.children, targetId) : [] }));
 }
