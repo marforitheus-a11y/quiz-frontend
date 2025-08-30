@@ -1,6 +1,9 @@
 // ARQUIVO login.js (ADAPTADO PARA NOVO index.html)
 // ==================================================================
-const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SUA URL AQUI
+// Use same origin when frontend is served from the same host as the API (works for local testing)
+const API_URL = (typeof window !== 'undefined' && window.location && window.location.origin)
+    ? window.location.origin
+    : 'http://localhost:3000'; // fallback
 
 document.addEventListener('DOMContentLoaded', () => {
     const toggleButtons = document.querySelectorAll('.toggle-btn');
