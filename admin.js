@@ -23,7 +23,7 @@ const token = localStorage.getItem('token');
 const username = localStorage.getItem('username');
 const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SUA URL AQUI
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // --- SELETORES DE ELEMENTOS ---
     const themeForm = document.getElementById('theme-form');
     const userForm = document.getElementById('user-form');
@@ -42,7 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loadThemes();
     loadUsers();
     loadReports();
-    loadCategories();
+    await loadCategories();
+    // ensure the category select used in the 'Adicionar Tema' form is populated
+    await populateCategorySelect();
 
     // --- EVENT LISTENERS ---
     if (logoutBtn) {
@@ -304,7 +306,9 @@ async function loadCategories() {
             const raw = localStorage.getItem('local_categories');
             categories = raw ? JSON.parse(raw) : [];
         }
-        renderCategories(list, categories);
+    renderCategories(list, categories);
+    // also refresh the admin theme category select so it stays in sync
+    try { await populateCategorySelect(); } catch (e) { /* ignore */ }
     } catch (error) {
         console.error('Erro ao carregar categorias:', error);
         list.innerHTML = '<div class="text-red-600">Erro ao carregar categorias</div>';
