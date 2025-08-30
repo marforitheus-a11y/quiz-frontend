@@ -104,7 +104,8 @@ function displaySetupScreen(mainContent, themes = []) {
         if (uncategorized.themes.length) groups.push(uncategorized);
 
         // build category checkboxes (one per group)
-        const categoryControls = groups.map(g => `<label class="category-filter"><input type="checkbox" class="cat-checkbox" data-cat-id="${g.id}" checked> ${g.name} <span class="muted">(${g.themes.length})</span></label>`).join(' ');
+    // category checkboxes start unchecked so themes are only shown when a category is selected
+    const categoryControls = groups.map(g => `<label class="category-filter"><input type="checkbox" class="cat-checkbox" data-cat-id="${g.id}"> ${g.name} <span class="muted">(${g.themes.length})</span></label>`).join(' ');
 
         let themeHTML = '';
         if (groups.length === 0) {
@@ -145,8 +146,7 @@ function displaySetupScreen(mainContent, themes = []) {
     if (questionCountInput) questionCountInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') startBtn.click();
     });
-    // category filter behavior (if present)
-    // category checkboxes filtering for quiz
+    // category filter behavior: only show themes for selected categories
     document.querySelectorAll('.cat-checkbox').forEach(cb => cb.addEventListener('change', () => {
         const activeCats = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(x => x.getAttribute('data-cat-id'));
         // show/hide folder groups
@@ -155,9 +155,12 @@ function displaySetupScreen(mainContent, themes = []) {
             if (activeCats.includes(cid)) list.style.display = '';
             else list.style.display = 'none';
         });
-        // if none selected, show all
-        if (activeCats.length === 0) document.querySelectorAll('.folder-list-quiz').forEach(l => l.style.display = '');
+        // if none selected, hide all groups (so nothing appears until a selection is made)
+        if (activeCats.length === 0) document.querySelectorAll('.folder-list-quiz').forEach(l => l.style.display = 'none');
     }));
+
+    // hide all theme groups by default so user must explicitly select categories to reveal themes
+    document.querySelectorAll('.folder-list-quiz').forEach(l => l.style.display = 'none');
 }
 
 async function startQuiz(mainContent) {
