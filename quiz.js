@@ -153,7 +153,11 @@ function displayQuestion(mainContent) {
     const letters = ['A', 'B', 'C', 'D', 'E'];
     const optionsHTML = currentQuestion.options.map((option, index) => 
         `<li class="option">
-            <span class="option-letter">${letters[index]}</span>
+            <span class="option-letter">
+              <span class="letter">${letters[index]}</span>
+              <svg class="icon icon-check" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg class="icon icon-cross" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
             <span class="option-text">${option}</span>
         </li>`
     ).join('');

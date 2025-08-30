@@ -183,6 +183,9 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 .option{display:flex;align-items:flex-start;gap:12px;padding:12px;border-radius:10px;border:1px solid #f0f2f5;cursor:pointer;background:#fff;transition:box-shadow .12s ease,transform .08s ease}
 .option:hover{box-shadow:0 8px 18px rgba(6,21,38,0.06);transform:translateY(-2px)}
 .option-letter{min-width:44px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:2px solid rgba(11,110,246,0.14);color:var(--brand-blue);font-weight:700;padding:0 10px;font-size:0.95rem;background:linear-gradient(180deg,rgba(77,163,255,0.02),rgba(11,110,246,0.01))}
+/* icon inside the badge */
+.option-letter .icon{display:none;width:16px;height:16px;margin-left:6px}
+.option-letter .letter{display:inline-block}
 .option.correct{background:#ecfdf5;border-color:rgba(5,150,105,0.12)}
 .option.incorrect{background:#fff5f5;border-color:rgba(220,38,38,0.08)}
 .progress-text{color:var(--muted);margin-top:14px}
@@ -210,7 +213,7 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 }
 .option.selected.correct .option-letter,
 .option.correct .option-letter {
-  background: #10b981 !important; /* green */
+  background: #059669 !important; /* stronger green */
   color: #fff !important;
   border-color: transparent !important;
 }
@@ -225,7 +228,7 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 }
 .option.selected.incorrect .option-letter,
 .option.incorrect .option-letter {
-  background: #ef4444 !important; /* red */
+  background: #dc2626 !important; /* stronger red */
   color: #fff !important;
   border-color: transparent !important;
 }
@@ -233,8 +236,10 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 /* stronger contrast shades */
 .option.correct{background:#dcfce7 !important;border-color:rgba(16,185,129,0.22) !important}
 .option.correct .option-letter{background:#059669 !important}
+.option.correct .option-letter .icon{display:inline-block;color:#ffffff}
 .option.incorrect{background:#ffeaea !important;border-color:rgba(220,38,38,0.18) !important}
 .option.incorrect .option-letter{background:#dc2626 !important}
+.option.incorrect .option-letter .icon{display:inline-block;color:#ffffff}
 
 /* add icons (check / cross) inside the badge via pseudo-elements */
 .option-letter{position:relative}
@@ -250,8 +255,8 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 }
 
 /* tweak shadows a bit for higher contrast */
-.option.correct{box-shadow:0 14px 36px rgba(16,185,129,0.08) !important}
-.option.incorrect{box-shadow:0 14px 36px rgba(220,38,38,0.06) !important}
+.option.correct{box-shadow:0 16px 44px rgba(16,185,129,0.10) !important}
+.option.incorrect{box-shadow:0 16px 44px rgba(220,38,38,0.08) !important}
 
 /* Mobile: center login container and hero spacing */
 @media (max-width:700px){
