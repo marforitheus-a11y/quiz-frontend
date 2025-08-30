@@ -101,7 +101,35 @@ async function handleThemeFormSubmit(e) {
     formData.append('pdfFile', e.target.pdfFile.files[0]);
     // include selected category id if present
     const categorySelect = document.getElementById('categorySelect');
-    if (categorySelect && categorySelect.value) formData.append('categoryId', categorySelect.value);
+    let chosenCategoryId = categorySelect && categorySelect.value ? categorySelect.value : null;
+    // if category is a local entry, try to persist it first
+    if (chosenCategoryId && String(chosenCategoryId).startsWith('local-')) {
+        const localCat = findLocalCategoryById(chosenCategoryId);
+        if (localCat) {
+            try {
+                const resp = await fetch(`${API_URL}/admin/categories`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ name: localCat.name, parentId: null })
+                });
+                if (resp.ok) {
+                    const created = await resp.json();
+                    chosenCategoryId = created.id; // replace with server id
+                    // refresh categories on UI
+                    await loadCategories();
+                } else {
+                    // couldn't persist - inform user but proceed without category
+                    alert('Não foi possível salvar a categoria no servidor. O tema será enviado sem categoria.');
+                    chosenCategoryId = null;
+                }
+            } catch (err) {
+                console.warn('Erro ao persistir categoria local:', err);
+                alert('Erro de rede ao salvar a categoria. O tema será enviado sem categoria.');
+                chosenCategoryId = null;
+            }
+        }
+    }
+    if (chosenCategoryId) formData.append('categoryId', chosenCategoryId);
 
     try {
         statusEl.textContent = 'Analisando e gerando questões com a IA (pode levar até 30s)...';
@@ -426,20 +454,39 @@ async function createCategory({ name, parentId = null }) {
         });
         if (resp.ok) { await loadCategories(); return; }
     } catch (err) { /* continue to fallback */ }
-
-    // fallback to localStorage implementation
+    // fallback to localStorage implementation (mark as local with prefix so we can detect later)
     const raw = localStorage.getItem('local_categories');
     const categories = raw ? JSON.parse(raw) : [];
+    const localId = `local-${Date.now()}`;
 
     // helper to find and insert with depth limit
     if (!parentId) {
-        categories.push({ id: Date.now(), name, children: [] });
+        categories.push({ id: localId, name, children: [], __local: true });
     } else {
-        const inserted = insertIntoCategories(categories, parentId, { id: Date.now(), name, children: [] });
+        const inserted = insertIntoCategories(categories, parentId, { id: localId, name, children: [], __local: true });
         if (!inserted) return alert('Não foi possível inserir: profundidade máxima ou id não encontrado.');
     }
     localStorage.setItem('local_categories', JSON.stringify(categories));
     await loadCategories();
+    alert('Categoria criada localmente. Houveram problemas ao salvar no servidor; ao enviar um tema que usar esta categoria, o sistema tentará persistir automaticamente no servidor.');
+}
+
+// helper to find a category by id inside local storage (recursive)
+function findLocalCategoryById(id) {
+    const raw = localStorage.getItem('local_categories');
+    if (!raw) return null;
+    const categories = JSON.parse(raw);
+    function search(list) {
+        for (const item of list) {
+            if (String(item.id) === String(id)) return item;
+            if (item.children && item.children.length) {
+                const found = search(item.children);
+                if (found) return found;
+            }
+        }
+        return null;
+    }
+    return search(categories);
 }
 
 function insertIntoCategories(list, targetId, node) {
