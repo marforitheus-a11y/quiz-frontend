@@ -91,13 +91,14 @@ function displaySetupScreen(mainContent, themes = []) {
         const grouped = {};
         const uncategorized = { id: '__uncategorized__', name: 'Sem categoria', themes: [] };
         themes.forEach(t => {
-            const cid = t.category_id || uncategorized.id;
-            if (!cid || cid === '__uncategorized__') {
-                uncategorized.themes.push(t);
-            } else {
-                if (!grouped[cid]) grouped[cid] = { id: cid, name: t.category_name || 'Categoria', themes: [] };
-                grouped[cid].themes.push(t);
-            }
+            // use parent category as top-level group when available, and keep subcategory info on the theme
+            const topId = t.parent_cat_id || t.category_id || uncategorized.id;
+            const topName = t.parent_cat_name || t.category_name || 'Sem categoria';
+            if (!grouped[topId]) grouped[topId] = { id: topId, name: topName, themes: [] };
+            // attach subcategory info to theme object for later grouping in UI
+            t._subcategory_id = t.category_id || null;
+            t._subcategory_name = (t.category_id && t.category_name) ? t.category_name : 'Sem subcategoria';
+            grouped[topId].themes.push(t);
         });
 
         const groups = Object.values(grouped);

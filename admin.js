@@ -386,7 +386,8 @@ function showContextMenuFor(type, obj, event) {
     }
     if (type === 'theme') {
         items.push({ label: 'Abrir', action: () => { alert('Abrir tema: ' + obj.name); } });
-        items.push({ label: 'Atribuir Categoria', action: () => assignCategoryPrompt(obj.id) });
+    items.push({ label: 'Atribuir Categoria', action: () => assignCategoryPrompt(obj.id) });
+    items.push({ label: 'Adicionar Subcategoria', action: () => addSubcategoryToThemePrompt(obj.id) });
         items.push({ label: 'Resetar', action: () => openResetModal(obj.id) });
         items.push({ label: 'Apagar', action: () => deleteTheme(obj.id) });
     }
@@ -878,4 +879,44 @@ function populateSubcategorySelect(categoryId) {
         opt.textContent = child.name;
         sel.appendChild(opt);
     });
+}
+
+async function addSubcategoryToThemePrompt(themeId) {
+    try {
+        const name = prompt('Nome da nova subcategoria para este tema:');
+        if (!name) return;
+        // fetch theme to find its current category
+        const themeResp = await fetch(`${API_URL}/themes`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!themeResp.ok) return alert('Não foi possível buscar informações do tema.');
+        const themes = await themeResp.json();
+        const theme = themes.find(t => String(t.id) === String(themeId));
+        const parentCategoryId = theme ? theme.category_id : null;
+        if (!parentCategoryId) return alert('Este tema não pertence a uma categoria. Atribua uma categoria primeiro.');
+
+        // create subcategory via admin endpoint
+        const resp = await fetch(`${API_URL}/admin/categories`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ name, parentId: parentCategoryId })
+        });
+        if (!resp.ok) {
+            const txt = await resp.text();
+            console.error('addSubcategoryToThemePrompt failed', resp.status, txt);
+            return alert('Não foi possível criar subcategoria no servidor.');
+        }
+        const created = await resp.json();
+        // assign theme to created subcategory (category_id points to child id)
+        const upd = await fetch(`${API_URL}/admin/themes/${themeId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ categoryId: created.id }) });
+        if (!upd.ok) {
+            const txt = await upd.text();
+            console.error('Failed to assign theme to new subcategory', upd.status, txt);
+            return alert('Subcategoria criada, mas não foi possível atribuir ao tema.');
+        }
+        alert('Subcategoria criada e atribuída ao tema com sucesso.');
+        await loadCategories();
+        await loadThemes();
+    } catch (err) {
+        console.error('Erro addSubcategoryToThemePrompt:', err);
+        alert('Erro ao criar subcategoria.');
+    }
 }
