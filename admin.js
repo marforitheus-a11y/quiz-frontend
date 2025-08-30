@@ -1,4 +1,4 @@
-// ==================================================================
+    // ==================================================================
 // ARQUIVO admin.js (VERSÃO FINAL E COMPLETA)
 // ==================================================================
 
@@ -22,6 +22,7 @@
 const token = localStorage.getItem('token');
 const username = localStorage.getItem('username');
 const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SUA URL AQUI
+let categoriesCache = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
     // --- SELETORES DE ELEMENTOS ---
@@ -45,6 +46,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadCategories();
     // ensure the category select used in the 'Adicionar Tema' form is populated
     await populateCategorySelect();
+    // wire category -> subcategory select behavior (populate on change)
+    const catSel = document.getElementById('categorySelect');
+    const subSel = document.getElementById('subcategorySelect');
+    if (catSel) catSel.addEventListener('change', () => populateSubcategorySelect(catSel.value));
 
     // --- EVENT LISTENERS ---
     if (logoutBtn) {
@@ -119,9 +124,11 @@ async function handleThemeFormSubmit(e) {
     formData.append('themeName', e.target.themeName.value);
     formData.append('questionCount', e.target.questionCount.value);
     formData.append('pdfFile', e.target.pdfFile.files[0]);
-    // include selected category id if present
+    // include selected category and subcategory id if present
     const categorySelect = document.getElementById('categorySelect');
     let chosenCategoryId = categorySelect && categorySelect.value ? categorySelect.value : null;
+    const subcategorySelect = document.getElementById('subcategorySelect');
+    let chosenSubcategoryId = subcategorySelect && subcategorySelect.value ? subcategorySelect.value : null;
     // if category is a local entry, try to persist it first
     if (chosenCategoryId && String(chosenCategoryId).startsWith('local-')) {
         const localCat = findLocalCategoryById(chosenCategoryId);
@@ -150,6 +157,7 @@ async function handleThemeFormSubmit(e) {
         }
     }
     if (chosenCategoryId) formData.append('categoryId', chosenCategoryId);
+    if (chosenSubcategoryId) formData.append('subcategoryId', chosenSubcategoryId);
 
     try {
         statusEl.textContent = 'Analisando e gerando questões com a IA (pode levar até 30s)...';
@@ -539,6 +547,15 @@ async function loadCategories() {
             const raw = localStorage.getItem('local_categories');
             categories = raw ? JSON.parse(raw) : [];
         }
+        // ensure categoriesCache is updated for other UI pieces
+        categoriesCache = categories;
+        // ensure each root category has the two subcategories we want (local-only auto-create)
+        categories.forEach(root => {
+            if (!root.children) root.children = [];
+            const names = root.children.map(c => c.name);
+            if (!names.includes('Conhecimentos Básicos')) root.children.push({ id: `local-sub-${Date.now()}-${Math.random().toString(36).slice(2,6)}`, name: 'Conhecimentos Básicos', children: [], __local:true });
+            if (!names.includes('Conhecimentos Específicos')) root.children.push({ id: `local-sub-${Date.now()}-${Math.random().toString(36).slice(2,6)}`, name: 'Conhecimentos Específicos', children: [], __local:true });
+        });
     renderCategories(list, categories);
     // also refresh the admin theme category select so it stays in sync
     try { await populateCategorySelect(); } catch (e) { /* ignore */ }
@@ -557,9 +574,9 @@ function renderCategories(container, categories) {
     categories.forEach(cat => {
         const div = document.createElement('div');
         div.className = 'category-item';
-        const breadcrumb = document.createElement('div');
-        breadcrumb.className = 'category-breadcrumb no-break';
-        breadcrumb.textContent = `${cat.name}` + (cat.children && cat.children.length ? ` › ${cat.children.map(c=>c.name).join(' • ')}` : '');
+    const breadcrumb = document.createElement('div');
+    breadcrumb.className = 'category-breadcrumb no-break';
+    breadcrumb.textContent = cat.name;
 
         const actions = document.createElement('div');
         actions.className = 'category-actions';
@@ -581,7 +598,7 @@ function renderCategories(container, categories) {
         div.appendChild(actions);
         container.appendChild(div);
 
-        // render children inline (one level deep)
+        // render children inline (one level deep) without repeating root name
         if (cat.children && cat.children.length) {
             const childList = document.createElement('div');
             childList.style.marginLeft = '12px';
@@ -591,7 +608,7 @@ function renderCategories(container, categories) {
                 childDiv.className = 'category-item';
                 childDiv.style.background = 'transparent';
                 childDiv.style.border = '1px dashed rgba(0,0,0,0.04)';
-                childDiv.innerHTML = `<div class="category-breadcrumb no-break">${cat.name} › ${child.name}${(child.children && child.children.length)? ' › ' + child.children.map(c=>c.name).join(' • '):''}</div>`;
+                childDiv.innerHTML = `<div class="category-breadcrumb no-break">${child.name}${(child.children && child.children.length)? ' › ' + child.children.map(c=>c.name).join(' • '):''}</div>`;
                 const chActions = document.createElement('div');
                 chActions.className = 'category-actions';
                 const addSub = document.createElement('button');
@@ -737,6 +754,8 @@ async function populateCategorySelect() {
     }
 
     if (!cats || cats.length === 0) return;
+    // cache for other UI pieces
+    categoriesCache = cats;
     // flatten small tree to grouped options
     cats.forEach(root => {
         const opt = document.createElement('option');
@@ -760,6 +779,8 @@ async function populateCategorySelect() {
             });
         }
     });
+    // reset subcategory select
+    try { populateSubcategorySelect(document.getElementById('categorySelect').value); } catch(e){}
 }
 
 // Prompt admin to choose from available categories and assign to a theme
@@ -851,4 +872,21 @@ async function testApi() {
         showServerError(String(err));
         alert('Erro ao contatar API. Veja painel de erro.');
     }
+}
+
+// populate subcategory select for a given category id
+function populateSubcategorySelect(categoryId) {
+    const sel = document.getElementById('subcategorySelect');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Sem subcategoria</option>';
+    if (!categoryId) return;
+    // find category in cache
+    const root = categoriesCache && categoriesCache.find(c => String(c.id) === String(categoryId));
+    if (!root || !root.children || root.children.length === 0) return;
+    root.children.forEach(child => {
+        const opt = document.createElement('option');
+        opt.value = child.id;
+        opt.textContent = child.name;
+        sel.appendChild(opt);
+    });
 }

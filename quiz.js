@@ -105,7 +105,19 @@ function displaySetupScreen(mainContent, themes = []) {
 
         // build category checkboxes (one per group)
     // category checkboxes start unchecked so themes are only shown when a category is selected
-    const categoryControls = groups.map(g => `<label class="category-filter"><input type="checkbox" class="cat-checkbox" data-cat-id="${g.id}"> ${g.name} <span class="muted">(${g.themes.length})</span></label>`).join(' ');
+    // also compute subcategory grouping per category
+    const categoryMap = {};
+    groups.forEach(g => { categoryMap[g.id] = { id: g.id, name: g.name, themes: g.themes, subcats: {} }; });
+    // try to infer subcategory_id from themes and group them
+    groups.forEach(g => {
+        g.themes.forEach(t => {
+            const subId = t.subcategory_id || '__uncat__';
+            if (!categoryMap[g.id].subcats[subId]) categoryMap[g.id].subcats[subId] = { id: subId, name: t.subcategory_name || (subId === '__uncat__' ? 'Sem subcategoria' : t.subcategory_name || 'Subcategoria'), themes: [] };
+            categoryMap[g.id].subcats[subId].themes.push(t);
+        });
+    });
+
+    const categoryControls = Object.values(categoryMap).map(g => `<label class="category-filter"><input type="checkbox" class="cat-checkbox" data-cat-id="${g.id}"> ${g.name} <span class="muted">(${g.themes.length})</span></label>`).join(' ');
 
         let themeHTML = '';
         if (groups.length === 0) {
@@ -114,12 +126,16 @@ function displaySetupScreen(mainContent, themes = []) {
             themeHTML = `<div class="controls-row">${categoryControls}</div>`;
             // render each group as a folder with its themes
             themeHTML += '<div class="theme-list">';
-            groups.forEach(g => {
+            Object.values(categoryMap).forEach(cat => {
                 themeHTML += `<div class="category-folder-quiz">`;
-                themeHTML += `<div class="folder-header"><strong>${g.name}</strong> <span class="folder-count muted">(${g.themes.length})</span></div>`;
-                themeHTML += `<div class="folder-list-quiz" data-cat-id="${g.id}">`;
-                g.themes.forEach(theme => {
-                    themeHTML += `<label class="theme-item" data-category-id="${g.id}"><input type="checkbox" name="theme" value="${theme.id}"><div class="theme-info"><div class="theme-name">${theme.name}</div><div class="theme-meta">${theme.description || ''}</div></div></label>`;
+                themeHTML += `<div class="folder-header"><strong>${cat.name}</strong> <span class="folder-count muted">(${cat.themes.length})</span></div>`;
+                themeHTML += `<div class="folder-list-quiz" data-cat-id="${cat.id}">`;
+                // render subcategories first
+                Object.values(cat.subcats).forEach(sub => {
+                    themeHTML += `<div style="padding:8px 10px;border-bottom:1px dashed rgba(0,0,0,0.04);font-weight:700">${sub.name} <span class="muted">(${sub.themes.length})</span></div>`;
+                    sub.themes.forEach(theme => {
+                        themeHTML += `<label class="theme-item" data-category-id="${cat.id}" data-subcategory-id="${sub.id}"><input type="checkbox" name="theme" value="${theme.id}"><div class="theme-info"><div class="theme-name">${theme.name}</div><div class="theme-meta">${theme.description || ''}</div></div></label>`;
+                    });
                 });
                 themeHTML += `</div></div>`;
             });
