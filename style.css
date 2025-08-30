@@ -230,6 +230,29 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
   border-color: transparent !important;
 }
 
+/* stronger contrast shades */
+.option.correct{background:#dcfce7 !important;border-color:rgba(16,185,129,0.22) !important}
+.option.correct .option-letter{background:#059669 !important}
+.option.incorrect{background:#ffeaea !important;border-color:rgba(220,38,38,0.18) !important}
+.option.incorrect .option-letter{background:#dc2626 !important}
+
+/* add icons (check / cross) inside the badge via pseudo-elements */
+.option-letter{position:relative}
+.option.correct .option-letter::after,
+.option.selected.correct .option-letter::after{
+  content: '\2713'; /* check */
+  position:absolute;right:6px;top:50%;transform:translateY(-50%);font-weight:700;font-size:0.95rem;color:rgba(255,255,255,0.95)
+}
+.option.incorrect .option-letter::after,
+.option.selected.incorrect .option-letter::after{
+  content: '\2715'; /* cross */
+  position:absolute;right:6px;top:50%;transform:translateY(-50%);font-weight:700;font-size:0.95rem;color:rgba(255,255,255,0.95)
+}
+
+/* tweak shadows a bit for higher contrast */
+.option.correct{box-shadow:0 14px 36px rgba(16,185,129,0.08) !important}
+.option.incorrect{box-shadow:0 14px 36px rgba(220,38,38,0.06) !important}
+
 /* Mobile: center login container and hero spacing */
 @media (max-width:700px){
   .logo-svg{width:72px;height:72px;transform:translateX(-50%) translateY(-6%);opacity:0.14}
