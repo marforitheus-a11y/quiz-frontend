@@ -312,24 +312,25 @@ function renderThemesByCategory(container, themes = []) {
     container.innerHTML = '';
     if (!themes || themes.length === 0) { container.innerHTML = '<div class="text-gray-500">Nenhum tema disponível.</div>'; return; }
 
-    // flatten themes with category and subcategory info
-    const rows = themes.map(t => ({ category: t.category_name || 'Sem categoria', subcategory: t._subcategory_name || '', themeName: t.name, id: t.id }));
+    // flatten themes with category and subcategory info (include question_count)
+    const rows = themes.map(t => ({ category: t.category_name || 'Sem categoria', subcategory: t._subcategory_name || '', themeName: t.name, id: t.id, question_count: (t.question_count || 0) }));
 
     const wrapper = document.createElement('div'); wrapper.className = 'scroll-table';
     const table = document.createElement('table');
     const thead = document.createElement('thead');
-    thead.innerHTML = `<tr><th>Categoria</th><th>Subcategoria</th><th>Tema</th><th>ID</th><th style="width:180px;text-align:right">Ações</th></tr>`;
+    thead.innerHTML = `<tr><th>Categoria</th><th>Subcategoria</th><th>Tema</th><th style="width:80px;text-align:center">Questões</th><th>ID</th><th style="width:180px;text-align:right">Ações</th></tr>`;
     table.appendChild(thead);
     const tbody = document.createElement('tbody');
 
     rows.forEach(r => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td class="cat-name">${r.category}</td><td class="cat-sub">${r.subcategory || '<span class="text-gray-500">—</span>'}</td><td>${r.themeName}</td><td>${r.id}</td>`;
+    tr.innerHTML = `<td class="cat-name">${r.category}</td><td class="cat-sub">${r.subcategory || '<span class="text-gray-500">—</span>'}</td><td>${r.themeName}</td><td style="text-align:center">${r.question_count}</td><td>${r.id}</td>`;
         const actionTd = document.createElement('td'); actionTd.style.textAlign='right'; actionTd.style.padding='8px 12px';
         const assignBtn = document.createElement('button'); assignBtn.className='btn-secondary'; assignBtn.textContent='Atribuir Categoria'; assignBtn.addEventListener('click', ()=>assignCategoryPrompt(r.id));
         const resetBtn = document.createElement('button'); resetBtn.className='btn-secondary'; resetBtn.textContent='Resetar'; resetBtn.style.marginLeft='8px'; resetBtn.addEventListener('click', ()=>openResetModal(r.id));
+        const addQBtn = document.createElement('button'); addQBtn.className='btn-primary'; addQBtn.textContent='Adicionar Questões'; addQBtn.style.marginLeft='8px'; addQBtn.addEventListener('click', ()=>openAddQuestionsModal(r.id));
         const delBtn = document.createElement('button'); delBtn.className='btn-delete'; delBtn.textContent='Apagar'; delBtn.style.marginLeft='8px'; delBtn.addEventListener('click', ()=>deleteTheme(r.id));
-        actionTd.appendChild(assignBtn); actionTd.appendChild(resetBtn); actionTd.appendChild(delBtn);
+        actionTd.appendChild(assignBtn); actionTd.appendChild(resetBtn); actionTd.appendChild(addQBtn); actionTd.appendChild(delBtn);
         tr.appendChild(actionTd);
         tbody.appendChild(tr);
     });
@@ -558,7 +559,7 @@ function renderCategories(container, categories) {
         actionTd.style.textAlign = 'right';
         actionTd.style.padding = '8px 12px';
         const addBtn = document.createElement('button'); addBtn.className='btn-small'; addBtn.textContent='+'; addBtn.title='Adicionar subcategoria'; addBtn.addEventListener('click', ()=>openCreateCategoryModal(cat.id));
-        const delBtn = document.createElement('button'); delBtn.className='btn-delete'; delBtn.textContent='Apagar'; delBtn.addEventListener('click', ()=>deleteCategory(cat.id));
+    const delBtn = document.createElement('button'); delBtn.className='btn-delete'; delBtn.textContent='Apagar'; delBtn.addEventListener('click', ()=>deleteCategory(cat.id));
         actionTd.appendChild(addBtn); actionTd.appendChild(document.createTextNode(' ')); actionTd.appendChild(delBtn);
         tr.appendChild(actionTd);
         tbody.appendChild(tr);
@@ -797,6 +798,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // expose helper to show modal from file click
     window.openThemeModal = openThemeModal;
+
+    // Add Questions modal wiring
+    const addModal = document.getElementById('add-questions-modal');
+    const addForm = document.getElementById('add-questions-form');
+    const cancelAdd = document.getElementById('cancel-add-questions');
+    const addSource = document.getElementById('addSourceType');
+    const addPdfInput = document.getElementById('add-pdf-input');
+    const addWebInput = document.getElementById('add-web-input');
+    const addStatus = document.getElementById('add-questions-status');
+
+    function openAddQuestionsModal(themeId) {
+        document.getElementById('add-theme-id').value = themeId;
+        addStatus.textContent = '';
+        document.getElementById('addQuestionCount').value = '5';
+        // default to pdf
+        if (addSource) addSource.value = 'pdf';
+        if (addPdfInput) addPdfInput.style.display = 'flex';
+        if (addWebInput) addWebInput.style.display = 'none';
+        if (addModal) addModal.style.display = 'flex';
+    }
+    // expose globally so renderers that attach click handlers can call it
+    window.openAddQuestionsModal = openAddQuestionsModal;
+
+    if (cancelAdd) cancelAdd.addEventListener('click', () => { if (addModal) addModal.style.display = 'none'; });
+    if (addSource) addSource.addEventListener('change', () => {
+        if (addSource.value === 'web') { addPdfInput.style.display = 'none'; addWebInput.style.display = 'flex'; }
+        else { addPdfInput.style.display = 'flex'; addWebInput.style.display = 'none'; }
+    });
+
+    if (addForm) {
+        addForm.addEventListener('submit', async (ev) => {
+            ev.preventDefault();
+            const progressWrap = document.getElementById('add-questions-progress');
+            const fill = document.getElementById('add-progress-fill');
+            addStatus.textContent = 'Iniciando...';
+            if (progressWrap) progressWrap.style.display = 'block';
+            if (fill) fill.style.width = '10%';
+
+            const themeId = document.getElementById('add-theme-id').value;
+            const fd = new FormData();
+            const src = document.getElementById('addSourceType').value;
+            fd.append('sourceType', src);
+            fd.append('questionCount', document.getElementById('addQuestionCount').value || '5');
+            if (src === 'pdf') {
+                const f = document.getElementById('addPdfFile').files[0];
+                if (!f) { addStatus.textContent = 'Selecione um arquivo PDF.'; return; }
+                fd.append('pdfFile', f);
+            } else {
+                const q = document.getElementById('addSearchQuery').value || '';
+                if (!q) { addStatus.textContent = 'Informe o termo/tópico para buscar na web.'; return; }
+                fd.append('searchQuery', q);
+            }
+
+            try {
+                addStatus.textContent = 'Enviando ao servidor...'; if (fill) fill.style.width = '30%';
+                const resp = await fetch(`${API_URL}/admin/themes/${themeId}/add`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: fd
+                });
+
+                addStatus.textContent = 'Gerando questões (IA)...'; if (fill) fill.style.width = '60%';
+
+                const txt = await resp.text();
+                let json = {};
+                try { json = JSON.parse(txt); } catch (e) { json = { message: txt }; }
+                if (!resp.ok) throw new Error(json.message || `Status ${resp.status}`);
+
+                addStatus.textContent = json.message || 'Questões adicionadas com sucesso.'; if (fill) fill.style.width = '100%';
+                setTimeout(() => { if (addModal) addModal.style.display = 'none'; loadThemes(); if (progressWrap) progressWrap.style.display = 'none'; if (fill) fill.style.width = '0%'; }, 1200);
+            } catch (err) {
+                console.error('addQuestions failed', err);
+                addStatus.textContent = `Erro: ${err.message}`;
+                if (fill) fill.style.width = '100%';
+            }
+        });
+    }
 });
 
 async function testApi() {

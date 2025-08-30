@@ -128,20 +128,20 @@ function displaySetupScreen(mainContent, themes = []) {
         } else {
             // controls row with category filters
             themeHTML = `<div class="controls-row">${categoryControls}</div>`;
-            // build flattened rows for table: category, subcategory, theme
+            // build flattened rows for table: category, subcategory, theme (include question_count from backend)
             const rows = [];
             Object.values(categoryMap).forEach(cat => {
                 Object.values(cat.subcats).forEach(sub => {
                     sub.themes.forEach(theme => {
-                        rows.push({ catId: cat.id, category: cat.name, subId: sub.id, subName: sub.name, themeId: theme.id, themeName: theme.name, desc: theme.description || '' });
+                        rows.push({ catId: cat.id, category: cat.name, subId: sub.id, subName: sub.name, themeId: theme.id, themeName: theme.name, desc: theme.description || '', question_count: theme.question_count || 0 });
                     });
                 });
             });
 
-            // render as scrollable table
-            themeHTML += `<div class="scroll-table" style="margin-top:12px"><table><thead><tr><th style="width:60px">Selecionar</th><th>Categoria</th><th>Subcategoria</th><th>Tema</th><th>Descrição</th></tr></thead><tbody>`;
+            // render as scrollable table with question counts
+            themeHTML += `<div class="scroll-table" style="margin-top:12px"><table><thead><tr><th style="width:60px">Selecionar</th><th>Categoria</th><th>Subcategoria</th><th>Tema</th><th style="width:100px;text-align:center">Questões</th><th>Descrição</th></tr></thead><tbody>`;
             rows.forEach(r => {
-                themeHTML += `<tr data-cat-id="${r.catId}"><td style="padding:8px 12px"><input type="checkbox" name="theme" value="${r.themeId}"></td><td class="cat-name">${r.category}</td><td class="cat-sub">${r.subName || '<span class="text-gray-500">—</span>'}</td><td>${r.themeName}</td><td class="no-break">${r.desc}</td></tr>`;
+                themeHTML += `<tr data-cat-id="${r.catId}"><td style="padding:8px 12px"><input type="checkbox" name="theme" value="${r.themeId}"></td><td class="cat-name">${r.category}</td><td class="cat-sub">${r.subName || '<span class="text-gray-500">—</span>'}</td><td>${r.themeName}</td><td style="text-align:center">${r.question_count}</td><td class="no-break">${r.desc}</td></tr>`;
             });
             themeHTML += `</tbody></table></div>`;
         }
