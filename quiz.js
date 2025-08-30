@@ -166,21 +166,20 @@ function displaySetupScreen(mainContent, themes = []) {
     if (questionCountInput) questionCountInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') startBtn.click();
     });
-    // category filter behavior: only show themes for selected categories
-    document.querySelectorAll('.cat-checkbox').forEach(cb => cb.addEventListener('change', () => {
+    // category filter behavior: only show table rows for selected categories
+    const catCheckboxes = Array.from(document.querySelectorAll('.cat-checkbox'));
+    function updateThemeRowsVisibility() {
         const activeCats = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(x => x.getAttribute('data-cat-id'));
-        // show/hide folder groups
-        document.querySelectorAll('.folder-list-quiz').forEach(list => {
-            const cid = list.getAttribute('data-cat-id');
-            if (activeCats.includes(cid)) list.style.display = '';
-            else list.style.display = 'none';
+        const rows = Array.from(document.querySelectorAll('table tbody tr[data-cat-id]'));
+        rows.forEach(r => {
+            const cid = r.getAttribute('data-cat-id');
+            if (activeCats.length === 0) r.style.display = 'none';
+            else r.style.display = activeCats.includes(cid) ? '' : 'none';
         });
-        // if none selected, hide all groups (so nothing appears until a selection is made)
-        if (activeCats.length === 0) document.querySelectorAll('.folder-list-quiz').forEach(l => l.style.display = 'none');
-    }));
-
-    // hide all theme groups by default so user must explicitly select categories to reveal themes
-    document.querySelectorAll('.folder-list-quiz').forEach(l => l.style.display = 'none');
+    }
+    catCheckboxes.forEach(cb => cb.addEventListener('change', updateThemeRowsVisibility));
+    // hide all rows by default so user must explicitly select categories to reveal themes
+    updateThemeRowsVisibility();
 }
 
 async function startQuiz(mainContent) {

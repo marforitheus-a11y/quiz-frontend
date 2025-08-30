@@ -862,9 +862,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 addStatus.textContent = 'Gerando questões (IA)...'; if (fill) fill.style.width = '60%';
 
                 const txt = await resp.text();
+                // try to parse JSON; if server returned HTML (like Express 404 page), extract a concise message
                 let json = {};
-                try { json = JSON.parse(txt); } catch (e) { json = { message: txt }; }
-                if (!resp.ok) throw new Error(json.message || `Status ${resp.status}`);
+                const contentType = (resp.headers.get('content-type') || '').toLowerCase();
+                if (contentType.includes('application/json')) {
+                    try { json = JSON.parse(txt); } catch (e) { json = { message: txt }; }
+                } else if (contentType.includes('text/html') || /cannot post/i.test(txt)) {
+                    // try to extract useful message from HTML (e.g. <pre>Cannot POST /admin/themes/22/add</pre>)
+                    let m = txt.match(/<pre[^>]*>([\s\S]*?)<\/pre>/i);
+                    if (m && m[1]) {
+                        json.message = m[1].trim();
+                    } else {
+                        m = txt.match(/Cannot POST\s+([^<\s]+)/i) || txt.match(/Cannot POST\s*([^<\n\r]+)/i);
+                        json.message = m ? (`Cannot POST ${m[1]}`) : `Rota não encontrada (status ${resp.status}). Verifique a URL da API.`;
+                    }
+                } else {
+                    try { json = JSON.parse(txt); } catch (e) { json = { message: txt }; }
+                }
+
+                if (!resp.ok) {
+                    // show a friendly message and include the endpoint used for debugging
+                    const endpoint = `${API_URL}/admin/themes/${themeId}/add`;
+                    throw new Error(`${json.message || 'Erro no servidor.'} — Endpoint: ${endpoint}`);
+                }
 
                 addStatus.textContent = json.message || 'Questões adicionadas com sucesso.'; if (fill) fill.style.width = '100%';
                 setTimeout(() => { if (addModal) addModal.style.display = 'none'; loadThemes(); if (progressWrap) progressWrap.style.display = 'none'; if (fill) fill.style.width = '0%'; }, 1200);
