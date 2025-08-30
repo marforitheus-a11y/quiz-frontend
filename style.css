@@ -235,23 +235,14 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 /* stronger contrast shades */
 .option.correct{background:#dcfce7 !important;border-color:rgba(16,185,129,0.22) !important}
 .option.correct .option-letter{background:#059669 !important}
-.option.correct .option-letter .icon{display:inline-block;color:#ffffff}
 .option.incorrect{background:#ffeaea !important;border-color:rgba(220,38,38,0.18) !important}
 .option.incorrect .option-letter{background:#dc2626 !important}
-.option.incorrect .option-letter .icon{display:inline-block;color:#ffffff}
 
-/* add icons (check / cross) inside the badge via pseudo-elements */
+/* icon SVG visibility: hidden by default, show only the appropriate icon */
 .option-letter{position:relative}
-.option.correct .option-letter::after,
-.option.selected.correct .option-letter::after{
-  content: '\2713'; /* check */
-  position:absolute;right:6px;top:50%;transform:translateY(-50%);font-weight:700;font-size:0.95rem;color:rgba(255,255,255,0.95)
-}
-.option.incorrect .option-letter::after,
-.option.selected.incorrect .option-letter::after{
-  content: '\2715'; /* cross */
-  position:absolute;right:6px;top:50%;transform:translateY(-50%);font-weight:700;font-size:0.95rem;color:rgba(255,255,255,0.95)
-}
+.option-letter .icon{display:none;width:16px;height:16px;margin-left:8px}
+.option.correct .option-letter .icon-check{display:inline-block;color:#fff}
+.option.incorrect .option-letter .icon-cross{display:inline-block;color:#fff}
 
 /* tweak shadows a bit for higher contrast */
 .option.correct{box-shadow:0 16px 44px rgba(16,185,129,0.10) !important}
