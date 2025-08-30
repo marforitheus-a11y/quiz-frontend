@@ -230,9 +230,13 @@ function displayQuestion(mainContent) {
 }
 
 function selectAnswer(selectedElement, mainContent) {
-    const selectedOptionText = selectedElement.querySelector('.option-text').textContent;
+    const rawSelected = selectedElement.querySelector('.option-text').textContent || '';
+    const selectedOptionText = String(rawSelected).trim();
     const currentQuestion = questionsToAsk[currentQuestionIndex];
-    const isCorrect = selectedOptionText === currentQuestion.answer;
+    // normalize answer comparison (strings, trim, lowercase)
+    const normalize = v => (v === null || v === undefined) ? '' : String(v).trim().toLowerCase();
+    const correctAnswer = normalize(currentQuestion.answer);
+    const isCorrect = normalize(selectedOptionText) === correctAnswer;
 
     // Bloqueia os outros cliques
     document.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'none');
@@ -244,7 +248,8 @@ function selectAnswer(selectedElement, mainContent) {
     } else {
         selectedElement.classList.add('incorrect');
         document.querySelectorAll('.option').forEach(opt => {
-            if (opt.querySelector('.option-text').textContent === currentQuestion.answer) {
+            const text = opt.querySelector('.option-text').textContent || '';
+            if (normalize(text) === correctAnswer) {
                 opt.classList.add('correct');
             }
         });

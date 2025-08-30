@@ -264,9 +264,9 @@ function renderThemesByCategory(container, themes = []) {
         list.className = 'folder-list';
         if (cat.themes.length === 0) list.innerHTML = '<div class="text-gray-500">Nenhum tema nesta categoria.</div>';
         cat.themes.forEach(theme => {
-            const item = document.createElement('div');
-            item.className = 'folder-item';
-            item.innerHTML = `<div class="folder-item-main"><div class="folder-item-name">${theme.name}</div><div class="folder-item-meta">ID: ${theme.id}${theme.description? ' — ' + theme.description : ''}</div></div><div class="folder-item-actions"><button class="btn-secondary" onclick="openResetModal(${theme.id})">Resetar</button><button class="btn-delete" onclick="deleteTheme(${theme.id})">Apagar</button></div>`;
+                const item = document.createElement('div');
+                item.className = 'folder-item';
+                item.innerHTML = `<div class="folder-item-main"><div class="folder-item-name">${theme.name}</div><div class="folder-item-meta">ID: ${theme.id}${theme.description? ' — ' + theme.description : ''}</div></div><div class="folder-item-actions"><button class="btn-secondary" onclick="openResetModal(${theme.id})">Resetar</button><button class="btn-secondary" onclick="assignCategoryPrompt(${theme.id})">Atribuir Categoria</button><button class="btn-delete" onclick="deleteTheme(${theme.id})">Apagar</button></div>`;
             list.appendChild(item);
         });
 
@@ -584,4 +584,39 @@ async function populateCategorySelect() {
             });
         }
     });
+}
+
+// Prompt admin to choose from available categories and assign to a theme
+async function assignCategoryPrompt(themeId) {
+    try {
+        // fetch categories (admin endpoint)
+        const resp = await fetch(`${API_URL}/admin/categories`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!resp.ok) return alert('Não foi possível buscar categorias.');
+        const cats = await resp.json();
+        // flatten to list
+        const flat = [];
+        function walk(list, prefix = '') {
+            for (const c of list) {
+                flat.push({ id: c.id, name: prefix + c.name });
+                if (c.children && c.children.length) walk(c.children, prefix + c.name + ' > ');
+            }
+        }
+        walk(cats);
+        flat.unshift({ id: '', name: 'Sem categoria' });
+        // build prompt text
+        const promptText = flat.map((c,i) => `${i}. ${c.name}`).join('\n');
+        const choice = prompt(`Escolha a categoria para o tema (digite o número):\n\n${promptText}`);
+        if (choice === null) return;
+        const idx = parseInt(choice, 10);
+        if (isNaN(idx) || idx < 0 || idx >= flat.length) return alert('Escolha inválida.');
+        const chosen = flat[idx];
+        const updateResp = await fetch(`${API_URL}/admin/themes/${themeId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ categoryId: chosen.id || null }) });
+        const result = await updateResp.json();
+        if (!updateResp.ok) throw new Error(result.message || 'Erro ao atualizar tema');
+        alert('Categoria atribuída com sucesso.');
+        await loadThemes();
+    } catch (err) {
+        console.error('Erro assignCategory:', err);
+        alert('Erro ao atribuir categoria. Veja o console para mais detalhes.');
+    }
 }
