@@ -4,9 +4,12 @@
 
 const token = localStorage.getItem('token');
 const username = localStorage.getItem('username');
-const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SUA URL AQUI
+const API_URL = (typeof window !== 'undefined' && window.location && window.location.origin)
+    ? (window.location.origin.includes('vercel.app') ? 'https://quiz-api-z4ri.onrender.com' : window.location.origin)
+    : 'http://localhost:3000';
 
 if (!token) {
+    // no token => redirect to login
     window.location.href = 'index.html';
 }
 

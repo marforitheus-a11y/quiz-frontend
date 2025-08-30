@@ -34,52 +34,50 @@
 </body>
 
   <script>
-    // Inline login handler (test credentials provided by user)
+    // Real login handler: POST to backend /login and store JWT.
     (function () {
-      const TEST_USER = 'gegeamor';
-      const TEST_PASS = 'gegeamor';
+      const API_URL = 'https://quiz-api-z4ri.onrender.com';
 
       document.addEventListener('DOMContentLoaded', () => {
         const authForm = document.getElementById('auth-form');
         const errorMessage = document.getElementById('error-message');
         if (!authForm) return;
 
-        authForm.addEventListener('submit', (e) => {
+        authForm.addEventListener('submit', async (e) => {
           e.preventDefault();
-          if (errorMessage) errorMessage.textContent = '';
+          if (errorMessage) { errorMessage.textContent = ''; errorMessage.style.color = 'orange'; errorMessage.textContent = 'Entrando...'; }
 
-          const username = document.getElementById('username').value.trim();
+          const loginIdentifier = document.getElementById('username').value.trim();
           const password = document.getElementById('password').value;
 
-          if (!username || !password) {
-            if (errorMessage) errorMessage.textContent = 'Por favor preencha usuário e senha.';
+          if (!loginIdentifier || !password) {
+            if (errorMessage) { errorMessage.textContent = 'Por favor preencha usuário e senha.'; errorMessage.style.color = 'red'; }
             return;
           }
 
-          // Accept explicit test user OR fallback to accept any non-empty credentials for testing.
-          const isTestUser = (username === TEST_USER || username === TEST_USER + '@example.com') && password === TEST_PASS;
-          const isAdminCandidate = /admin|adm|root/i.test(username);
+          try {
+            const resp = await fetch(`${API_URL}/login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ loginIdentifier, password })
+            });
+            const data = await resp.json();
+            if (!resp.ok) throw new Error(data.message || `Erro ${resp.status}`);
 
-          if (isTestUser || true) {
-            // For compatibility with different checks, set multiple storage keys many scripts may expect.
-            const role = isTestUser ? 'user' : (isAdminCandidate ? 'admin' : 'user');
-            const userObj = { username, role };
-
+            // store token and username
+            localStorage.setItem('token', data.token);
             try {
-              sessionStorage.setItem('loggedIn', 'true');
-              sessionStorage.setItem('user', JSON.stringify(userObj));
-            } catch (err) { /* ignore */ }
+              const payload = JSON.parse(atob(data.token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+              localStorage.setItem('username', payload.username || loginIdentifier);
+              if (payload.role === 'admin') window.location.href = 'admin.html';
+              else window.location.href = 'quiz.html';
+            } catch (err) {
+              // fallback redirect
+              window.location.href = 'quiz.html';
+            }
 
-            try {
-              localStorage.setItem('loggedIn', 'true');
-              localStorage.setItem('token', 'local-test-token');
-              localStorage.setItem('user', JSON.stringify(userObj));
-            } catch (err) { /* ignore */ }
-
-            // Redirect to quiz page
-            window.location.href = 'quiz.html';
-          } else {
-            if (errorMessage) errorMessage.textContent = 'Usuário ou senha inválidos.';
+          } catch (err) {
+            if (errorMessage) { errorMessage.textContent = err.message || 'Usuário ou senha inválidos.'; errorMessage.style.color = 'red'; }
           }
         });
       });
