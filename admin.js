@@ -730,56 +730,45 @@ async function populateCategorySelect() {
     if (!sel) return;
     sel.innerHTML = '<option value="">Sem categoria</option>';
     let cats = [];
-    // Try public endpoint first, then admin endpoint, then localStorage as a last resort
-    try {
-        const resp = await fetch(`${API_URL}/categories`, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (resp.ok) cats = await resp.json();
-        else {
-            // try admin endpoint as fallback
-            const resp2 = await fetch(`${API_URL}/admin/categories`, { headers: { 'Authorization': `Bearer ${token}` } });
-            if (resp2.ok) cats = await resp2.json();
-        }
-    } catch (err) {
-        // network/other error - try admin endpoint
+    // prefer the cached categories (they may include locally-added default subcats)
+    if (categoriesCache && categoriesCache.length) {
+        cats = categoriesCache;
+    } else {
+        // Try public endpoint first, then admin endpoint, then localStorage as a last resort
         try {
-            const resp2 = await fetch(`${API_URL}/admin/categories`, { headers: { 'Authorization': `Bearer ${token}` } });
-            if (resp2.ok) cats = await resp2.json();
-        } catch (e) { /* ignore */ }
-    }
+            const resp = await fetch(`${API_URL}/categories`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (resp.ok) cats = await resp.json();
+            else {
+                // try admin endpoint as fallback
+                const resp2 = await fetch(`${API_URL}/admin/categories`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (resp2.ok) cats = await resp2.json();
+            }
+        } catch (err) {
+            // network/other error - try admin endpoint
+            try {
+                const resp2 = await fetch(`${API_URL}/admin/categories`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (resp2.ok) cats = await resp2.json();
+            } catch (e) { /* ignore */ }
+        }
 
-    // fallback to localStorage
-    if ((!cats || cats.length === 0)) {
-        const raw = localStorage.getItem('local_categories');
-        if (raw) cats = JSON.parse(raw);
+        // fallback to localStorage
+        if ((!cats || cats.length === 0)) {
+            const raw = localStorage.getItem('local_categories');
+            if (raw) cats = JSON.parse(raw);
+        }
     }
 
     if (!cats || cats.length === 0) return;
     // cache for other UI pieces
     categoriesCache = cats;
-    // flatten small tree to grouped options
+    // populate only root categories in the category select (do not add children here)
     cats.forEach(root => {
         const opt = document.createElement('option');
         opt.value = root.id;
         opt.textContent = root.name;
         sel.appendChild(opt);
-        if (root.children && root.children.length) {
-            root.children.forEach(child => {
-                const sub = document.createElement('option');
-                sub.value = child.id;
-                sub.textContent = `  └ ${root.name} › ${child.name}`;
-                sel.appendChild(sub);
-                if (child.children && child.children.length) {
-                    child.children.forEach(gc => {
-                        const g = document.createElement('option');
-                        g.value = gc.id;
-                        g.textContent = `    └ ${root.name} › ${child.name} › ${gc.name}`;
-                        sel.appendChild(g);
-                    });
-                }
-            });
-        }
     });
-    // reset subcategory select
+    // reset subcategory select to reflect currently selected category (if any)
     try { populateSubcategorySelect(document.getElementById('categorySelect').value); } catch(e){}
 }
 
