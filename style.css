@@ -184,13 +184,7 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 .option:hover{box-shadow:0 8px 18px rgba(6,21,38,0.06);transform:translateY(-2px)}
 .option-letter{min-width:44px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:2px solid rgba(11,110,246,0.14);color:var(--brand-blue);font-weight:700;padding:0 10px;font-size:0.95rem;background:linear-gradient(180deg,rgba(77,163,255,0.02),rgba(11,110,246,0.01))}
 /* icon inside the badge */
-.option-letter .icon{display:none;width:16px;height:16px;margin-left:6px}
 .option-letter .letter{display:inline-block}
-
-/* utility icon classes (reusable) */
-.u-icon{width:16px;height:16px;display:inline-block;vertical-align:middle}
-.u-icon--hidden{display:none}
-.icon{width:16px;height:16px}
 .option.correct{background:#ecfdf5;border-color:rgba(5,150,105,0.12)}
 .option.incorrect{background:#fff5f5;border-color:rgba(220,38,38,0.08)}
 .progress-text{color:var(--muted);margin-top:14px}

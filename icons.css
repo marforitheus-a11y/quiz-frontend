@@ -1,0 +1,9 @@
+/* Small utilities for SVG/icon usage across the site */
+.u-icon{width:16px;height:16px;display:inline-block;vertical-align:middle}
+.u-icon--hidden{display:none}
+.icon{width:16px;height:16px;display:inline-block;vertical-align:middle}
+.option-letter .icon{display:none;width:16px;height:16px;margin-left:6px}
+.option-letter .letter{display:inline-block}
+
+/* helpers to show/hide icons if needed via utility class */
+.u-icon--show{display:inline-block}
