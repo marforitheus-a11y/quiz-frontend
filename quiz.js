@@ -88,10 +88,13 @@ async function loadThemes(mainContent) {
 
 function displaySetupScreen(mainContent, themes = []) {
     let themeHTML = themes.length > 0
-        ? `<div class="theme-grid">` + themes.map(theme => `
-            <label class="theme-option" for="theme-${theme.id}">
+        ? `<div class="theme-list">` + themes.map(theme => `
+            <label class="theme-item" for="theme-${theme.id}">
                 <input type="checkbox" id="theme-${theme.id}" name="theme" value="${theme.id}">
-                <span>${theme.name}</span>
+                <div class="theme-info">
+                  <div class="theme-name">${theme.name}</div>
+                  <div class="theme-meta">${theme.description || ''}</div>
+                </div>
             </label>
         `).join('') + `</div>`
         : '<p>Nenhum tema encontrado. Adicione um tema no Painel de Admin.</p>';
@@ -109,7 +112,13 @@ function displaySetupScreen(mainContent, themes = []) {
             </div>
         </div>
     `;
-    document.getElementById('start-btn').addEventListener('click', () => startQuiz(mainContent));
+    const startBtn = document.getElementById('start-btn');
+    if (startBtn) startBtn.addEventListener('click', () => startQuiz(mainContent));
+    // allow Enter key on question count to start
+    const questionCountInput = document.getElementById('question-count');
+    if (questionCountInput) questionCountInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') startBtn.click();
+    });
 }
 
 async function startQuiz(mainContent) {
@@ -151,15 +160,30 @@ function displayQuestion(mainContent) {
 
     mainContent.innerHTML = `
         <div id="quiz-screen" class="quiz-card">
-            <p class="question-text">${currentQuestion.question}</p>
+            <div class="question-head"><p class="question-text">${currentQuestion.question}</p></div>
             <ul class="options">${optionsHTML}</ul>
             <p class="progress-text">Questão ${currentQuestionIndex + 1} de ${questionsToAsk.length}</p>
         </div>
     `;
 
+    // selection flow: pick one, then press Respond
     document.querySelectorAll('.option').forEach(optionElement => {
-        optionElement.addEventListener('click', (e) => selectAnswer(e.currentTarget, mainContent));
+        optionElement.addEventListener('click', (e) => {
+            document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            e.currentTarget.classList.add('selected');
+        });
     });
+
+    // add respond button
+    const respondBtn = document.createElement('button');
+    respondBtn.textContent = 'Responder';
+    respondBtn.className = 'btn-respond';
+    respondBtn.addEventListener('click', () => {
+        const selected = document.querySelector('.option.selected');
+        if (!selected) { alert('Selecione uma opção antes de responder.'); return; }
+        selectAnswer(selected, mainContent);
+    });
+    document.getElementById('quiz-screen').appendChild(respondBtn);
 }
 
 function selectAnswer(selectedElement, mainContent) {
