@@ -87,17 +87,30 @@ async function loadThemes(mainContent) {
 }
 
 function displaySetupScreen(mainContent, themes = []) {
-    let themeHTML = themes.length > 0
-        ? `<div class="theme-list">` + themes.map(theme => `
-            <label class="theme-item" for="theme-${theme.id}">
-                <input type="checkbox" id="theme-${theme.id}" name="theme" value="${theme.id}">
-                <div class="theme-info">
-                  <div class="theme-name">${theme.name}</div>
-                  <div class="theme-meta">${theme.description || ''}</div>
-                </div>
-            </label>
-        `).join('') + `</div>`
-        : '<p>Nenhum tema encontrado. Adicione um tema no Painel de Admin.</p>';
+        // build category select and theme list. themes may include category info
+        const categories = [];
+        themes.forEach(t => { if (t.category_id && !categories.find(c=>c.id===t.category_id)) categories.push({ id: t.category_id, name: t.category_name }); });
+
+        const categorySelectHtml = `
+            <div class="controls-row" style="align-items:center;">
+                <label style="min-width:110px;font-weight:600;margin-right:8px">Categoria</label>
+                <select id="category-filter" style="flex:1;padding:8px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);">
+                    <option value="">Todas</option>
+                    ${categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}
+                </select>
+            </div>`;
+
+        let themeHTML = themes.length > 0
+                ? `${categorySelectHtml}<div class="theme-list">` + themes.map(theme => `
+                        <label class="theme-item" for="theme-${theme.id}" data-category-id="${theme.category_id || ''}">
+                                <input type="checkbox" id="theme-${theme.id}" name="theme" value="${theme.id}">
+                                <div class="theme-info">
+                                    <div class="theme-name">${theme.name}${theme.category_name? ' — ' + theme.category_name : ''}</div>
+                                    <div class="theme-meta">${theme.description || ''}</div>
+                                </div>
+                        </label>
+                `).join('') + `</div>`
+                : '<p>Nenhum tema encontrado. Adicione um tema no Painel de Admin.</p>';
 
     mainContent.innerHTML = `
         <div id="setup-screen">
@@ -119,6 +132,18 @@ function displaySetupScreen(mainContent, themes = []) {
     if (questionCountInput) questionCountInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') startBtn.click();
     });
+    // category filter behavior (if present)
+    const categoryFilter = document.getElementById('category-filter');
+    if (categoryFilter) {
+        categoryFilter.addEventListener('change', (e) => {
+            const selected = e.target.value;
+            document.querySelectorAll('.theme-item').forEach(item => {
+                const catId = item.getAttribute('data-category-id') || '';
+                if (!selected) item.style.display = '';
+                else item.style.display = (catId === selected) ? '' : 'none';
+            });
+        });
+    }
 }
 
 async function startQuiz(mainContent) {

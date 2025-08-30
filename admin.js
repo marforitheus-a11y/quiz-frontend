@@ -97,6 +97,9 @@ async function handleThemeFormSubmit(e) {
     formData.append('themeName', e.target.themeName.value);
     formData.append('questionCount', e.target.questionCount.value);
     formData.append('pdfFile', e.target.pdfFile.files[0]);
+    // include selected category id if present
+    const categorySelect = document.getElementById('categorySelect');
+    if (categorySelect && categorySelect.value) formData.append('categoryId', categorySelect.value);
 
     try {
         statusEl.textContent = 'Analisando e gerando questões com a IA (pode levar até 30s)...';
@@ -446,4 +449,39 @@ async function deleteCategory(catId) {
 
 function removeFromCategories(list, targetId) {
     return list.filter(item => item.id !== targetId).map(item => ({ ...item, children: item.children ? removeFromCategories(item.children, targetId) : [] }));
+}
+
+// populate the category select in the admin theme form
+async function populateCategorySelect() {
+    const sel = document.getElementById('categorySelect');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Sem categoria</option>';
+    try {
+        const resp = await fetch(`${API_URL}/categories`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!resp.ok) return;
+        const cats = await resp.json();
+        // flatten small tree to grouped optgroups
+        cats.forEach(root => {
+            const opt = document.createElement('option');
+            opt.value = root.id;
+            opt.textContent = root.name;
+            sel.appendChild(opt);
+            if (root.children && root.children.length) {
+                root.children.forEach(child => {
+                    const sub = document.createElement('option');
+                    sub.value = child.id;
+                    sub.textContent = `  └ ${root.name} › ${child.name}`;
+                    sel.appendChild(sub);
+                    if (child.children && child.children.length) {
+                        child.children.forEach(gc => {
+                            const g = document.createElement('option');
+                            g.value = gc.id;
+                            g.textContent = `    └ ${root.name} › ${child.name} › ${gc.name}`;
+                            sel.appendChild(g);
+                        });
+                    }
+                });
+            }
+        });
+    } catch (err) { /* ignore */ }
 }

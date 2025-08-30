@@ -98,6 +98,12 @@
             <input type="number" id="questionCount" name="questionCount" value="5" min="1" required class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
           </div>
           <div class="flex flex-col">
+            <label for="categorySelect" class="mb-2 font-medium text-gray-700">Categoria</label>
+            <select id="categorySelect" name="categorySelect" class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Sem categoria</option>
+            </select>
+          </div>
+          <div class="flex flex-col">
             <label for="pdfFile" class="mb-2 font-medium text-gray-700">Arquivo PDF</label>
             <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required class="rounded-xl border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
           </div>
