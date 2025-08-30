@@ -331,10 +331,11 @@ function renderThemesByCategory(container, themes = []) {
         const grid = document.createElement('div');
         grid.className = 'folder-grid';
 
-        // create folder icon (represents the category)
-        const folderEl = document.createElement('div');
-        folderEl.className = 'win-folder';
-        folderEl.innerHTML = `<div class="folder-icon" aria-hidden="true">📁</div><div class="folder-label">${cat.name}</div>`;
+    // create folder icon (represents the category)
+    const folderEl = document.createElement('div');
+    folderEl.className = 'win-folder';
+    // show only the folder icon here; the category name is already shown in the header
+    folderEl.innerHTML = `<div class="folder-icon" aria-hidden="true">📁</div>`;
     folderEl.tabIndex = 0;
     folderEl.setAttribute('role','button');
     folderEl.setAttribute('aria-label', `Categoria ${cat.name}`);
