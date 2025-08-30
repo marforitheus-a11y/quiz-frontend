@@ -186,6 +186,11 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 /* icon inside the badge */
 .option-letter .icon{display:none;width:16px;height:16px;margin-left:6px}
 .option-letter .letter{display:inline-block}
+
+/* utility icon classes (reusable) */
+.u-icon{width:16px;height:16px;display:inline-block;vertical-align:middle}
+.u-icon--hidden{display:none}
+.icon{width:16px;height:16px}
 .option.correct{background:#ecfdf5;border-color:rgba(5,150,105,0.12)}
 .option.incorrect{background:#fff5f5;border-color:rgba(220,38,38,0.08)}
 .progress-text{color:var(--muted);margin-top:14px}
