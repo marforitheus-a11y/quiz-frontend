@@ -112,8 +112,10 @@ function displaySetupScreen(mainContent, themes = []) {
     // try to infer subcategory_id from themes and group them
     groups.forEach(g => {
         g.themes.forEach(t => {
-            const subId = t.subcategory_id || '__uncat__';
-            if (!categoryMap[g.id].subcats[subId]) categoryMap[g.id].subcats[subId] = { id: subId, name: t.subcategory_name || (subId === '__uncat__' ? 'Sem subcategoria' : t.subcategory_name || 'Subcategoria'), themes: [] };
+            // use the _subcategory_* fields we attached earlier (was mistakenly using non-underscored props)
+            const subId = t._subcategory_id || '__uncat__';
+            const subName = t._subcategory_name || (subId === '__uncat__' ? 'Sem subcategoria' : 'Subcategoria');
+            if (!categoryMap[g.id].subcats[subId]) categoryMap[g.id].subcats[subId] = { id: subId, name: subName, themes: [] };
             categoryMap[g.id].subcats[subId].themes.push(t);
         });
     });
