@@ -172,8 +172,14 @@ async function startQuiz(mainContent) {
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ themeIds: selectedThemeIds, count: numQuestions })
         });
+        if (!response.ok) {
+            const txt = await response.text();
+            console.error('startQuiz fetch questions failed', response.status, txt);
+            alert('Não foi possível buscar questões do servidor.');
+            return;
+        }
         questionsToAsk = await response.json();
-        if (!response.ok || questionsToAsk.length === 0) {
+        if (!questionsToAsk || questionsToAsk.length === 0) {
             alert('Não foi possível buscar questões para os temas selecionados.');
             return;
         }
@@ -285,7 +291,12 @@ async function showResults(mainContent) {
                 answers: userAnswers
             })
         });
-        await response.json();
+        if (!response.ok) {
+            const t = await response.text();
+            console.error('showResults finish failed', response.status, t);
+        } else {
+            await response.json();
+        }
         
         sessionStorage.setItem('lastQuizResults', JSON.stringify({
             score: score,
@@ -306,6 +317,11 @@ async function checkForMessages(modal) {
     try {
         const response = await fetch(`${API_URL}/message`, { headers: { 'Authorization': `Bearer ${token}` } });
         if (response.status === 204) return;
+        if (!response.ok) {
+            const t = await response.text();
+            console.error('checkForMessages failed', response.status, t);
+            return;
+        }
         const messageData = await response.json();
         if (messageData.timestamp !== lastMessageTimestamp) {
             modalContent.textContent = messageData.content;

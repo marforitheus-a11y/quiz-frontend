@@ -56,6 +56,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    const testApiBtn = document.getElementById('test-api-btn');
+    if (testApiBtn) testApiBtn.addEventListener('click', testApi);
+
     if (reloadUsersBtn) {
         reloadUsersBtn.addEventListener('click', loadUsers);
     }
@@ -78,7 +81,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (resetForm) {
         resetForm.addEventListener('submit', handleResetFormSubmit);
     }
+
+    // wire server error debug panel
+    const serverPanel = document.getElementById('server-error-panel');
+    const serverBody = document.getElementById('server-error-body');
+    const closeBtn = document.getElementById('close-server-error');
+    if (closeBtn && serverPanel) closeBtn.addEventListener('click', () => { serverPanel.style.display = 'none'; serverBody.textContent = ''; });
 });
+
+// show server error text/html in the debug panel (visible only when content provided)
+function showServerError(text) {
+    try {
+        const panel = document.getElementById('server-error-panel');
+        const body = document.getElementById('server-error-body');
+        if (!panel || !body) return;
+        body.textContent = text;
+        panel.style.display = 'block';
+    } catch (e) { console.error('showServerError failed', e); }
+}
 
 
 // --- FUNÇÕES DE LÓGICA DOS FORMULÁRIOS ---
@@ -184,9 +204,15 @@ async function handleUserFormSubmit(e) {
             },
             body: JSON.stringify(userData),
         });
+        if (!response.ok) {
+            const txt = await response.text();
+            console.error('handleUserFormSubmit failed', response.status, txt);
+            let msg = `Erro ao criar usuário (status ${response.status}).`;
+            try { const parsed = JSON.parse(txt); if (parsed && parsed.message) msg = parsed.message; } catch(e){}
+            throw new Error(msg);
+        }
         const result = await response.json();
-        if (!response.ok) throw new Error(result.message);
-        
+
         statusEl.textContent = result.message;
         statusEl.style.color = 'var(--success-color)';
         userForm.reset();
@@ -213,8 +239,14 @@ async function handleResetFormSubmit(e) {
             headers: { 'Authorization': `Bearer ${token}` },
             body: formData,
         });
+        if (!response.ok) {
+            const txt = await response.text();
+            console.error('handleResetFormSubmit failed', response.status, txt);
+            let msg = `Erro ao resetar tema (status ${response.status}).`;
+            try { const parsed = JSON.parse(txt); if (parsed && parsed.message) msg = parsed.message; } catch(e){}
+            throw new Error(msg);
+        }
         const result = await response.json();
-        if (!response.ok) throw new Error(result.message);
 
         statusEl.textContent = result.message;
         statusEl.style.color = 'var(--success-color)';
@@ -234,6 +266,13 @@ async function loadThemes() {
     if (!container) return;
     try {
         const response = await fetch(`${API_URL}/themes`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!response.ok) {
+            const txt = await response.text();
+            console.error('loadThemes fetch error:', response.status, txt);
+            showServerError(txt);
+            container.innerHTML = `<div class="text-red-600">Erro ao carregar temas (status ${response.status}). Veja painel de erro.</div>`;
+            return;
+        }
         const themes = await response.json();
         renderThemesByCategory(container, themes);
     } catch (error) { console.error('Erro ao carregar temas:', error); container.innerHTML = '<div class="text-red-600">Erro ao carregar temas.</div>'; }
@@ -286,6 +325,11 @@ async function loadUsers() {
     if (!usersTableBody) return;
     try {
         const response = await fetch(`${API_URL}/admin/users`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!response.ok) {
+            const txt = await response.text();
+            console.error('loadUsers failed', response.status, txt);
+            return;
+        }
         const users = await response.json();
         usersTableBody.innerHTML = '';
         users.forEach(user => {
@@ -320,8 +364,14 @@ async function deleteTheme(themeId) {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
+        if (!response.ok) {
+            const txt = await response.text();
+            console.error('deleteTheme failed', response.status, txt);
+            let msg = `Erro ao apagar tema (status ${response.status}).`;
+            try { const parsed = JSON.parse(txt); if (parsed && parsed.message) msg = parsed.message; } catch(e){}
+            throw new Error(msg);
+        }
         const result = await response.json();
-        if (!response.ok) throw new Error(result.message);
         alert(result.message);
         loadThemes();
     } catch (error) { alert(`Erro: ${error.message}`); }
@@ -591,7 +641,11 @@ async function assignCategoryPrompt(themeId) {
     try {
         // fetch categories (admin endpoint)
         const resp = await fetch(`${API_URL}/admin/categories`, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (!resp.ok) return alert('Não foi possível buscar categorias.');
+        if (!resp.ok) {
+            const text = await resp.text();
+            console.error('assignCategoryPrompt: failed to fetch categories', resp.status, text);
+            return alert('Não foi possível buscar categorias no servidor.');
+        }
         const cats = await resp.json();
         // flatten to list
         const flat = [];
@@ -611,12 +665,37 @@ async function assignCategoryPrompt(themeId) {
         if (isNaN(idx) || idx < 0 || idx >= flat.length) return alert('Escolha inválida.');
         const chosen = flat[idx];
         const updateResp = await fetch(`${API_URL}/admin/themes/${themeId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ categoryId: chosen.id || null }) });
+        if (!updateResp.ok) {
+            const text = await updateResp.text();
+            console.error('assignCategoryPrompt: update failed', updateResp.status, text);
+            showServerError(text);
+            let msg = `Erro ao atualizar tema (status ${updateResp.status}).`;
+            try { const parsed = JSON.parse(text); if (parsed && parsed.message) msg = parsed.message; } catch(e){}
+            throw new Error(msg);
+        }
         const result = await updateResp.json();
-        if (!updateResp.ok) throw new Error(result.message || 'Erro ao atualizar tema');
         alert('Categoria atribuída com sucesso.');
         await loadThemes();
     } catch (err) {
         console.error('Erro assignCategory:', err);
         alert('Erro ao atribuir categoria. Veja o console para mais detalhes.');
+    }
+}
+
+async function testApi() {
+    try {
+        const resp = await fetch(`${API_URL}/health`);
+        if (!resp.ok) {
+            const t = await resp.text();
+            showServerError(`Status: ${resp.status}\n\n${t}`);
+            alert('Health check falhou. Veja painel de erro.');
+            return;
+        }
+        const data = await resp.json();
+        showServerError(`Health OK:\n${JSON.stringify(data, null, 2)}`);
+        alert('API respondeu com sucesso. Veja painel de erro para detalhes.');
+    } catch (err) {
+        showServerError(String(err));
+        alert('Erro ao contatar API. Veja painel de erro.');
     }
 }

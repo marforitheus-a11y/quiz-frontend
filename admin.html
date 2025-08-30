@@ -46,6 +46,9 @@
         <a href="broadcast.html" class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold shadow-md hover:bg-blue-700 transition focus:outline-none focus:ring-4 focus:ring-blue-300" role="button" tabindex="0">
           Mensagem Global
         </a>
+        <button id="test-api-btn" type="button" aria-label="Testar API" class="inline-flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-800 rounded-xl font-medium shadow-sm hover:bg-gray-200 transition focus:outline-none focus:ring-4 focus:ring-gray-300">
+          Testar API
+        </button>
         <button id="logout-btn" type="button" aria-label="Sair do painel admin" class="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold shadow-md hover:bg-red-700 transition focus:outline-none focus:ring-4 focus:ring-red-300">
           Sair <i class="fa-solid fa-right-from-bracket text-lg"></i>
         </button>
@@ -230,6 +233,14 @@
     </div>
   </div>
 
+    <!-- Debug panel for server error bodies (visible when enabled) -->
+    <div id="server-error-panel" style="position:fixed;right:12px;bottom:12px;max-width:420px;max-height:40vh;overflow:auto;z-index:60;display:none;border:1px solid rgba(220,38,38,0.9);background:#fff;padding:10px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.12);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <strong style="color:#dc2626">Server Error</strong>
+        <button id="close-server-error" aria-label="Fechar" style="background:transparent;border:none;color:#666;cursor:pointer;font-size:14px;padding:2px 6px">✕</button>
+      </div>
+      <pre id="server-error-body" style="white-space:pre-wrap;font-size:12px;color:#111;margin:0;"></pre>
+    </div>
   <script src="admin.js"></script>
 </body>
 </html>
