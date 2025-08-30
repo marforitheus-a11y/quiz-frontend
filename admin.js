@@ -202,26 +202,55 @@ async function handleResetFormSubmit(e) {
 
 // --- FUNÇÕES DE CARREGAMENTO DE DADOS ---
 async function loadThemes() {
-    const themesTableBody = document.getElementById('themes-table-body');
-    if (!themesTableBody) return;
+    const container = document.getElementById('themes-by-category');
+    if (!container) return;
     try {
         const response = await fetch(`${API_URL}/themes`, { headers: { 'Authorization': `Bearer ${token}` } });
         const themes = await response.json();
-        themesTableBody.innerHTML = '';
-        themes.forEach(theme => {
-            const row = `
-                <tr>
-                    <td>${theme.id}</td>
-                    <td>${theme.name}</td>
-                    <td class="actions">
-                        <button class="btn-secondary" onclick="openResetModal(${theme.id})">Resetar</button>
-                        <button class="btn-delete" onclick="deleteTheme(${theme.id})">Apagar</button>
-                    </td>
-                </tr>
-            `;
-            themesTableBody.innerHTML += row;
+        renderThemesByCategory(container, themes);
+    } catch (error) { console.error('Erro ao carregar temas:', error); container.innerHTML = '<div class="text-red-600">Erro ao carregar temas.</div>'; }
+}
+
+function renderThemesByCategory(container, themes = []) {
+    container.innerHTML = '';
+    // build a map: categoryId -> { id, name, themes: [] }
+    const map = new Map();
+    const uncategorizedKey = '__uncategorized__';
+    themes.forEach(t => {
+        const cid = t.category_id || uncategorizedKey;
+        if (!map.has(cid)) map.set(cid, { id: cid, name: (t.category_name || 'Sem categoria'), themes: [] });
+        map.get(cid).themes.push(t);
+    });
+
+    // Create folder UI for each category
+    map.forEach(cat => {
+        const folder = document.createElement('div');
+        folder.className = 'category-folder';
+
+        const header = document.createElement('div');
+        header.className = 'folder-header';
+        header.innerHTML = `<div class="folder-title">${cat.name} <span class="folder-count">(${cat.themes.length})</span></div><button class="btn-small folder-toggle">Abrir</button>`;
+        folder.appendChild(header);
+
+        const list = document.createElement('div');
+        list.className = 'folder-list';
+        if (cat.themes.length === 0) list.innerHTML = '<div class="text-gray-500">Nenhum tema nesta categoria.</div>';
+        cat.themes.forEach(theme => {
+            const item = document.createElement('div');
+            item.className = 'folder-item';
+            item.innerHTML = `<div class="folder-item-main"><div class="folder-item-name">${theme.name}</div><div class="folder-item-meta">ID: ${theme.id}${theme.description? ' — ' + theme.description : ''}</div></div><div class="folder-item-actions"><button class="btn-secondary" onclick="openResetModal(${theme.id})">Resetar</button><button class="btn-delete" onclick="deleteTheme(${theme.id})">Apagar</button></div>`;
+            list.appendChild(item);
         });
-    } catch (error) { console.error('Erro ao carregar temas:', error); }
+
+        header.querySelector('.folder-toggle').addEventListener('click', () => {
+            const isOpen = list.style.display === 'block';
+            list.style.display = isOpen ? 'none' : 'block';
+            header.querySelector('.folder-toggle').textContent = isOpen ? 'Abrir' : 'Fechar';
+        });
+
+        folder.appendChild(list);
+        container.appendChild(folder);
+    });
 }
 
 async function loadUsers() {

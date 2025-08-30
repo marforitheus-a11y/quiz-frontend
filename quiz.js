@@ -87,30 +87,43 @@ async function loadThemes(mainContent) {
 }
 
 function displaySetupScreen(mainContent, themes = []) {
-        // build category select and theme list. themes may include category info
-        const categories = [];
-        themes.forEach(t => { if (t.category_id && !categories.find(c=>c.id===t.category_id)) categories.push({ id: t.category_id, name: t.category_name }); });
+        // group themes by category
+        const grouped = {};
+        const uncategorized = { id: '__uncategorized__', name: 'Sem categoria', themes: [] };
+        themes.forEach(t => {
+            const cid = t.category_id || uncategorized.id;
+            if (!cid || cid === '__uncategorized__') {
+                uncategorized.themes.push(t);
+            } else {
+                if (!grouped[cid]) grouped[cid] = { id: cid, name: t.category_name || 'Categoria', themes: [] };
+                grouped[cid].themes.push(t);
+            }
+        });
 
-        const categorySelectHtml = `
-            <div class="controls-row" style="align-items:center;">
-                <label style="min-width:110px;font-weight:600;margin-right:8px">Categoria</label>
-                <select id="category-filter" style="flex:1;padding:8px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);">
-                    <option value="">Todas</option>
-                    ${categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}
-                </select>
-            </div>`;
+        const groups = Object.values(grouped);
+        if (uncategorized.themes.length) groups.push(uncategorized);
 
-        let themeHTML = themes.length > 0
-                ? `${categorySelectHtml}<div class="theme-list">` + themes.map(theme => `
-                        <label class="theme-item" for="theme-${theme.id}" data-category-id="${theme.category_id || ''}">
-                                <input type="checkbox" id="theme-${theme.id}" name="theme" value="${theme.id}">
-                                <div class="theme-info">
-                                    <div class="theme-name">${theme.name}${theme.category_name? ' — ' + theme.category_name : ''}</div>
-                                    <div class="theme-meta">${theme.description || ''}</div>
-                                </div>
-                        </label>
-                `).join('') + `</div>`
-                : '<p>Nenhum tema encontrado. Adicione um tema no Painel de Admin.</p>';
+        // build category checkboxes (one per group)
+        const categoryControls = groups.map(g => `<label class="category-filter"><input type="checkbox" class="cat-checkbox" data-cat-id="${g.id}" checked> ${g.name} <span class="muted">(${g.themes.length})</span></label>`).join(' ');
+
+        let themeHTML = '';
+        if (groups.length === 0) {
+            themeHTML = '<p>Nenhum tema encontrado. Adicione um tema no Painel de Admin.</p>';
+        } else {
+            themeHTML = `<div class="controls-row">${categoryControls}</div>`;
+            // render each group as a folder with its themes
+            themeHTML += '<div class="theme-list">';
+            groups.forEach(g => {
+                themeHTML += `<div class="category-folder-quiz">`;
+                themeHTML += `<div class="folder-header"><strong>${g.name}</strong> <span class="folder-count muted">(${g.themes.length})</span></div>`;
+                themeHTML += `<div class="folder-list-quiz" data-cat-id="${g.id}">`;
+                g.themes.forEach(theme => {
+                    themeHTML += `<label class="theme-item" data-category-id="${g.id}"><input type="checkbox" name="theme" value="${theme.id}"><div class="theme-info"><div class="theme-name">${theme.name}</div><div class="theme-meta">${theme.description || ''}</div></div></label>`;
+                });
+                themeHTML += `</div></div>`;
+            });
+            themeHTML += '</div>';
+        }
 
     mainContent.innerHTML = `
         <div id="setup-screen">
@@ -133,17 +146,18 @@ function displaySetupScreen(mainContent, themes = []) {
         if (e.key === 'Enter') startBtn.click();
     });
     // category filter behavior (if present)
-    const categoryFilter = document.getElementById('category-filter');
-    if (categoryFilter) {
-        categoryFilter.addEventListener('change', (e) => {
-            const selected = e.target.value;
-            document.querySelectorAll('.theme-item').forEach(item => {
-                const catId = item.getAttribute('data-category-id') || '';
-                if (!selected) item.style.display = '';
-                else item.style.display = (catId === selected) ? '' : 'none';
-            });
+    // category checkboxes filtering for quiz
+    document.querySelectorAll('.cat-checkbox').forEach(cb => cb.addEventListener('change', () => {
+        const activeCats = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(x => x.getAttribute('data-cat-id'));
+        // show/hide folder groups
+        document.querySelectorAll('.folder-list-quiz').forEach(list => {
+            const cid = list.getAttribute('data-cat-id');
+            if (activeCats.includes(cid)) list.style.display = '';
+            else list.style.display = 'none';
         });
-    }
+        // if none selected, show all
+        if (activeCats.length === 0) document.querySelectorAll('.folder-list-quiz').forEach(l => l.style.display = '');
+    }));
 }
 
 async function startQuiz(mainContent) {

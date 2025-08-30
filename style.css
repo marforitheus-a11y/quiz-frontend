@@ -167,6 +167,23 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 .theme-name{font-weight:600;color:var(--text);white-space:normal;overflow-wrap:break-word}
 .theme-meta{font-size:0.9rem;color:var(--muted);margin-top:4px;white-space:normal}
 
+/* Folder UI used in admin and quiz */
+.category-folder, .category-folder-quiz{background:var(--white);border-radius:12px;padding:10px;border:1px solid rgba(0,0,0,0.04);box-shadow:0 10px 28px rgba(0,0,0,0.04)}
+.folder-header{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:1px dashed rgba(0,0,0,0.04);margin-bottom:8px}
+.folder-title{font-weight:700;color:var(--text)}
+.folder-count{color:var(--muted);font-weight:600;margin-left:8px}
+.folder-list{display:none;padding:8px;gap:8px}
+.folder-list .folder-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(90deg,rgba(129,212,250,0.03),transparent);margin-bottom:6px}
+.folder-item-main{display:flex;flex-direction:column}
+.folder-item-name{font-weight:600}
+.folder-item-meta{font-size:0.9rem;color:var(--muted)}
+.folder-item-actions{display:flex;gap:8px}
+
+/* Quiz folder styles */
+.category-folder-quiz .folder-list-quiz{padding:6px 4px}
+.category-filter{margin-right:12px;font-weight:600;color:var(--text)}
+.category-filter .muted{color:var(--muted);font-weight:500}
+
 /* scrollbar refinement for theme list */
 .theme-list::-webkit-scrollbar{width:10px}
 .theme-list::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--brand-blue-300),var(--brand-blue));border-radius:6px}
