@@ -126,23 +126,24 @@ function displaySetupScreen(mainContent, themes = []) {
         if (groups.length === 0) {
             themeHTML = '<p>Nenhum tema encontrado. Adicione um tema no Painel de Admin.</p>';
         } else {
+            // controls row with category filters
             themeHTML = `<div class="controls-row">${categoryControls}</div>`;
-            // render each group as a folder with its themes
-            themeHTML += '<div class="theme-list">';
+            // build flattened rows for table: category, subcategory, theme
+            const rows = [];
             Object.values(categoryMap).forEach(cat => {
-                themeHTML += `<div class="category-folder-quiz">`;
-                themeHTML += `<div class="folder-header"><strong>${cat.name}</strong> <span class="folder-count muted">(${cat.themes.length})</span></div>`;
-                themeHTML += `<div class="folder-list-quiz" data-cat-id="${cat.id}">`;
-                // render subcategories first
                 Object.values(cat.subcats).forEach(sub => {
-                    themeHTML += `<div style="padding:8px 10px;border-bottom:1px dashed rgba(0,0,0,0.04);font-weight:700">${sub.name} <span class="muted">(${sub.themes.length})</span></div>`;
                     sub.themes.forEach(theme => {
-                        themeHTML += `<label class="theme-item" data-category-id="${cat.id}" data-subcategory-id="${sub.id}"><input type="checkbox" name="theme" value="${theme.id}"><div class="theme-info"><div class="theme-name">${theme.name}</div><div class="theme-meta">${theme.description || ''}</div></div></label>`;
+                        rows.push({ catId: cat.id, category: cat.name, subId: sub.id, subName: sub.name, themeId: theme.id, themeName: theme.name, desc: theme.description || '' });
                     });
                 });
-                themeHTML += `</div></div>`;
             });
-            themeHTML += '</div>';
+
+            // render as scrollable table
+            themeHTML += `<div class="scroll-table" style="margin-top:12px"><table><thead><tr><th style="width:60px">Selecionar</th><th>Categoria</th><th>Subcategoria</th><th>Tema</th><th>Descrição</th></tr></thead><tbody>`;
+            rows.forEach(r => {
+                themeHTML += `<tr data-cat-id="${r.catId}"><td style="padding:8px 12px"><input type="checkbox" name="theme" value="${r.themeId}"></td><td class="cat-name">${r.category}</td><td class="cat-sub">${r.subName || '<span class="text-gray-500">—</span>'}</td><td>${r.themeName}</td><td class="no-break">${r.desc}</td></tr>`;
+            });
+            themeHTML += `</tbody></table></div>`;
         }
 
     mainContent.innerHTML = `
