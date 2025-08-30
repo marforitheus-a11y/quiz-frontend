@@ -179,6 +179,37 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 .folder-item-meta{font-size:0.9rem;color:var(--muted)}
 .folder-item-actions{display:flex;gap:8px}
 
+/* Windows-like folder and file visuals */
+.win-folder{display:inline-flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;padding:12px;border-radius:6px;background:linear-gradient(180deg,#fff,#f7fbff);border:1px solid rgba(0,0,0,0.04);width:140px;margin:8px;cursor:pointer}
+.win-folder .folder-icon{width:72px;height:54px;border-radius:6px;background:linear-gradient(180deg,#ffeaa7,#ffd166);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -6px 12px rgba(0,0,0,0.03)}
+.win-folder .folder-label{font-weight:600;color:var(--text);font-size:0.95rem;text-align:center}
+.win-file{display:flex;align-items:center;gap:10px;padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.04);background:#fff;margin:6px 0;cursor:pointer}
+.win-file .file-icon{width:28px;height:36px;border-radius:4px;background:linear-gradient(180deg,#e6f7ff,#d0ebff);display:inline-flex;align-items:center;justify-content:center}
+.win-file .file-name{font-size:0.95rem;color:var(--text)}
+
+/* Layout for folders grid inside category card */
+.folder-grid{display:flex;flex-wrap:wrap;gap:12px;padding:8px}
+
+/* Context menu items */
+#custom-context-menu .ctx-item{padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(0,0,0,0.04);}
+#custom-context-menu .ctx-item:last-child{border-bottom:none}
+#custom-context-menu .ctx-item:hover{background:rgba(11,110,246,0.06)}
+
+@media(max-width:700px){
+  .win-folder{width:44%;margin:6px}
+}
+
+/* Animations for folder open/close */
+.folder-list[aria-hidden="true"]{display:none}
+.folder-list.animate-open{display:flex;animation:folderOpen .22s ease forwards}
+.folder-list.animate-close{animation:folderClose .18s ease forwards}
+@keyframes folderOpen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes folderClose{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-6px)}}
+
+/* Modal tweaks */
+#theme-modal{display:none}
+#theme-modal[data-open="true"]{display:flex}
+
 /* Quiz folder styles */
 .category-folder-quiz .folder-list-quiz{padding:6px 4px}
 .category-filter{margin-right:12px;font-weight:600;color:var(--text)}

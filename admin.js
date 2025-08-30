@@ -289,35 +289,161 @@ function renderThemesByCategory(container, themes = []) {
         map.get(cid).themes.push(t);
     });
 
-    // Create folder UI for each category
+    // Render each category as a Windows-like folder card containing files
     map.forEach(cat => {
-        const folder = document.createElement('div');
-        folder.className = 'category-folder';
-
+        const card = document.createElement('div');
+        card.className = 'category-folder';
         const header = document.createElement('div');
         header.className = 'folder-header';
-        header.innerHTML = `<div class="folder-title">${cat.name} <span class="folder-count">(${cat.themes.length})</span></div><button class="btn-small folder-toggle">Abrir</button>`;
-        folder.appendChild(header);
+        header.innerHTML = `<div class="folder-title">${cat.name} <span class="folder-count">(${cat.themes.length})</span></div>`;
+        card.appendChild(header);
 
+        const grid = document.createElement('div');
+        grid.className = 'folder-grid';
+
+        // create folder icon (represents the category)
+        const folderEl = document.createElement('div');
+        folderEl.className = 'win-folder';
+        folderEl.innerHTML = `<div class="folder-icon" aria-hidden="true">📁</div><div class="folder-label">${cat.name}</div>`;
+    folderEl.tabIndex = 0;
+    folderEl.setAttribute('role','button');
+    folderEl.setAttribute('aria-label', `Categoria ${cat.name}`);
+        // clicking the folder toggles open/close of its file list
+        folderEl.addEventListener('click', (e) => {
+            // on mobile/touch, clicking opens context for the folder
+            if (isTouchDevice()) {
+                showContextMenuFor('category', cat, e);
+                return;
+            }
+            const list = card.querySelector('.folder-list');
+            const isOpen = list.style.display === 'flex' || list.style.display === 'block';
+            list.style.display = isOpen ? 'none' : 'flex';
+        });
+        // right-click shows context menu on desktop
+        folderEl.addEventListener('contextmenu', (e) => { e.preventDefault(); showContextMenuFor('category', cat, e); });
+    // keyboard open (Enter) and context (Shift+F10 handled globally)
+    folderEl.addEventListener('keydown', (ke) => { if (ke.key === 'Enter') { const list = card.querySelector('.folder-list'); list.style.display = (list.style.display === 'flex' || list.style.display === 'block') ? 'none' : 'flex'; } });
+        grid.appendChild(folderEl);
+
+        // files for this category
         const list = document.createElement('div');
         list.className = 'folder-list';
+        list.style.display = 'none';
+        list.style.flexDirection = 'column';
+        list.style.width = '100%';
         if (cat.themes.length === 0) list.innerHTML = '<div class="text-gray-500">Nenhum tema nesta categoria.</div>';
         cat.themes.forEach(theme => {
-                const item = document.createElement('div');
-                item.className = 'folder-item';
-                item.innerHTML = `<div class="folder-item-main"><div class="folder-item-name">${theme.name}</div><div class="folder-item-meta">ID: ${theme.id}${theme.description? ' — ' + theme.description : ''}</div></div><div class="folder-item-actions"><button class="btn-secondary" onclick="openResetModal(${theme.id})">Resetar</button><button class="btn-secondary" onclick="assignCategoryPrompt(${theme.id})">Atribuir Categoria</button><button class="btn-delete" onclick="deleteTheme(${theme.id})">Apagar</button></div>`;
-            list.appendChild(item);
+            const file = document.createElement('div');
+            file.className = 'win-file';
+            file.innerHTML = `<div class="file-icon">📄</div><div class="file-name">${theme.name}<div style="font-size:12px;color:var(--muted)">ID: ${theme.id}</div></div>`;
+            file.tabIndex = 0;
+            file.setAttribute('role','button');
+            file.setAttribute('aria-label', `Tema ${theme.name}`);
+            // left click on mobile shows context, on desktop single click selects
+            file.addEventListener('click', (e) => {
+                if (isTouchDevice()) { showContextMenuFor('theme', theme, e); return; }
+                // desktop: single click selects file (visual only)
+                document.querySelectorAll('.win-file').forEach(f => f.style.background = '');
+                file.style.background = 'rgba(11,110,246,0.04)';
+            });
+            // double-click opens preview modal on desktop
+            file.addEventListener('dblclick', (e) => { if (!isTouchDevice() && window.openThemeModal) window.openThemeModal(theme); });
+            // keyboard activation: Enter opens preview, Space opens context menu
+            file.addEventListener('keydown', (ke) => { if (ke.key === 'Enter') { if (window.openThemeModal) window.openThemeModal(theme); } if (ke.key === ' ') { ke.preventDefault(); showContextMenuFor('theme', theme, ke); } });
+            file.addEventListener('contextmenu', (e) => { e.preventDefault(); showContextMenuFor('theme', theme, e); });
+            list.appendChild(file);
         });
 
-        header.querySelector('.folder-toggle').addEventListener('click', () => {
-            const isOpen = list.style.display === 'block';
-            list.style.display = isOpen ? 'none' : 'block';
-            header.querySelector('.folder-toggle').textContent = isOpen ? 'Abrir' : 'Fechar';
-        });
-
-        folder.appendChild(list);
-        container.appendChild(folder);
+        card.appendChild(grid);
+        card.appendChild(list);
+        container.appendChild(card);
     });
+}
+
+// Helper to detect touch devices
+function isTouchDevice() { return ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0; }
+
+// Show context menu for either category or theme
+function showContextMenuFor(type, obj, event) {
+    const menu = document.getElementById('custom-context-menu');
+    if (!menu) return;
+    menu.innerHTML = '';
+    menu.setAttribute('aria-hidden', 'false');
+    menu.tabIndex = -1;
+    // build items depending on type
+    const items = [];
+    if (type === 'category') {
+        items.push({ label: 'Abrir', action: () => { /* toggle handled by click */ } });
+        items.push({ label: 'Atribuir Categoria', action: async () => { alert('Selecione um tema dentro desta pasta para atribuir categoria.'); } });
+    }
+    if (type === 'theme') {
+        items.push({ label: 'Abrir', action: () => { alert('Abrir tema: ' + obj.name); } });
+        items.push({ label: 'Atribuir Categoria', action: () => assignCategoryPrompt(obj.id) });
+        items.push({ label: 'Resetar', action: () => openResetModal(obj.id) });
+        items.push({ label: 'Apagar', action: () => deleteTheme(obj.id) });
+    }
+
+    items.forEach(it => {
+        const el = document.createElement('div');
+        el.className = 'ctx-item';
+    el.textContent = it.label;
+    el.setAttribute('role', 'menuitem');
+    el.tabIndex = 0; // make focusable
+    el.addEventListener('click', () => { hideContextMenu(); setTimeout(() => it.action(), 80); });
+    // keyboard activation
+    el.addEventListener('keydown', (ke) => { if (ke.key === 'Enter' || ke.key === ' ') { ke.preventDefault(); hideContextMenu(); setTimeout(() => it.action(), 80); } });
+        menu.appendChild(el);
+    });
+
+    // position menu
+    const x = (event.clientX || (event.touches && event.touches[0].clientX) || 60) + 4;
+    const y = (event.clientY || (event.touches && event.touches[0].clientY) || 60) + 4;
+    menu.style.left = x + 'px';
+    menu.style.top = y + 'px';
+    menu.style.display = 'block';
+    // focus first item for keyboard users
+    setTimeout(() => {
+        const first = menu.querySelector('[role="menuitem"]');
+        if (first) first.focus();
+    }, 10);
+}
+
+function hideContextMenu() { const m = document.getElementById('custom-context-menu'); if (m) m.style.display = 'none'; }
+
+// hide context menu on global click
+document.addEventListener('click', (e) => { const menu = document.getElementById('custom-context-menu'); if (!menu) return; if (menu.style.display === 'block') menu.style.display = 'none'; });
+document.addEventListener('contextmenu', (e) => { /* allow specific handlers only */ });
+
+// Keyboard: open context menu via ContextMenu key or Shift+F10 when focusing a file/folder
+document.addEventListener('keydown', (e) => {
+    // 93 = ContextMenu key on some keyboards; fallback to 'ContextMenu' and Shift+F10
+    if (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) {
+        const active = document.activeElement;
+        if (!active) return;
+        // try to find associated file or folder element
+        const themeEl = active.closest && active.closest('.win-file');
+        const catEl = active.closest && active.closest('.win-folder');
+        if (themeEl) {
+            e.preventDefault();
+            const rect = themeEl.getBoundingClientRect();
+            showContextMenuFor('theme', { id: extractIdFromFile(themeEl), name: themeEl.innerText }, { clientX: rect.left + 8, clientY: rect.top + 8 });
+        } else if (catEl) {
+            e.preventDefault();
+            const rect = catEl.getBoundingClientRect();
+            showContextMenuFor('category', { id: null, name: catEl.innerText }, { clientX: rect.left + 8, clientY: rect.top + 8 });
+        }
+    }
+});
+
+function extractIdFromFile(fileEl) {
+    try {
+        const idDiv = fileEl.querySelector('.file-name div');
+        if (!idDiv) return null;
+        const txt = idDiv.textContent || '';
+        const m = txt.match(/ID:\s*(\d+)/);
+        if (m) return m[1];
+    } catch (e) {}
+    return null;
 }
 
 async function loadUsers() {
@@ -676,11 +802,38 @@ async function assignCategoryPrompt(themeId) {
         const result = await updateResp.json();
         alert('Categoria atribuída com sucesso.');
         await loadThemes();
+        // close context menu if open
+        hideContextMenu();
     } catch (err) {
         console.error('Erro assignCategory:', err);
         alert('Erro ao atribuir categoria. Veja o console para mais detalhes.');
     }
 }
+
+// THEME PREVIEW MODAL WIRING
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('theme-modal');
+    const body = document.getElementById('theme-modal-body');
+    const close = document.getElementById('close-theme-modal');
+    const btnAssign = document.getElementById('modal-assign');
+    const btnReset = document.getElementById('modal-reset');
+    const btnDelete = document.getElementById('modal-delete');
+    let currentThemeId = null;
+
+    function openThemeModal(theme) {
+        currentThemeId = theme.id;
+        if (body) body.textContent = JSON.stringify(theme, null, 2);
+        if (modal) { modal.style.display = 'flex'; modal.setAttribute('data-open','true'); }
+    }
+
+    if (close) close.addEventListener('click', () => { if (modal) { modal.style.display = 'none'; modal.removeAttribute('data-open'); } });
+    if (btnAssign) btnAssign.addEventListener('click', () => { if (currentThemeId) assignCategoryPrompt(currentThemeId); });
+    if (btnReset) btnReset.addEventListener('click', () => { if (currentThemeId) openResetModal(currentThemeId); });
+    if (btnDelete) btnDelete.addEventListener('click', () => { if (currentThemeId) deleteTheme(currentThemeId); });
+
+    // expose helper to show modal from file click
+    window.openThemeModal = openThemeModal;
+});
 
 async function testApi() {
     try {
