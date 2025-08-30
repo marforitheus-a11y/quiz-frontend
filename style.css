@@ -7,6 +7,9 @@
   --baby-200:#B3E5FC;
   --baby-300:#81D4FA;
   --white:#FFFFFF;
+  --brand-blue: #0B6EF6; /* primary brand accent (used for logo tint) */
+  --brand-blue-300: #4DA3FF;
+  --logo-alpha: 0.12;
   --muted:#6B7280;
   --text:#162029;
   --shadow:rgba(129,212,250,0.12);
@@ -66,6 +69,14 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 .brand-title{color:var(--text);font-weight:600}
 .logo-header{text-align:center}
 .logo-img-header{width:56px;height:56px}
+
+/* Layered logo behind title following Laws of UX: visual hierarchy, contrast, and aesthetic-usability */
+.logo-header{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.logo-svg{position:absolute;left:50%;top:2px;transform:translateX(-50%) translateY(-16%);width:120px;height:120px;color:var(--brand-blue);opacity:var(--logo-alpha);pointer-events:none;z-index:0}
+.brand-title{position:relative;z-index:1;font-size:1.4rem;color:var(--text);letter-spacing:0.4px}
+
+/* Replace small image usage with accessible hidden fallback */
+.logo-img-header{width:56px;height:56px;display:none}
 .page-hero{padding:18px 0 8px}
 .hero-title h2{font-size:1.4rem;margin:0 0 6px}
 .hero-title p{margin:0 0 12px;color:var(--muted)}
@@ -95,6 +106,17 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 
 @media(min-width:1000px){body{align-items:flex-start;padding-top:40px}.container{margin-left:80px}}
 @media(max-width:700px){.container{margin-left:0;padding:0}.login-container{max-width:92%}}
+
+/* Responsive logo adjustments */
+@media (max-width:700px){
+  .logo-svg{width:84px;height:84px;transform:translateX(-50%) translateY(-8%);opacity:0.14}
+  .brand-title{font-size:1.05rem}
+}
+
+@media (min-width:1000px){
+  .logo-svg{width:160px;height:160px;transform:translateX(-50%) translateY(-22%);opacity:0.12}
+  .brand-title{font-size:1.6rem}
+}
 
 /* Site-wide helpers added for uniform visuals and responsive tables */
 .no-break{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
