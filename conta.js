@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
         newTagInput.value = '';
     });
     if (newTagInput) newTagInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') addBtn.click(); });
-    // safe logout binding if present
-    const logoutBtn = document.getElementById('logout-btn');
+    // safe logout binding if present (support new header IDs)
+    const logoutBtn = document.getElementById('logout-btn') || document.getElementById('logout-btn-menu');
     if (logoutBtn) logoutBtn.addEventListener('click', () => { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = 'index.html'; });
 });
 

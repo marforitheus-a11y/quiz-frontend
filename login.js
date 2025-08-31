@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('submit-btn');
     const errorMessage = document.getElementById('error-message');
 
+    // header selector fallbacks (some pages use these IDs for logout/menu)
+    const headerLogoutBtn = document.getElementById('logout-btn') || document.getElementById('logout-btn-menu');
+    const headerMenuToggle = document.getElementById('menu-toggle-btn') || document.getElementById('menu-toggle');
+
     const nameGroup = document.getElementById('name-group'); // campo nome (signup)
     const usernameInput = document.getElementById('username');
     const emailInput = document.getElementById('email');

@@ -11,19 +11,16 @@
 </head>
 <body>
     <div class="container">
-        <header class="app-header">
-            <div class="logo-header">
-                <!-- Use the shared SVG (external file) so this page stays lightweight -->
-                <img src="a212705a-8951-474c-bf5e-c4fa68780392.svg" alt="Concursando" class="logo-img-header" />
-                <h1 class="brand-title">Concursando</h1>
+        <header class="site-header">
+            <div class="brand">
+                <div class="logo" aria-hidden>
+                  <svg width="36" height="36" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g3" x1="0" x2="1"><stop offset="0" stop-color="#4F46E5"/><stop offset="1" stop-color="#06B6D4"/></linearGradient></defs><rect width="48" height="48" rx="10" fill="url(#g3)"/></svg>
+                </div>
+                <div class="brand-text"><div class="brand-name">Concursando</div><small class="brand-tag">Resultados</small></div>
             </div>
-            <div class="header-buttons">
-                <a href="quiz.html" class="btn-header">
-                    <i class="fa-solid fa-pencil"></i> Novo Simulado
-                </a>
-                <a href="desempenho.html" class="btn-header">
-                    <i class="fa-solid fa-chart-line"></i> Meu Desempenho
-                </a>
+            <div class="site-nav">
+                <a href="quiz.html" class="btn-ghost">Novo Simulado</a>
+                <a href="desempenho.html" class="btn-ghost">Meu Desempenho</a>
             </div>
         </header>
         <main class="quiz-body" id="result-details">

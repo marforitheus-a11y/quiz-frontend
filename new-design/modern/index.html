@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Concursando — Modern Preview</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="app" class="app-root">
+    <header class="site-header">
+      <div class="brand">
+        <!-- inline svg logo -->
+        <div class="logo" aria-hidden="true"> 
+          <svg width="42" height="42" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="#4F46E5"/>
+                <stop offset="1" stop-color="#06B6D4"/>
+              </linearGradient>
+            </defs>
+            <rect width="48" height="48" rx="10" fill="url(#g1)" />
+            <path d="M18 33C24 33 30 27 30 21C30 15 24 11 18 11" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="32" cy="16" r="2.5" fill="white" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Concursando</span>
+          <small class="brand-tag">IA para seu concurso</small>
+        </div>
+      </div>
+      <nav class="site-nav">
+        <button id="theme-toggle" class="btn-ghost" aria-pressed="false">Tema</button>
+        <a href="#" class="btn-primary">Entrar</a>
+      </nav>
+    </header>
+
+    <main class="hero">
+      <div class="hero-inner">
+        <h1 class="hero-title">Estude com questões geradas por inteligência artificial</h1>
+        <p class="hero-sub">Simulados personalizados, revisão baseada em desempenho e geração de questões por tópico.</p>
+        <div class="hero-cta">
+          <a class="btn-cta" href="#start">Começar</a>
+          <a class="btn-ghost" href="#learn">Como funciona</a>
+        </div>
+      </div>
+      <div class="hero-aside">
+        <div class="card-stats">
+          <div class="stat"><div class="num">1.2k</div><div class="label">Usuários</div></div>
+          <div class="stat"><div class="num">32k</div><div class="label">Questões</div></div>
+          <div class="stat"><div class="num">98%</div><div class="label">Satisfação</div></div>
+        </div>
+      </div>
+    </main>
+
+    <section id="features" class="features">
+      <h2>Diferenciais da IA</h2>
+      <ul class="features-grid">
+        <li class="feature">
+          <h3>Geração contextual</h3>
+          <p>Questões criadas a partir de tópicos, PDFs e resumos com garantia de diversidade.</p>
+        </li>
+        <li class="feature">
+          <h3>Revisão inteligente</h3>
+          <p>Recomendações de estudo com base no seu desempenho.</p>
+        </li>
+        <li class="feature">
+          <h3>Formato oficial</h3>
+          <p>Opções e feedback parecidos com provas reais.</p>
+        </li>
+      </ul>
+    </section>
+
+    <footer class="site-footer">
+      <div>© Concursando — Feito para aprovação</div>
+      <div class="footer-links"><a href="#">Privacidade</a> · <a href="#">Contato</a></div>
+    </footer>
+  </div>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>

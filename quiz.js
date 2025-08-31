@@ -22,10 +22,11 @@ let lastMessageTimestamp = null;
 document.addEventListener('DOMContentLoaded', () => {
     // --- SELETORES DE ELEMENTOS ---
     const mainContent = document.getElementById('main-content');
-    const menuToggleBtn = document.getElementById('menu-toggle-btn');
+    // support both old and new header IDs
+    const menuToggleBtn = document.getElementById('menu-toggle-btn') || document.getElementById('menu-toggle');
     const sidebarMenu = document.getElementById('sidebar-menu');
     const menuOverlay = document.getElementById('menu-overlay');
-    const logoutBtnMenu = document.getElementById('logout-btn-menu');
+    const logoutBtnMenu = document.getElementById('logout-btn-menu') || document.getElementById('logout-btn');
     const modal = document.getElementById('global-message-modal');
     const closeModalBtn = document.getElementById('close-modal-btn');
 
