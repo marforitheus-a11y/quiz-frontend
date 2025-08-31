@@ -167,6 +167,24 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 .theme-name{font-weight:600;color:var(--text);white-space:normal;overflow-wrap:break-word}
 .theme-meta{font-size:0.9rem;color:var(--muted);margin-top:4px;white-space:normal}
 
+/* Table row dividers and responsive wrapping */
+.scroll-table table{width:100%;border-collapse:separate;border-spacing:0 10px}
+.scroll-table tbody tr{background:var(--white);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,0.04);overflow:hidden;border:1px solid rgba(0,0,0,0.04)}
+.scroll-table td, .scroll-table th{padding:12px;border:none;vertical-align:middle}
+.theme-name{font-weight:600;color:var(--text);max-width:560px}
+.theme-desc{color:var(--muted);font-size:0.95rem;max-width:420px}
+
+/* Hide the table header until a discipline is selected */
+#themes-table-head{display:none}
+
+@media(max-width:700px){
+  .scroll-table table thead, .scroll-table table tfoot{display:none}
+  .scroll-table tbody tr{display:flex;flex-direction:column;gap:8px;padding:12px}
+  .scroll-table td{display:block;padding:6px}
+  .theme-name{font-size:0.98rem}
+  .theme-desc{font-size:0.9rem}
+}
+
 /* Folder UI used in admin and quiz */
 .category-folder, .category-folder-quiz{background:var(--white);border-radius:12px;padding:10px;border:1px solid rgba(0,0,0,0.04);box-shadow:0 10px 28px rgba(0,0,0,0.04)}
 .folder-header{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:1px dashed rgba(0,0,0,0.04);margin-bottom:8px}

@@ -142,11 +142,13 @@ function displaySetupScreen(mainContent, themes = []) {
             });
 
             // render as scrollable table showing only Tema, Questões and Descrição
-            themeHTML += `<div class="scroll-table" style="margin-top:12px"><table><thead><tr><th style="width:60px">Selecionar</th><th>Tema</th><th style="width:100px;text-align:center">Questões</th><th>Descrição</th></tr></thead><tbody>`;
+            // add an id to the thead so we can toggle its visibility when no discipline is selected
+            themeHTML += `<div class="scroll-table" style="margin-top:12px"><table><thead id="themes-table-head"><tr><th style="width:60px">Selecionar</th><th>Tema</th><th style="width:100px;text-align:center">Questões</th><th>Descrição</th></tr></thead><tbody>`;
             rows.forEach(r => {
                 // include data-sub-id when available so subject-level filtering is possible
                 const subAttr = r.subId ? ` data-sub-id="${r.subId}"` : '';
-                themeHTML += `<tr data-cat-id="${r.catId}"${subAttr}><td style="padding:8px 12px"><input type="checkbox" name="theme" value="${r.themeId}"></td><td>${r.themeName}</td><td style="text-align:center">${r.question_count}</td><td class="no-break">${r.desc}</td></tr>`;
+                // remove forced no-break so content can wrap on small screens
+                themeHTML += `<tr data-cat-id="${r.catId}"${subAttr}><td style="padding:8px 12px;vertical-align:top"><input type="checkbox" name="theme" value="${r.themeId}"></td><td class="theme-name">${r.themeName}</td><td style="text-align:center;vertical-align:top">${r.question_count}</td><td class="theme-desc">${r.desc}</td></tr>`;
             });
             themeHTML += `</tbody></table></div>`;
         }
