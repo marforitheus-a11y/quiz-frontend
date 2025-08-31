@@ -22,11 +22,10 @@ let lastMessageTimestamp = null;
 document.addEventListener('DOMContentLoaded', () => {
     // --- SELETORES DE ELEMENTOS ---
     const mainContent = document.getElementById('main-content');
-    // support both old and new header IDs
-    const menuToggleBtn = document.getElementById('menu-toggle-btn') || document.getElementById('menu-toggle');
+    const menuToggleBtn = document.getElementById('menu-toggle-btn');
     const sidebarMenu = document.getElementById('sidebar-menu');
     const menuOverlay = document.getElementById('menu-overlay');
-    const logoutBtnMenu = document.getElementById('logout-btn-menu') || document.getElementById('logout-btn');
+    const logoutBtnMenu = document.getElementById('logout-btn-menu');
     const modal = document.getElementById('global-message-modal');
     const closeModalBtn = document.getElementById('close-modal-btn');
 
@@ -106,8 +105,7 @@ function displaySetupScreen(mainContent, themes = []) {
         if (uncategorized.themes.length) groups.push(uncategorized);
 
         // build category checkboxes (one per group)
-    // category checkboxes start unchecked so themes are only shown when a category is selected
-    // also compute subcategory grouping per category
+    // compute category map and subcategories for selects
     const categoryMap = {};
     groups.forEach(g => { categoryMap[g.id] = { id: g.id, name: g.name, themes: g.themes, subcats: {} }; });
     // try to infer subcategory_id from themes and group them
@@ -121,14 +119,15 @@ function displaySetupScreen(mainContent, themes = []) {
         });
     });
 
-    const categoryControls = Object.values(categoryMap).map(g => `<label class="category-filter"><input type="checkbox" class="cat-checkbox" data-cat-id="${g.id}"> ${g.name} <span class="muted">(${g.themes.length})</span></label>`).join(' ');
+    // build discipline (category) select options
+    const disciplineOptions = Object.values(categoryMap).map(g => `<option value="${g.id}">${g.name} (${g.themes.length})</option>`).join('\n');
 
         let themeHTML = '';
         if (groups.length === 0) {
             themeHTML = '<p>Nenhum tema encontrado. Adicione um tema no Painel de Admin.</p>';
         } else {
-            // controls row with category filters
-            themeHTML = `<div class="controls-row">${categoryControls}</div>`;
+            // controls row with discipline/subject selects
+            themeHTML = `<div class="select-pair"><div class="select-box"><label class="select-label">Disciplina</label><select id="discipline-select"><option value="">Selecione a disciplina</option>${disciplineOptions}</select></div><div class="select-box secondary"><label class="select-label">Assunto</label><select id="subject-select"><option value="">Escolha uma disciplina primeiro</option></select></div></div>`;
             // build flattened rows for table: only theme, question_count and description (keep catId for filtering)
             const rows = [];
             Object.values(categoryMap).forEach(cat => {
@@ -137,7 +136,7 @@ function displaySetupScreen(mainContent, themes = []) {
                     sub.themes.forEach(theme => {
                         if (seen.has(theme.id)) return;
                         seen.add(theme.id);
-                        rows.push({ catId: cat.id, themeId: theme.id, themeName: theme.name, desc: theme.description || '', question_count: theme.question_count || 0 });
+                        rows.push({ catId: cat.id, subId: theme._subcategory_id || '', themeId: theme.id, themeName: theme.name, desc: theme.description || '', question_count: theme.question_count || 0 });
                     });
                 });
             });
@@ -145,7 +144,9 @@ function displaySetupScreen(mainContent, themes = []) {
             // render as scrollable table showing only Tema, Questões and Descrição
             themeHTML += `<div class="scroll-table" style="margin-top:12px"><table><thead><tr><th style="width:60px">Selecionar</th><th>Tema</th><th style="width:100px;text-align:center">Questões</th><th>Descrição</th></tr></thead><tbody>`;
             rows.forEach(r => {
-                themeHTML += `<tr data-cat-id="${r.catId}"><td style="padding:8px 12px"><input type="checkbox" name="theme" value="${r.themeId}"></td><td>${r.themeName}</td><td style="text-align:center">${r.question_count}</td><td class="no-break">${r.desc}</td></tr>`;
+                // include data-sub-id when available so subject-level filtering is possible
+                const subAttr = r.subId ? ` data-sub-id="${r.subId}"` : '';
+                themeHTML += `<tr data-cat-id="${r.catId}"${subAttr}><td style="padding:8px 12px"><input type="checkbox" name="theme" value="${r.themeId}"></td><td>${r.themeName}</td><td style="text-align:center">${r.question_count}</td><td class="no-break">${r.desc}</td></tr>`;
             });
             themeHTML += `</tbody></table></div>`;
         }
@@ -170,19 +171,44 @@ function displaySetupScreen(mainContent, themes = []) {
     if (questionCountInput) questionCountInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') startBtn.click();
     });
-    // category filter behavior: only show table rows for selected categories
-    const catCheckboxes = Array.from(document.querySelectorAll('.cat-checkbox'));
+    // discipline / subject select behavior: populate subject select and filter rows
+    const disciplineSelect = document.getElementById('discipline-select');
+    const subjectSelect = document.getElementById('subject-select');
+
+    // helper: build subject options for a discipline
+    function populateSubjectsForDiscipline(did) {
+        subjectSelect.innerHTML = '';
+        if (!did) {
+            subjectSelect.innerHTML = `<option value="">Escolha uma disciplina primeiro</option>`;
+            updateThemeRowsVisibility();
+            return;
+        }
+        const subcats = categoryMap[did].subcats || {};
+        const opts = Object.values(subcats).map(s => `<option value="${s.id}">${s.name} (${s.themes.length})</option>`).join('\n');
+        subjectSelect.innerHTML = `<option value="">Todos os assuntos</option>${opts}`;
+        subjectSelect.value = '';
+        updateThemeRowsVisibility();
+    }
+
     function updateThemeRowsVisibility() {
-        const activeCats = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(x => x.getAttribute('data-cat-id'));
+        const did = disciplineSelect.value;
+        const sid = subjectSelect.value;
         const rows = Array.from(document.querySelectorAll('table tbody tr[data-cat-id]'));
         rows.forEach(r => {
             const cid = r.getAttribute('data-cat-id');
-            if (activeCats.length === 0) r.style.display = 'none';
-            else r.style.display = activeCats.includes(cid) ? '' : 'none';
+            const rowSub = r.getAttribute('data-sub-id');
+            // hide if no discipline selected
+            if (!did) { r.style.display = 'none'; return; }
+            if (cid !== did) { r.style.display = 'none'; return; }
+            // if subject selected, filter by sub-id if available
+            if (sid && rowSub && rowSub !== sid) { r.style.display = 'none'; return; }
+            r.style.display = '';
         });
     }
-    catCheckboxes.forEach(cb => cb.addEventListener('change', updateThemeRowsVisibility));
-    // hide all rows by default so user must explicitly select categories to reveal themes
+
+    disciplineSelect.addEventListener('change', (e) => populateSubjectsForDiscipline(e.target.value));
+    subjectSelect.addEventListener('change', updateThemeRowsVisibility);
+    // initially hide all rows until selection
     updateThemeRowsVisibility();
 }
 

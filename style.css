@@ -124,19 +124,6 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 .no-break{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .break-word{word-break:break-word}
 
-/* Modern header and brand utilities (keeps backwards compatibility) */
-.site-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.85),rgba(250,250,250,0.6));border:1px solid rgba(0,0,0,0.04);box-shadow:0 10px 28px rgba(2,6,23,0.04);margin-bottom:18px}
-.brand{display:flex;align-items:center;gap:12px}
-.brand .logo{width:44px;height:44px;flex:0 0 auto}
-.brand-text{display:flex;flex-direction:column}
-.brand-name{font-weight:700}
-.brand-tag{font-size:12px;color:var(--muted)}
-
-/* Button variants used across new layout */
-.btn-ghost{background:transparent;border:1px solid rgba(2,6,23,0.06);padding:8px 10px;border-radius:8px;color:var(--text);cursor:pointer}
-.btn-primary{background:linear-gradient(90deg,var(--brand-blue),var(--brand-blue-300));color:#fff;padding:8px 12px;border-radius:10px;border:none;cursor:pointer}
-.btn-delete{background:#fff;border:1px solid rgba(0,0,0,0.06);color:#b91c1c;padding:8px 10px;border-radius:10px;cursor:pointer}
-
 /* Scrollable table body with fixed height (used for users list) */
 .table-scroll{max-height:360px;overflow-y:auto}
 .table-scroll table{width:100%;border-collapse:collapse}
@@ -339,3 +326,11 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 @media(max-width:700px){
   .controls-row{flex-direction:row;justify-content:flex-start}
 }
+
+/* Discipline / Subject select style (matching provided screenshot) */
+.select-pair{display:flex;gap:12px;align-items:center;margin:12px 0}
+.select-box{background:#fff;border:1px solid rgba(0,0,0,0.06);padding:10px 14px;border-radius:8px;min-width:200px;box-shadow:0 8px 20px rgba(0,0,0,0.04)}
+.select-box select{border:none;background:transparent;font-size:0.95rem;color:var(--text);outline:none;appearance:none;padding-right:18px}
+.select-label{display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px;font-weight:600}
+.select-pair .select-box.secondary{min-width:260px}
+.select-placeholder{color:var(--muted)}
