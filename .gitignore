@@ -1,0 +1,9 @@
+node_modules/
+dist/
+new-design/react/node_modules/
+new-design/react/dist/
+.DS_Store
+Thumbs.db
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
