@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Concursando - Plataforma de questões por IA para concursos">
+  <title>Concursando - Questões por IA para Concursos</title>
+  
+  <!-- Preload de fontes críticas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="src/styles/main.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <div id="app" class="login-container">
+    <main class="login-card animate-fade-in">
+      <!-- Logo SVG -->
+      <div class="logo text-center mb-8" role="img" aria-label="Concursando">
+        <svg width="180" height="40" viewBox="0 0 180 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4">
+          <path d="M25 35c-8.284 0-15-6.716-15-15 0-8.284 6.716-15 15-15" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="25" cy="20" r="3" fill="currentColor"/>
+          <path d="M25 5c8.284 0 15 6.716 15 15" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 4"/>
+          <text x="55" y="28" font-family="Inter, sans-serif" font-size="24" font-weight="600" fill="currentColor">oncursando</text>
+          <circle cx="165" cy="20" r="1.5" fill="currentColor"/>
+          <circle cx="170" cy="15" r="1.5" fill="currentColor"/>
+          <circle cx="170" cy="25" r="1.5" fill="currentColor"/>
+          <path d="M165 20l5-5m-5 0l5 5" stroke="currentColor" stroke-width="1"/>
+        </svg>
+        <p class="text-secondary text-sm mb-8">Sua plataforma inteligente de estudos</p>
+      </div>
+
+      <!-- Formulário de Login -->
+      <form id="auth-form" class="flex flex-col gap-4">
+        <div class="input-group">
+          <label for="username" class="input-label">Usuário ou E-mail</label>
+          <input type="text" id="username" class="input" placeholder="Digite seu usuário ou e-mail" required>
+        </div>
+
+        <div class="input-group">
+          <label for="password" class="input-label">Senha</label>
+          <input type="password" id="password" class="input" placeholder="Digite sua senha" required>
+          <a href="#" class="text-sm text-brand mt-1 hover:underline">Esqueceu a senha?</a>
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn btn-primary mt-4">
+          <span>Entrar</span>
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/>
+          </svg>
+        </button>
+      </form>
+
+      <!-- Mensagem de Erro -->
+      <div id="error-message" class="error-text text-center mt-4"></div>
+
+      <!-- Chamada para Ação -->
+      <div class="text-center mt-8">
+        <p class="text-secondary text-sm">
+          Não tem uma conta? 
+          <a href="#" class="text-brand hover:underline">Fale com um administrador</a>
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Real login handler: POST to backend /login and store JWT.
+    (function () {
+      const API_URL = 'https://quiz-api-z4ri.onrender.com';
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const authForm = document.getElementById('auth-form');
+        const errorMessage = document.getElementById('error-message');
+        const submitBtn = document.getElementById('submit-btn');
+        
+        if (!authForm) return;
+
+        authForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          // Reset estado visual
+          errorMessage.textContent = '';
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="spinner"></span>';
+
+          const loginIdentifier = document.getElementById('username').value.trim();
+          const password = document.getElementById('password').value;
+
+          if (!loginIdentifier || !password) {
+            errorMessage.textContent = 'Por favor preencha usuário e senha.';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Entrar</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/></svg>';
+            return;
+          }
+
+          try {
+            const resp = await fetch(`${API_URL}/login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ loginIdentifier, password })
+            });
+            const data = await resp.json();
+            if (!resp.ok) throw new Error(data.message || `Erro ${resp.status}`);
+
+            // Armazena token e username
+            localStorage.setItem('token', data.token);
+            try {
+              const payload = JSON.parse(atob(data.token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+              localStorage.setItem('username', payload.username || loginIdentifier);
+              if (payload.role === 'admin') window.location.href = 'admin.html';
+              else window.location.href = 'quiz.html';
+            } catch (err) {
+              // Fallback redirect
+              window.location.href = 'quiz.html';
+            }
+
+          } catch (err) {
+            errorMessage.textContent = err.message || 'Usuário ou senha inválidos.';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Entrar</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/></svg>';
+          }
+        });
+        
+        // Theme toggle (se implementado)
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) document.documentElement.setAttribute('data-theme', 'dark');
+      });
+    })();
+  </script>
+</body>
+</html>
