@@ -1,8 +1,8 @@
 // ARQUIVO login.js (ADAPTADO PARA NOVO index.html)
 // ==================================================================
-// Use same origin when frontend is served from the same host as the API (works for local testing)
+// Determine API_URL: prefer explicit backend when frontend deployed on vercel (common hosting)
 const API_URL = (typeof window !== 'undefined' && window.location && window.location.origin)
-    ? window.location.origin
+    ? (window.location.origin.includes('vercel.app') ? 'https://quiz-api-z4ri.onrender.com' : window.location.origin)
     : 'http://localhost:3000'; // fallback
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,10 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const authForm = document.getElementById('auth-form');
     const submitBtn = document.getElementById('submit-btn');
     const errorMessage = document.getElementById('error-message');
-
-    // header selector fallbacks (some pages use these IDs for logout/menu)
-    const headerLogoutBtn = document.getElementById('logout-btn') || document.getElementById('logout-btn-menu');
-    const headerMenuToggle = document.getElementById('menu-toggle-btn') || document.getElementById('menu-toggle');
 
     const nameGroup = document.getElementById('name-group'); // campo nome (signup)
     const usernameInput = document.getElementById('username');
@@ -67,6 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // helper: fetch with timeout
+    function fetchWithTimeout(resource, options = {}) {
+        const { timeout = 15000 } = options;
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+        return fetch(resource, { ...options, signal: controller.signal }).finally(() => clearTimeout(id));
+    }
+
     // Login
     async function handleLogin() {
         errorMessage.textContent = 'Entrando...';
@@ -81,29 +85,54 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // disable submit while request is pending
+        const submitBtn = document.getElementById('submit-btn');
+        if (submitBtn) { submitBtn.disabled = true; }
+
         try {
-            const response = await fetch(`${API_URL}/login`, {
+            const response = await fetchWithTimeout(`${API_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ loginIdentifier, password }),
+                timeout: 15000,
             });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message);
 
-            if (data.token) {
+            // attempt to parse JSON; if fails, fallback to text for better error messages
+            let data = null;
+            const contentType = response.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                const text = await response.text();
+                // try to extract JSON inside HTML <pre> or return plain text
+                try { data = JSON.parse(text); } catch (e) { data = { message: text }; }
+            }
+
+            if (!response.ok) {
+                const msg = data && data.message ? data.message : `Erro do servidor (${response.status})`;
+                throw new Error(msg);
+            }
+
+            if (data && data.token) {
                 localStorage.setItem('token', data.token);
-                const payload = parseJwt(data.token);
-                localStorage.setItem('username', payload.username);
+                const payload = parseJwt(data.token) || {};
+                if (payload.username) localStorage.setItem('username', payload.username);
 
                 if (payload && payload.role === 'admin') {
                     window.location.href = 'admin.html';
                 } else {
                     window.location.href = 'quiz.html';
                 }
+            } else {
+                throw new Error('Resposta inválida do servidor.');
             }
         } catch (error) {
-            errorMessage.textContent = error.message || 'Erro ao fazer login.';
+            const msg = (error && error.message) ? error.message : 'Erro ao fazer login.';
+            errorMessage.textContent = msg;
             errorMessage.style.color = 'red';
+            console.error('handleLogin error:', error);
+        } finally {
+            if (submitBtn) { submitBtn.disabled = false; }
         }
     }
 
