@@ -89,7 +89,20 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 /* When using the scoped site theme we intentionally show the main logo
   image (some rules previously hid it globally). This overrides that rule
   only for pages that have body.site-theme. */
-.site-theme .logo-img-header{display:block}
+.site-theme .logo-img-header{
+  display:block;
+  width:120px; /* larger by default for better visibility */
+  height:auto;
+  max-height:140px;
+}
+
+/* Responsive logo sizes when site-theme is present */
+@media (max-width:700px){
+  .site-theme .logo-img-header{width:88px;max-height:100px}
+}
+@media (min-width:1000px){
+  .site-theme .logo-img-header{width:140px;max-height:160px}
+}
 
 /* Layered logo behind title following Laws of UX: visual hierarchy, contrast, and aesthetic-usability */
 .logo-header{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center}
