@@ -204,22 +204,26 @@ function displaySetupScreen(mainContent, themes = []) {
     function toggleTableHeader() {
         const thead = document.getElementById('themes-table-head');
         if (!thead) return;
-        if (disciplineSelect.value) thead.style.display = 'table-header-group';
+        // header is a flex-based div now; show when a discipline is selected
+        if (disciplineSelect.value) thead.style.display = 'flex';
         else thead.style.display = 'none';
     }
 
     function updateThemeRowsVisibility() {
         const did = disciplineSelect.value;
         const sid = subjectSelect.value;
-        const rows = Array.from(document.querySelectorAll('table tbody tr[data-cat-id]'));
+        // select the div-based theme rows (refactor from table -> flex rows)
+        const rows = Array.from(document.querySelectorAll('.theme-row[data-cat-id]'));
         rows.forEach(r => {
             const cid = r.getAttribute('data-cat-id');
             const rowSub = r.getAttribute('data-sub-id');
             // hide if no discipline selected
             if (!did) { r.style.display = 'none'; return; }
+            // hide rows that don't belong to the selected discipline
             if (cid !== did) { r.style.display = 'none'; return; }
-            // if subject selected, filter by sub-id if available
-            if (sid && rowSub && rowSub !== sid) { r.style.display = 'none'; return; }
+            // if a specific subject is selected, only show rows matching that sub-id
+            if (sid && rowSub !== sid) { r.style.display = 'none'; return; }
+            // otherwise show
             r.style.display = '';
         });
     }
