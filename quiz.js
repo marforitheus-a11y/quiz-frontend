@@ -203,6 +203,14 @@ function displaySetupScreen(mainContent, themes = []) {
         updateThemeRowsVisibility();
     }
 
+    // show/hide table header when a discipline is selected
+    function toggleTableHeader() {
+        const thead = document.getElementById('themes-table-head');
+        if (!thead) return;
+        if (disciplineSelect.value) thead.style.display = 'table-header-group';
+        else thead.style.display = 'none';
+    }
+
     function updateThemeRowsVisibility() {
         const did = disciplineSelect.value;
         const sid = subjectSelect.value;
@@ -223,6 +231,10 @@ function displaySetupScreen(mainContent, themes = []) {
     subjectSelect.addEventListener('change', updateThemeRowsVisibility);
     // initially hide all rows until selection
     updateThemeRowsVisibility();
+    // initialize header visibility
+    toggleTableHeader();
+
+    disciplineSelect.addEventListener('change', toggleTableHeader);
 }
 
 async function startQuiz(mainContent) {
