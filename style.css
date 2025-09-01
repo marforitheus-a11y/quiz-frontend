@@ -309,6 +309,19 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
   .option.selected{background:linear-gradient(90deg, rgba(11,110,246,0.12), rgba(77,163,255,0.05));border-color:rgba(11,110,246,0.28);box-shadow:0 18px 44px rgba(11,110,246,0.06)}
 }
 
+/* Specific rules for the quiz page: keep overall site theme large logo but
+   scale it down on the quiz page to fit the header area. */
+.site-theme.quiz-page .logo-img-header{
+  width:160px; /* smaller for quiz header */
+  max-height:180px;
+}
+@media (max-width:700px){
+  .site-theme.quiz-page .logo-img-header{width:120px;max-height:140px}
+}
+@media (min-width:1000px){
+  .site-theme.quiz-page .logo-img-header{width:200px;max-height:220px}
+}
+
 /* Ensure correct/incorrect states override the 'selected' state visuals */
 .option.selected.correct,
 .option.correct.selected,
