@@ -1,33 +1,40 @@
-/* Clean baby-blue theme */
+/* Default font (admin kept as-is). Site theme overrides below. */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+/* Font for new site-theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 :root{
-  --baby-50:#F5FBFF;
-  --baby-100:#E1F5FE;
-  --baby-200:#B3E5FC;
-  --baby-300:#81D4FA;
+  /* legacy defaults kept for admin pages */
   --white:#FFFFFF;
-  --brand-blue: #0B6EF6; /* primary brand accent (used for logo tint) */
-  --brand-blue-300: #4DA3FF;
-  --logo-alpha: 0.12;
-  --accent: var(--brand-blue);
-  --respond-bg: linear-gradient(180deg,var(--brand-blue),var(--brand-blue-300));
   --muted:#6B7280;
+  --shadow:rgba(0,0,0,0.06);
   --text:#162029;
-  --shadow:rgba(129,212,250,0.12);
+}
+
+/* Scoped site theme: Royal Blue / Violet / Black palette applied only when body has .site-theme */
+.site-theme{
+  --brand-royal:#0b3d91; /* deep royal blue */
+  --brand-violet:#6c4bd7; /* violet accent */
+  --brand-black:#0b0b0b; /* primary text */
+  --bg-100: linear-gradient(135deg,#f6f9ff,#f0f4ff);
+  --logo-alpha: 0.10;
+  --accent: var(--brand-royal);
+  --respond-bg: linear-gradient(180deg,var(--brand-royal),var(--brand-violet));
+  --muted:#7b7f8b;
+  --text:var(--brand-black);
 }
 
 /* Common app colors used by JS (progress, status) */
 :root{
   --success-color: #059669; /* emerald-500 */
   --danger-color: #dc2626; /* red-600 */
-  --primary-color: var(--baby-300);
 }
 
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
 html,body{height:100%}
 body{
-  background:linear-gradient(135deg,var(--baby-200),var(--baby-100) 60%,var(--white) 100%);
+  background:var(--bg-100, linear-gradient(135deg,#f5fbff,#fff));
   color:var(--text);
   min-height:100vh;
   display:flex;
@@ -74,8 +81,8 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 
 /* Layered logo behind title following Laws of UX: visual hierarchy, contrast, and aesthetic-usability */
 .logo-header{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.logo-svg{position:absolute;left:50%;top:2px;transform:translateX(-50%) translateY(-16%);width:120px;height:120px;color:var(--brand-blue);opacity:var(--logo-alpha);pointer-events:none;z-index:0}
-.brand-title{position:relative;z-index:1;font-size:1.4rem;color:var(--text);letter-spacing:0.4px}
+.logo-svg{position:absolute;left:50%;top:2px;transform:translateX(-50%) translateY(-16%);width:120px;height:120px;color:var(--accent);opacity:var(--logo-alpha);pointer-events:none;z-index:0}
+.brand-title{position:relative;z-index:1;font-size:1.4rem;color:var(--text);letter-spacing:0.4px;font-family:Inter, Poppins, sans-serif}
 
 /* Replace small image usage with accessible hidden fallback */
 .logo-img-header{width:56px;height:56px;display:none}
@@ -98,7 +105,7 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 .sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .sidebar-links{list-style:none;padding:0;margin:8px 0}
 .sidebar-links li{margin:8px 0}
-.sidebar-links a{color:var(--baby-300);text-decoration:none;font-weight:500}
+.sidebar-links a{color:var(--accent);text-decoration:none;font-weight:500}
 .btn-logout-menu{margin-top:14px;background:transparent;border:1px solid rgba(0,0,0,0.06);padding:8px 10px;border-radius:8px;cursor:pointer}
 
 /* UTILITIES */
@@ -177,6 +184,13 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 /* Hide the table header until a discipline is selected */
 #themes-table-head{display:none}
 
+/* When site-theme is active, hide small corner X buttons for a cleaner mobile view */
+.site-theme .modal-close, .site-theme .close-sidebar { display:none !important }
+
+/* Make the questions count column visually distinct */
+.scroll-table td:nth-child(3), .scroll-table th:nth-child(3){font-weight:700;color:var(--accent);}
+
+
 @media(max-width:700px){
   .scroll-table table thead, .scroll-table table tfoot{display:none}
   .scroll-table tbody tr{display:flex;flex-direction:column;gap:8px;padding:12px}
@@ -235,10 +249,10 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 
 /* scrollbar refinement for theme list */
 .theme-list::-webkit-scrollbar{width:10px}
-.theme-list::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--brand-blue-300),var(--brand-blue));border-radius:6px}
+.theme-list::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--brand-violet, #6c4bd7),var(--accent));border-radius:6px}
 
 /* Modern button styles (Laws of UX: affordance, feedback, consistency) */
-.btn-main{background:linear-gradient(180deg,var(--brand-blue),var(--brand-blue-300));color:white;border:none;padding:10px 16px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow:0 10px 24px rgba(11,110,246,0.12);transition:transform .12s ease,box-shadow .12s ease}
+.btn-main{background:var(--respond-bg);color:white;border:none;padding:10px 16px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow:0 10px 24px rgba(11,110,246,0.12);transition:transform .12s ease,box-shadow .12s ease}
 .btn-main:active{transform:translateY(1px)}
 .btn-main:hover{box-shadow:0 14px 36px rgba(11,110,246,0.14);transform:translateY(-2px)}
 
@@ -248,7 +262,7 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 .options{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
 .option{display:flex;align-items:flex-start;gap:12px;padding:12px;border-radius:10px;border:1px solid #f0f2f5;cursor:pointer;background:#fff;transition:box-shadow .12s ease,transform .08s ease}
 .option:hover{box-shadow:0 8px 18px rgba(6,21,38,0.06);transform:translateY(-2px)}
-.option-letter{min-width:44px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:2px solid rgba(11,110,246,0.14);color:var(--brand-blue);font-weight:700;padding:0 10px;font-size:0.95rem;background:linear-gradient(180deg,rgba(77,163,255,0.02),rgba(11,110,246,0.01))}
+.option-letter{min-width:44px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:2px solid rgba(11,110,246,0.14);color:var(--accent);font-weight:700;padding:0 10px;font-size:0.95rem;background:linear-gradient(180deg,rgba(77,163,255,0.02),rgba(11,110,246,0.01))}
 /* icon inside the badge */
 .option-letter .letter{display:inline-block}
 .option.correct{background:#ecfdf5;border-color:rgba(5,150,105,0.12)}

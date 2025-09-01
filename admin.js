@@ -28,9 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- SELETORES DE ELEMENTOS ---
     const themeForm = document.getElementById('theme-form');
     const userForm = document.getElementById('user-form');
-    // support both old and new header logout IDs
-    const logoutBtn = document.getElementById('logout-btn') || document.getElementById('logout-btn-menu');
-    const menuToggle = document.getElementById('menu-toggle-btn');
+    const logoutBtn = document.getElementById('logout-btn');
     const themesTableBody = document.getElementById('themes-table-body');
     const usersTableBody = document.getElementById('users-table-body');
     const reportsTableBody = document.getElementById('reports-table-body');

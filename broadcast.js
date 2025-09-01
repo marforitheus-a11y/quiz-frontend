@@ -8,7 +8,7 @@ if (!token) { window.location.href = 'index.html'; }
 document.addEventListener('DOMContentLoaded', () => {
     const broadcastForm = document.getElementById('broadcast-form');
     const broadcastStatus = document.getElementById('broadcast-status');
-    const logoutBtn = document.getElementById('logout-btn') || document.getElementById('logout-btn-menu');
+    const logoutBtn = document.getElementById('logout-btn');
     // Adicione a lógica de logout aqui, se desejar...
 
     broadcastForm.addEventListener('submit', async (e) => {

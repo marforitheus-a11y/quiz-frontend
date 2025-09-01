@@ -57,22 +57,21 @@
 </head>
 <body class="min-h-screen bg-gray-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <header class="site-header" role="banner">
-      <div class="brand">
-        <div class="logo" aria-hidden>
-          <svg width="40" height="40" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#4F46E5"/><stop offset="1" stop-color="#06B6D4"/></linearGradient></defs>
-            <rect width="48" height="48" rx="10" fill="url(#g1)" />
-            <path d="M18 33C24 33 30 27 30 21C30 15 24 11 18 11" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="32" cy="16" r="2.5" fill="white" />
-          </svg>
-        </div>
-        <div class="brand-text"><div class="brand-name">Concursando</div><small class="brand-tag">Painel Admin</small></div>
+    <header class="flex flex-col sm:flex-row justify-between items-center mb-12 gap-6">
+      <div class="logo-header">
+        <img src="a212705a-8951-474c-bf5e-c4fa68780392.svg" alt="Concursando" class="logo-img-header" />
+        <h1 class="text-4xl font-extrabold text-gray-900 select-none">Painel Admin</h1>
       </div>
-      <div class="site-nav">
-        <a href="broadcast.html" class="btn-primary">Mensagem Global</a>
-        <button id="test-api-btn" class="btn-ghost">Testar API</button>
-        <button id="logout-btn" class="btn-delete">Sair</button>
+      <div class="flex gap-4 w-full sm:w-auto">
+        <a href="broadcast.html" class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold shadow-md hover:bg-blue-700 transition focus:outline-none focus:ring-4 focus:ring-blue-300" role="button" tabindex="0">
+          Mensagem Global
+        </a>
+        <button id="test-api-btn" type="button" aria-label="Testar API" class="inline-flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-800 rounded-xl font-medium shadow-sm hover:bg-gray-200 transition focus:outline-none focus:ring-4 focus:ring-gray-300">
+          Testar API
+        </button>
+        <button id="logout-btn" type="button" aria-label="Sair do painel admin" class="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold shadow-md hover:bg-red-700 transition focus:outline-none focus:ring-4 focus:ring-red-300">
+          Sair <i class="fa-solid fa-right-from-bracket text-lg"></i>
+        </button>
       </div>
     </header>
 

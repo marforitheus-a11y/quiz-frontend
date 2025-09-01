@@ -143,7 +143,7 @@ function displaySetupScreen(mainContent, themes = []) {
 
             // render as scrollable table showing only Tema, Questões and Descrição
             // add an id to the thead so we can toggle its visibility when no discipline is selected
-            themeHTML += `<div class="scroll-table" style="margin-top:12px"><table><thead id="themes-table-head"><tr><th style="width:60px">Selecionar</th><th>Tema</th><th style="width:100px;text-align:center">Questões</th><th>Descrição</th></tr></thead><tbody>`;
+            themeHTML += `<div class="scroll-table" style="margin-top:12px"><table><thead id="themes-table-head"><tr><th style="width:60px">Selecionar</th><th>Tema</th><th style="width:140px;text-align:center">Quantidade de questões</th><th>Descrição</th></tr></thead><tbody>`;
             rows.forEach(r => {
                 // include data-sub-id when available so subject-level filtering is possible
                 const subAttr = r.subId ? ` data-sub-id="${r.subId}"` : '';
