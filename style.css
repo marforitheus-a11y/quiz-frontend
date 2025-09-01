@@ -91,17 +91,20 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
   only for pages that have body.site-theme. */
 .site-theme .logo-img-header{
   display:block;
-  width:120px; /* larger by default for better visibility */
+  /* 3x larger than the previous default (120px -> 360px) */
+  width:360px;
   height:auto;
-  max-height:140px;
+  max-width:90%;
+  max-height:420px;
+  margin:0 auto;
 }
 
-/* Responsive logo sizes when site-theme is present */
+/* Responsive logo sizes (3x the prior responsive sizes) */
 @media (max-width:700px){
-  .site-theme .logo-img-header{width:88px;max-height:100px}
+  .site-theme .logo-img-header{width:264px;max-height:300px}
 }
 @media (min-width:1000px){
-  .site-theme .logo-img-header{width:140px;max-height:160px}
+  .site-theme .logo-img-header{width:420px;max-height:480px}
 }
 
 /* Layered logo behind title following Laws of UX: visual hierarchy, contrast, and aesthetic-usability */
