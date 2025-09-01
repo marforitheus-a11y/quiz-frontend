@@ -209,8 +209,20 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 .theme-name{font-weight:600;color:var(--text);max-width:560px}
 .theme-desc{color:var(--muted);font-size:0.95rem;max-width:420px}
 
-/* Show the table header (labels) by default so columns are described */
-#themes-table-head{display:table-header-group}
+/* New flex-based themes table (replaces previous <table> layout) */
+.themes-table{width:100%}
+.themes-head{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin-bottom:8px}
+.themes-head .head-left{font-weight:700}
+.themes-head .head-count{font-weight:700;text-align:center}
+.themes-body{display:flex;flex-direction:column;gap:10px}
+.theme-row{display:flex;align-items:center;justify-content:space-between;background:var(--white);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,0.04);overflow:hidden;border:1px solid rgba(0,0,0,0.04);padding:12px}
+.theme-left{display:flex;gap:12px;align-items:flex-start;flex:1;min-width:0}
+.theme-left input[type="checkbox"]{margin-top:6px;flex:0 0 auto}
+.theme-left div{min-width:0}
+.theme-count{flex:0 0 84px;text-align:center;font-weight:700;color:var(--accent)}
+
+/* For progressive enhancement: keep older table styles hidden */
+ #themes-table-head{display:none}
 
 /* When site-theme is active, hide small corner X buttons for a cleaner mobile view */
 .site-theme .modal-close, .site-theme .close-sidebar { display:none !important }

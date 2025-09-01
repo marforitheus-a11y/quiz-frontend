@@ -141,27 +141,24 @@ function displaySetupScreen(mainContent, themes = []) {
                 });
             });
 
-                        // render as scrollable table with two columns: Tema (with checkbox + description) and Quantidade de questões
-                        // add an id to the thead so we can toggle its visibility when no discipline is selected
-                        themeHTML += `<div class="scroll-table" style="margin-top:12px"><table><thead id="themes-table-head"><tr><th>Tema</th><th style="width:140px;text-align:center">Quantidade de questões</th></tr></thead><tbody>`;
-                        rows.forEach(r => {
-                                // include data-sub-id when available so subject-level filtering is possible
-                                const subAttr = r.subId ? ` data-sub-id="${r.subId}"` : '';
-                                // theme cell contains a checkbox and the title + optional description underneath
-                                themeHTML += `<tr data-cat-id="${r.catId}"${subAttr}>
-                                        <td style="padding:12px 16px;vertical-align:middle">
-                                            <label style="display:flex;align-items:flex-start;gap:12px">
-                                                <input type="checkbox" name="theme" value="${r.themeId}" style="margin-top:6px;flex:0 0 auto">
-                                                <div style="min-width:0">
-                                                    <div class="theme-name">${r.themeName}</div>
-                                                    <div class="theme-desc">${r.desc}</div>
-                                                </div>
-                                            </label>
-                                        </td>
-                                        <td style="text-align:center;vertical-align:middle;font-weight:700;color:var(--accent)">${r.question_count}</td>
-                                </tr>`;
-                        });
-                        themeHTML += `</tbody></table></div>`;
+                                    // render as a flex-based list with two columns: Tema (checkbox + title/desc) and Quantidade de questões
+                                    // header uses id #themes-table-head so JS can toggle visibility when no discipline selected
+                                    themeHTML += `<div class="scroll-table" style="margin-top:12px"><div class="themes-table"><div id="themes-table-head" class="themes-head"><div class="head-left">Tema</div><div class="head-count">Quantidade de questões</div></div><div class="themes-body">`;
+                                    rows.forEach(r => {
+                                            const subAttr = r.subId ? ` data-sub-id="${r.subId}"` : '';
+                                            themeHTML += `
+                                                <div class="theme-row" data-cat-id="${r.catId}"${subAttr}>
+                                                    <label class="theme-left">
+                                                        <input type="checkbox" name="theme" value="${r.themeId}">
+                                                        <div>
+                                                            <div class="theme-name">${r.themeName}</div>
+                                                            <div class="theme-desc">${r.desc}</div>
+                                                        </div>
+                                                    </label>
+                                                    <div class="theme-count">${r.question_count}</div>
+                                                </div>`;
+                                    });
+                                    themeHTML += `</div></div></div>`;
         }
 
     mainContent.innerHTML = `
