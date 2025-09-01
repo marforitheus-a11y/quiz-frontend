@@ -141,16 +141,27 @@ function displaySetupScreen(mainContent, themes = []) {
                 });
             });
 
-            // render as scrollable table showing only Tema, Questões and Descrição
-            // add an id to the thead so we can toggle its visibility when no discipline is selected
-            themeHTML += `<div class="scroll-table" style="margin-top:12px"><table><thead id="themes-table-head"><tr><th style="width:60px">Selecionar</th><th>Tema</th><th style="width:140px;text-align:center">Quantidade de questões</th><th>Descrição</th></tr></thead><tbody>`;
-            rows.forEach(r => {
-                // include data-sub-id when available so subject-level filtering is possible
-                const subAttr = r.subId ? ` data-sub-id="${r.subId}"` : '';
-                // remove forced no-break so content can wrap on small screens
-                themeHTML += `<tr data-cat-id="${r.catId}"${subAttr}><td style="padding:8px 12px;vertical-align:top"><input type="checkbox" name="theme" value="${r.themeId}"></td><td class="theme-name">${r.themeName}</td><td style="text-align:center;vertical-align:top">${r.question_count}</td><td class="theme-desc">${r.desc}</td></tr>`;
-            });
-            themeHTML += `</tbody></table></div>`;
+                        // render as scrollable table with two columns: Tema (with checkbox + description) and Quantidade de questões
+                        // add an id to the thead so we can toggle its visibility when no discipline is selected
+                        themeHTML += `<div class="scroll-table" style="margin-top:12px"><table><thead id="themes-table-head"><tr><th>Tema</th><th style="width:140px;text-align:center">Quantidade de questões</th></tr></thead><tbody>`;
+                        rows.forEach(r => {
+                                // include data-sub-id when available so subject-level filtering is possible
+                                const subAttr = r.subId ? ` data-sub-id="${r.subId}"` : '';
+                                // theme cell contains a checkbox and the title + optional description underneath
+                                themeHTML += `<tr data-cat-id="${r.catId}"${subAttr}>
+                                        <td style="padding:12px 16px;vertical-align:middle">
+                                            <label style="display:flex;align-items:flex-start;gap:12px">
+                                                <input type="checkbox" name="theme" value="${r.themeId}" style="margin-top:6px;flex:0 0 auto">
+                                                <div style="min-width:0">
+                                                    <div class="theme-name">${r.themeName}</div>
+                                                    <div class="theme-desc">${r.desc}</div>
+                                                </div>
+                                            </label>
+                                        </td>
+                                        <td style="text-align:center;vertical-align:middle;font-weight:700;color:var(--accent)">${r.question_count}</td>
+                                </tr>`;
+                        });
+                        themeHTML += `</tbody></table></div>`;
         }
 
     mainContent.innerHTML = `
