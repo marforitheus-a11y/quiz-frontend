@@ -209,8 +209,8 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 .theme-name{font-weight:600;color:var(--text);max-width:560px}
 .theme-desc{color:var(--muted);font-size:0.95rem;max-width:420px}
 
-/* Hide the table header until a discipline is selected */
-#themes-table-head{display:none}
+/* Show the table header (labels) by default so columns are described */
+#themes-table-head{display:table-header-group}
 
 /* When site-theme is active, hide small corner X buttons for a cleaner mobile view */
 .site-theme .modal-close, .site-theme .close-sidebar { display:none !important }
@@ -220,7 +220,7 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 
 
 @media(max-width:700px){
-  .scroll-table table thead, .scroll-table table tfoot{display:none}
+  .scroll-table table tfoot{display:none}
   /* Use a 2-column grid on small screens so the count remains on the right
      and the theme title/description occupy the left column. This prevents
      the count from wrapping below the theme. */
