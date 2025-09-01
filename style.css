@@ -442,3 +442,24 @@ body.site-theme .scroll-table td:first-child .theme-name{display:block;max-width
 .select-label{display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px;font-weight:600}
 .select-pair .select-box.secondary{min-width:260px}
 .select-placeholder{color:var(--muted)}
+/* Fix para evitar letras em coluna no mobile */
+.scroll-table td:first-child label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.scroll-table td:first-child label div {
+  flex: 1 1 auto;       /* deixa o texto ocupar o espaço disponível */
+  min-width: 0 !important; /* garante que o flex não quebre em colunas */
+}
+
+.scroll-table .theme-name,
+.scroll-table .theme-desc {
+  display: block;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.4;
+}
