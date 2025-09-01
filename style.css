@@ -236,8 +236,14 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
   .scroll-table td{display:block;padding:6px}
   .scroll-table td:first-child{flex:1;min-width:0}
   .scroll-table td:nth-child(2){flex:0 0 84px;max-width:84px;text-align:center;white-space:nowrap}
-  .theme-name{font-size:0.98rem;overflow-wrap:break-word}
-  .theme-desc{font-size:0.9rem;color:var(--muted)}
+  .theme-name{font-size:0.98rem;overflow-wrap:break-word;white-space:normal;word-break:break-word}
+  .theme-desc{font-size:0.9rem;color:var(--muted);white-space:normal}
+
+  /* Ensure inner label/div containers can shrink properly and text flows
+    horizontally (fixes vertical single-letter wrapping seen on some phones) */
+  .scroll-table td:first-child > label{display:flex;align-items:flex-start;gap:12px}
+  .scroll-table td:first-child > label > div{min-width:0}
+  .scroll-table td:first-child, .scroll-table td:first-child *{writing-mode:horizontal-tb !important; text-orientation:mixed !important}
 }
 
 /* Folder UI used in admin and quiz */
