@@ -463,3 +463,17 @@ body.site-theme .scroll-table td:first-child .theme-name{display:block;max-width
   overflow-wrap: break-word !important;
   line-height: 1.4;
 }
+/* Forçar textos dos temas a ficarem sempre em linha no mobile */
+body.site-theme .scroll-table td:first-child label,
+body.site-theme .scroll-table td:first-child label div,
+body.site-theme .scroll-table td:first-child .theme-name,
+body.site-theme .scroll-table td:first-child .theme-desc {
+  display: block !important;
+  width: 100% !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.4 !important;
+}
