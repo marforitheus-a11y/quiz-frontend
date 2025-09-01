@@ -223,20 +223,21 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 
 @media(max-width:700px){
   .scroll-table table tfoot{display:none}
-  /* Use a 2-column grid on small screens so the count remains on the right
-     and the theme title/description occupy the left column. This prevents
-     the count from wrapping below the theme. */
+  /* Mobile: layout each row as a horizontal flex container so the
+     theme block stays at left and the count is fixed at the right. This
+     keeps the count visually aligned even when the title wraps to multiple lines. */
   .scroll-table tbody tr{
-    display:grid;
-    grid-template-columns: 1fr 72px; /* left: theme, right: count */
-    align-items:center;
+    display:flex;
+    flex-direction:row;
+    align-items:flex-start; /* align to top so count stays near title start */
     gap:12px;
     padding:12px;
   }
   .scroll-table td{display:block;padding:6px}
-  .scroll-table td:nth-child(2){text-align:right;white-space:nowrap}
+  .scroll-table td:first-child{flex:1;min-width:0}
+  .scroll-table td:nth-child(2){flex:0 0 84px;max-width:84px;text-align:center;white-space:nowrap}
   .theme-name{font-size:0.98rem;overflow-wrap:break-word}
-  .theme-desc{font-size:0.9rem}
+  .theme-desc{font-size:0.9rem;color:var(--muted)}
 }
 
 /* Folder UI used in admin and quiz */
