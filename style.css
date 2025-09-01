@@ -246,8 +246,6 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
   .scroll-table td:first-child, .scroll-table td:first-child *{writing-mode:horizontal-tb !important; text-orientation:mixed !important}
 }
 
-/* Strong overrides to prevent vertical letter stacking observed on some phones.
-   Use high-specificity selectors and !important to beat external CSS. */
 body.site-theme .scroll-table td:first-child .theme-name,
 body.site-theme .scroll-table td:first-child .theme-desc,
 body.site-theme .scroll-table td:first-child > label > div,
@@ -256,9 +254,10 @@ body.site-theme .scroll-table td:first-child * {
   text-orientation: mixed !important;
   white-space: normal !important;
   letter-spacing: normal !important;
-  word-break: normal !important;
-  overflow-wrap: anywhere !important;
+  word-break: break-word !important; /* permite quebrar palavras grandes */
+  overflow-wrap: break-word !important; /* compatível com navegadores móveis */
 }
+
 
 /* Ensure the theme title is not constrained to a tiny inline width */
 body.site-theme .scroll-table td:first-child .theme-name{display:block;max-width:100% !important}
