@@ -97,15 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 timeout: 15000,
             });
 
-            // attempt to parse JSON; if fails, fallback to text for better error messages
+            // robust parsing: always read text and try to JSON.parse it; fallback to plain text
             let data = null;
-            const contentType = response.headers.get('content-type') || '';
-            if (contentType.includes('application/json')) {
-                data = await response.json();
-            } else {
-                const text = await response.text();
-                // try to extract JSON inside HTML <pre> or return plain text
-                try { data = JSON.parse(text); } catch (e) { data = { message: text }; }
+            const text = await response.text();
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                data = { message: text };
             }
 
             if (!response.ok) {
