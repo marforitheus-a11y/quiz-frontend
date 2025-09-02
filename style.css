@@ -62,7 +62,8 @@ body::before{
   z-index: 0; /* sits above the body background but behind page content */
   pointer-events: none;
   /* try absolute root first, then relative and assets/ as fallbacks for different hosting setups */
-  background-image: linear-gradient(rgba(0,0,0,0.52), rgba(0,0,0,0.52)), url('/background.png'), url('./background.png'), url('assets/background.png');
+  /* use CSS variable when set by loader; otherwise fallback to common paths */
+  background-image: linear-gradient(rgba(0,0,0,0.52), rgba(0,0,0,0.52)), var(--bg-image-url, url('/background.png'), url('./background.png'), url('assets/background.png'));
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -83,6 +84,12 @@ body > *{position:relative;z-index:1}
     opacity: 0.12;
     background-attachment: scroll;
   }
+}
+
+/* when the JS loader applied the background we lower the dark overlay intensity */
+body.bg-loaded::before{
+  opacity: 0.22; /* slightly less dark when image is confirmed */
+  background-image: linear-gradient(rgba(0,0,0,0.38), rgba(0,0,0,0.38)), var(--bg-image-url, url('/background.png'));
 }
 
 /* LOGIN CARD */
