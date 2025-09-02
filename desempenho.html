@@ -10,7 +10,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="site-theme">
+<body class="site-theme performance-page">
+  <!-- overlay for mobile menu -->
+  <div id="menu-overlay" class="menu-overlay"></div>
+
   <nav id="sidebar-menu" class="sidebar-menu">
     <div class="sidebar-header">
       <h2>Menu</h2>
@@ -24,9 +27,13 @@
 
   <div class="container">
     <header class="app-header">
+      <button id="menu-toggle-btn" class="menu-toggle-btn" aria-label="Abrir menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
       <div class="logo-header">
-        <img class="logo-img-header" src="assets/logo.svg" alt="Concursando" />
+        <img class="logo-img-header" src="assets/logo.svg" alt="Concursando" style="width:140px;max-height:140px;" />
       </div>
+      <div class="header-space"></div>
     </header>
 
     <section class="page-hero">
@@ -60,5 +67,18 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="desempenho.js"></script>
+
+  <script>
+    // menu open/close for desempenho page (simple, mirrors quiz.html behavior)
+    (function(){
+      const sidebarMenu = document.getElementById('sidebar-menu');
+      const menuOverlay = document.getElementById('menu-overlay');
+      const toggle = document.getElementById('menu-toggle-btn');
+      const logoutBtn = document.getElementById('logout-btn-menu');
+      if (toggle) toggle.addEventListener('click', ()=>{ sidebarMenu.classList.toggle('active'); menuOverlay.classList.toggle('active'); });
+      if (menuOverlay) menuOverlay.addEventListener('click', ()=>{ sidebarMenu.classList.remove('active'); menuOverlay.classList.remove('active'); });
+      if (logoutBtn) logoutBtn.addEventListener('click', ()=>{ localStorage.removeItem('token'); localStorage.removeItem('username'); window.location.href = 'index.html'; });
+    })();
+  </script>
 </body>
 </html>
