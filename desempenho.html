@@ -6,6 +6,7 @@
   <title>Concursando - Meu Desempenho</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="icons.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -19,7 +20,7 @@
       <h2>Menu</h2>
     </div>
     <ul class="sidebar-links">
-      <li><a href="index.html"><i class="fa-solid fa-house"></i> Início</a></li>
+  <li><a href="quiz.html"><i class="fa-solid fa-house"></i> Início</a></li>
       <li><a href="conta.html"><i class="fa-solid fa-user"></i> Minha Conta</a></li>
       <li><a href="desempenho.html"><i class="fa-solid fa-chart-line"></i> Meu Desempenho</a></li>
     </ul>
@@ -27,12 +28,12 @@
   </nav>
 
   <div class="container">
-    <header class="app-header">
+    <header class="app-header" role="banner">
       <button id="menu-toggle-btn" class="menu-toggle-btn" aria-label="Abrir menu">
         <i class="fa-solid fa-bars"></i>
       </button>
       <div class="logo-header">
-        <img class="logo-img-header" src="assets/logo.svg" alt="Concursando" style="width:140px;max-height:140px;" />
+        <img class="logo-img-header" src="assets/logo.svg" alt="Concursando" />
       </div>
       <div class="header-space"></div>
     </header>
@@ -48,7 +49,7 @@
       <div id="perf-wrapper">
         <div id="perf-top" style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start">
           <div id="chart-card" class="quiz-card" style="flex:1;min-width:320px;max-width:640px">
-            <canvas id="themesChart" width="400" height="260"></canvas>
+            <canvas id="themesChart"></canvas>
           </div>
 
           <div id="summary-card" class="quiz-card" style="width:320px;min-width:260px">
