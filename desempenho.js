@@ -36,20 +36,17 @@ async function init() {
     const ctx = document.getElementById('themesChart').getContext('2d');
     // create chart and use Chart.js internal legend positioned below the chart
     let chart = new Chart(ctx, {
-      type: 'bar',
-      data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [], borderRadius:6 }] },
+      type: 'pie',
+      data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [] }] },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          // legend disabled: we remove the dataset label and don't show legend
-          legend: { display: false }
+          // legend disabled (cards provide the details)
+          legend: { display: false },
+          tooltip: { enabled: true }
         },
-        layout: { padding: { bottom: 12, top: 6 } },
-        scales: {
-          y: { beginAtZero: true },
-          x: { ticks: { font: { size: 11 }, maxRotation: 15, minRotation: 0 } }
-        }
+        layout: { padding: { bottom: 12, top: 6 } }
       }
     });
 
