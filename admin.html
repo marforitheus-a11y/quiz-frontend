@@ -32,8 +32,8 @@
     .btn-delete:hover { background:#fecaca }
     .btn-small { background:transparent;border:1px solid rgba(0,0,0,0.06);padding:6px 8px;border-radius:8px;font-weight:700 }
 
-    /* Categories table scroll area */
-    .scroll-table { width:100%; background:#fff; border:1px solid #e6edf8; border-radius:12px; overflow:auto; max-height:300px; box-shadow:0 6px 18px rgba(2,6,23,0.04) }
+  /* Categories / Users table scroll area */
+  .scroll-table { width:100%; background:#fff; border:1px solid #e6edf8; border-radius:12px; overflow:auto; max-height:420px; position:relative; box-shadow:0 6px 18px rgba(2,6,23,0.04) }
     .scroll-table table { width:100%; border-collapse:collapse; font-size:14px }
     .scroll-table thead th { position:sticky; top:0; background:linear-gradient(90deg,#f8fafc,#ffffff); padding:12px 16px; text-align:left; border-bottom:1px solid #eef2f7 }
     .scroll-table tbody tr { border-bottom:1px solid #f1f5f9 }
@@ -53,6 +53,13 @@
     #users-table-body tr:not(:last-child) {
       border-bottom: 1.5px solid #e5e7eb; /* Tailwind gray-200 */
     }
+  /* Visible search input styling (ensure it stands out) */
+  #user-search { box-shadow: 0 6px 18px rgba(2,6,23,0.04); }
+
+  /* Status pill styles */
+  .status-pill { display:inline-block; padding:6px 10px; border-radius:999px; font-weight:600; font-size:13px; min-width:84px; text-align:center }
+  .status-pill.online { background: linear-gradient(90deg,#10b981,#34d399); color:#fff }
+  .status-pill.offline { background: linear-gradient(90deg,#f3f4f6,#fee2e2); color:#9b1c1c }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -153,7 +160,15 @@
         <button id="reload-users-btn" class="mb-4 px-5 py-2 bg-gray-200 text-gray-800 rounded-xl font-semibold shadow-sm hover:bg-gray-300 transition focus:outline-none focus:ring-4 focus:ring-gray-300">
           Atualizar Lista
         </button>
-        <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
+          <div style="flex:1;min-width:220px;">
+            <input id="user-search" type="search" placeholder="Buscar usuário por nome..." aria-label="Buscar usuários" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e6edf8;box-shadow:0 4px 12px rgba(2,6,23,0.04);" />
+          </div>
+          <div style="white-space:nowrap"> 
+            <!-- botão já existe acima (Atualizar Lista) -->
+          </div>
+        </div>
+        <div class="scroll-table">
           <table class="min-w-full table-auto border-collapse text-left text-gray-800">
             <thead class="bg-blue-600 text-white select-none">
               <tr>

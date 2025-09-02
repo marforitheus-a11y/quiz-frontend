@@ -90,10 +90,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     // search input for users
     const userSearch = document.getElementById('user-search');
     if (userSearch) {
+        // simple debounce to avoid flood on fast typing
+        let _deb = null;
+        userSearch.placeholder = userSearch.placeholder || 'Buscar usuário por nome...';
         userSearch.addEventListener('input', (e) => {
-            const q = String(e.target.value || '').trim().toLowerCase();
-            renderUsersFiltered(q);
+            clearTimeout(_deb);
+            _deb = setTimeout(() => {
+                const q = String(e.target.value || '').trim().toLowerCase();
+                renderUsersFiltered(q);
+            }, 160);
         });
+        // ensure it's visible and accessible
+        userSearch.setAttribute('autocomplete', 'off');
     }
 
     const createRootBtn = document.getElementById('create-root-category');
@@ -461,13 +469,15 @@ function renderUsersFiltered(query) {
         return;
     }
     list.forEach(user => {
-        const activeIcon = user.isActive ? '<span class="status-icon active" title="Online"></span>' : '<span class="status-icon inactive" title="Offline"></span>';
+        // determine online status from several possible fields
+        const isActive = !!(user.isActive || user.online || user.is_online || user.last_seen && (Date.now() - new Date(user.last_seen).getTime() < 1000 * 60 * 5)); // treat last_seen within 5m as online
+        const statusHtml = `<span class="status-pill ${isActive ? 'online' : 'offline'}">${isActive ? 'Online' : 'Offline'}</span>`;
         const expirationDate = user.subscription_expires_at ? new Date(user.subscription_expires_at).toLocaleDateString('pt-BR') : 'N/A';
         const row = `
             <tr>
                 <td>${user.id}</td>
                 <td class="no-break">${user.username}</td>
-                <td>${activeIcon}</td>
+                <td>${statusHtml}</td>
                 <td>${expirationDate}</td>
                 <td><button class="btn-delete" onclick="deleteUser(${user.id})">Apagar</button></td>
             </tr>
