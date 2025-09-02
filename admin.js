@@ -1011,7 +1011,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(parsed)
             });
-            if (!resp.ok) { const t = await resp.text(); return alert('Erro ao salvar: ' + t); }
+            if (!resp.ok) {
+                const bodyText = await resp.text();
+                try {
+                    const j = JSON.parse(bodyText);
+                    if (j && j.error) return alert('Erro ao salvar: ' + j.error + '\n\nResposta completa: ' + bodyText);
+                    if (j && j.message) return alert('Erro ao salvar: ' + j.message + '\n\nResposta completa: ' + bodyText);
+                } catch (e) {
+                    // not JSON
+                }
+                return alert('Erro ao salvar: ' + bodyText);
+            }
             alert('Questão atualizada com sucesso.');
             if (reportJsonModal) reportJsonModal.style.display = 'none';
             // refresh reports list
