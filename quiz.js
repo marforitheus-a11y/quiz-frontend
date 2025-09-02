@@ -161,17 +161,23 @@ function displaySetupScreen(mainContent, themes = []) {
                                     themeHTML += `</div></div></div>`;
         }
 
-    mainContent.innerHTML = `
+        mainContent.innerHTML = `
         <div id="setup-screen">
             <h2>Crie seu Simulado</h2>
             <div id="theme-selection">
                 <h3>1. Selecione os Temas</h3>
                 ${themeHTML}
             </div>
-            <div class="controls-row">
-              <input type="number" id="question-count" value="5" min="1" class="input">
-              <button id="start-btn" class="btn-main">Iniciar Simulado</button>
-            </div>
+                        <div class="controls-row">
+                            <div style="display:flex;gap:8px;align-items:center">
+                                <label style="font-weight:600">Dificuldades:</label>
+                                <label><input type="checkbox" name="difficulty" value="easy" checked> Fácil</label>
+                                <label><input type="checkbox" name="difficulty" value="medium"> Média</label>
+                                <label><input type="checkbox" name="difficulty" value="hard"> Difícil</label>
+                            </div>
+                            <input type="number" id="question-count" value="5" min="1" class="input" style="width:120px">
+                            <button id="start-btn" class="btn-main">Iniciar Simulado</button>
+                        </div>
         </div>
     `;
     const startBtn = document.getElementById('start-btn');
@@ -181,6 +187,33 @@ function displaySetupScreen(mainContent, themes = []) {
     if (questionCountInput) questionCountInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') startBtn.click();
     });
+    // when difficulty checkboxes change or themes change, update available counts
+    function getSelectedDifficulties() {
+        return Array.from(document.querySelectorAll('input[name="difficulty"]:checked')).map(cb => cb.value);
+    }
+    async function refreshCountsForSelectedThemes() {
+        const selectedThemes = Array.from(document.querySelectorAll('input[name="theme"]:checked')).map(cb => parseInt(cb.value));
+        const difficulties = getSelectedDifficulties();
+        const countInput = document.getElementById('question-count');
+        if (selectedThemes.length === 0) return;
+        try {
+            const resp = await fetch(`${API_URL}/questions/counts`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ themeIds: selectedThemes })
+            });
+            if (!resp.ok) return;
+            const data = await resp.json();
+            // sum counts for selected difficulties
+            let total = 0;
+            difficulties.forEach(d => { if (data[d]) total += Number(data[d]); });
+            if (total > 0) countInput.value = Math.min(total, parseInt(countInput.min || '1', 10) || total) || total;
+        } catch (err) { console.warn('refreshCounts failed', err); }
+    }
+    // wire difficulty and theme checkboxes to refresh counts
+    document.querySelectorAll('input[name="difficulty"]').forEach(cb => cb.addEventListener('change', refreshCountsForSelectedThemes));
+    // also refresh when theme checkboxes change
+    document.addEventListener('change', (e) => { if (e.target && e.target.name === 'theme') refreshCountsForSelectedThemes(); });
     // discipline / subject select behavior: populate subject select and filter rows
     const disciplineSelect = document.getElementById('discipline-select');
     const subjectSelect = document.getElementById('subject-select');
@@ -241,6 +274,8 @@ function displaySetupScreen(mainContent, themes = []) {
 async function startQuiz(mainContent) {
     const selectedThemeIds = Array.from(document.querySelectorAll('input[name="theme"]:checked')).map(cb => parseInt(cb.value));
     const numQuestions = parseInt(document.getElementById('question-count').value, 10);
+    const selectedDifficulties = Array.from(document.querySelectorAll('input[name="difficulty"]:checked')).map(cb => cb.value);
+    if (selectedDifficulties.length === 0) { alert('Por favor, selecione pelo menos uma dificuldade.'); return; }
     if (selectedThemeIds.length === 0) { alert("Por favor, selecione pelo menos um tema."); return; }
     if (isNaN(numQuestions) || numQuestions <= 0) { alert(`Número de questões inválido.`); return; }
 
@@ -248,7 +283,7 @@ async function startQuiz(mainContent) {
         const response = await fetch(`${API_URL}/questions`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ themeIds: selectedThemeIds, count: numQuestions })
+            body: JSON.stringify({ themeIds: selectedThemeIds, count: numQuestions, difficulties: selectedDifficulties })
         });
         if (!response.ok) {
             const txt = await response.text();
