@@ -301,7 +301,10 @@ function displayQuestion(mainContent) {
         });
     });
 
-    // add respond button
+    // add respond and report buttons inside an actions container
+    const actions = document.createElement('div');
+    actions.className = 'quiz-actions';
+
     const respondBtn = document.createElement('button');
     respondBtn.textContent = 'Responder';
     respondBtn.className = 'btn-respond';
@@ -310,7 +313,50 @@ function displayQuestion(mainContent) {
         if (!selected) { alert('Selecione uma opção antes de responder.'); return; }
         selectAnswer(selected, mainContent);
     });
-    document.getElementById('quiz-screen').appendChild(respondBtn);
+
+    const reportBtn = document.createElement('button');
+    reportBtn.textContent = 'Reportar Erro';
+    reportBtn.className = 'btn-report';
+    reportBtn.addEventListener('click', () => openReportModal(currentQuestion));
+
+    actions.appendChild(respondBtn);
+    actions.appendChild(reportBtn);
+    document.getElementById('quiz-screen').appendChild(actions);
+}
+
+function openReportModal(question) {
+    const modal = document.getElementById('report-modal');
+    if (!modal) return;
+    document.getElementById('report-question-id').value = question.id;
+    document.getElementById('report-question-text').textContent = question.question;
+    document.getElementById('report-details').value = '';
+    modal.style.display = 'flex';
+    // wire cancel
+    document.getElementById('cancel-report').onclick = () => { modal.style.display = 'none'; };
+    const form = document.getElementById('report-form');
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const qid = document.getElementById('report-question-id').value;
+        const type = document.getElementById('report-type').value;
+        const details = document.getElementById('report-details').value || '';
+        try {
+            const resp = await fetch(`${API_URL}/report-error`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ questionId: qid, errorType: type, details })
+            });
+            if (!resp.ok) {
+                const t = await resp.text();
+                alert('Erro ao enviar reporte: ' + t);
+                return;
+            }
+            alert('Reporte enviado. Obrigado pela colaboração.');
+            modal.style.display = 'none';
+        } catch (err) {
+            console.error('report submit failed', err);
+            alert('Erro ao enviar reporte. Tente novamente mais tarde.');
+        }
+    };
 }
 
 function selectAnswer(selectedElement, mainContent) {

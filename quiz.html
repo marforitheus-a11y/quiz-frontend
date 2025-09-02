@@ -74,6 +74,34 @@
     </div>
   </div>
 
+  <!-- Modal Reportar Erro -->
+  <div id="report-modal" class="global-modal" style="display:none;">
+    <div class="global-modal-card" style="max-width:640px;padding:18px;">
+      <h3 style="margin:0 0 8px 0;font-weight:700">Reportar erro na questão</h3>
+      <p id="report-question-text" style="font-size:14px;color:#333;margin-bottom:8px"></p>
+      <form id="report-form">
+        <input type="hidden" id="report-question-id" />
+        <div style="margin-bottom:8px">
+          <label for="report-type" style="display:block;font-weight:600;margin-bottom:4px">Tipo de erro</label>
+          <select id="report-type" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6edf8">
+            <option value="errata">Errata no enunciado</option>
+            <option value="options">Opções incorretas</option>
+            <option value="answer">Resposta incorreta</option>
+            <option value="other">Outro</option>
+          </select>
+        </div>
+        <div style="margin-bottom:12px">
+          <label for="report-details" style="display:block;font-weight:600;margin-bottom:4px">Descreva o problema</label>
+          <textarea id="report-details" rows="4" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6edf8"></textarea>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px">
+          <button type="button" id="cancel-report" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">Enviar reporte</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Script do Quiz -->
   <script src="quiz.js"></script>
 
