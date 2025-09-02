@@ -69,17 +69,28 @@ async function init() {
     async function renderForTheme(selectedTid) {
       document.getElementById('summary-text').textContent = 'Carregando dados...';
       const groupsEl = document.getElementById('groups'); groupsEl.innerHTML = '';
-      const labels = [];
-      const counts = [];
-      const colors = [];
+      // Build deduplicated arrays: aggregate by theme name to avoid duplicated legend entries
       const displayArr = selectedTid === '__all__' ? arr : arr.filter(x => String(x.tid) === String(selectedTid));
+      const aggByName = {};
       displayArr.forEach((g,i)=>{
-        labels.push(g.name);
-        counts.push(g.total);
+        const name = g.name || `Tema ${g.tid}`;
         const c = `hsl(${(i*37)%360} 70% 55% / 0.85)`;
-        colors.push(c);
+        if (!aggByName[name]) aggByName[name] = { total:0, correct:0, color:c };
+        aggByName[name].total += g.total;
+        aggByName[name].correct += g.correct;
+      });
 
-        // build group card
+      const labels = Object.keys(aggByName);
+      const counts = labels.map(l => aggByName[l].total);
+      const colors = labels.map(l => aggByName[l].color);
+
+      // render aggregated group cards (one per deduplicated theme name)
+      labels.forEach((label, idx) => {
+        const data = aggByName[label];
+        const total = data.total;
+        const correct = data.correct;
+        const pct = total ? Math.round((correct/total)*100) : 0;
+
         const card = document.createElement('div');
         card.className = 'quiz-card theme-card';
         card.style.display = 'flex';
@@ -88,18 +99,18 @@ async function init() {
         card.style.marginBottom = '10px';
 
         const left = document.createElement('div'); left.style.flex='1';
-        const title = document.createElement('div'); title.style.fontWeight='700'; title.textContent = g.name;
-        const meta = document.createElement('div'); meta.style.color='var(--muted)'; meta.style.fontSize='0.95rem'; meta.textContent = `${g.total} questões — ${g.pct}% acertos`;
+        const title = document.createElement('div'); title.style.fontWeight='700'; title.textContent = label;
+        const meta = document.createElement('div'); meta.style.color='var(--muted)'; meta.style.fontSize='0.85rem'; meta.textContent = `${total} questões — ${pct}% acertos`;
         left.appendChild(title); left.appendChild(meta);
 
-        const right = document.createElement('div'); right.style.minWidth='140px'; right.style.textAlign='right';
-        const pct = document.createElement('div'); pct.style.fontWeight='800'; pct.textContent = `${g.pct}%`;
-        const countsText = document.createElement('div'); countsText.style.color='var(--muted)'; countsText.textContent = `${g.correct} acertos • ${g.total - g.correct} erros`;
-        right.appendChild(pct); right.appendChild(countsText);
+        const right = document.createElement('div'); right.style.minWidth='120px'; right.style.textAlign='right';
+        const pctEl = document.createElement('div'); pctEl.style.fontWeight='800'; pctEl.textContent = `${pct}%`;
+        const countsText = document.createElement('div'); countsText.style.color='var(--muted)'; countsText.textContent = `${correct} acertos • ${total - correct} erros`;
+        right.appendChild(pctEl); right.appendChild(countsText);
 
         card.appendChild(left); card.appendChild(right);
         const details = document.createElement('div'); details.style.width='100%'; details.style.overflow='hidden'; details.style.maxHeight='0'; details.style.transition='max-height .28s ease'; details.style.padding='0 12px';
-        const detailsInner = document.createElement('div'); detailsInner.style.padding='10px 0'; detailsInner.style.color='var(--muted)'; detailsInner.textContent = `Acertos: ${g.correct} — Erros: ${g.total - g.correct} — Percentual: ${g.pct}%`;
+        const detailsInner = document.createElement('div'); detailsInner.style.padding='10px 0'; detailsInner.style.color='var(--muted)'; detailsInner.textContent = `Acertos: ${correct} — Erros: ${total - correct} — Percentual: ${pct}%`;
         details.appendChild(detailsInner);
         card.appendChild(details);
         let expanded=false;
@@ -122,35 +133,28 @@ async function init() {
       labels.forEach((lab, i) => {
         const item = document.createElement('div');
         item.className = 'legend-item';
-        item.style.display = 'inline-flex';
-        item.style.alignItems = 'center';
-        item.style.gap = '8px';
-        item.style.margin = '6px 10px';
         item.style.cursor = 'pointer';
 
         const swatch = document.createElement('span');
-        swatch.style.width = '12px';
-        swatch.style.height = '12px';
+        swatch.className = 'legend-swatch';
         swatch.style.background = colors[i];
-        swatch.style.display = 'inline-block';
-        swatch.style.borderRadius = '3px';
 
         const txt = document.createElement('span');
+        txt.className = 'legend-text';
         txt.textContent = lab;
-        txt.style.fontWeight = '600';
-        txt.style.fontSize = '11px';
+        txt.title = lab; // full name on hover
 
         item.appendChild(swatch);
         item.appendChild(txt);
 
-        // toggle bar visibility on click
+        // toggle bar visibility on click — find index of label in chart.data.labels
         item.addEventListener('click', ()=>{
+          const labelIndex = chart.data.labels.indexOf(lab);
           const meta = chart.getDatasetMeta(0);
-          if (meta && meta.data && meta.data[i]) {
-            meta.data[i].hidden = !meta.data[i].hidden;
+          if (labelIndex >= 0 && meta && meta.data && meta.data[labelIndex]) {
+            meta.data[labelIndex].hidden = !meta.data[labelIndex].hidden;
             chart.update();
-            // dim the legend item
-            item.style.opacity = meta.data[i].hidden ? '0.45' : '1';
+            item.style.opacity = meta.data[labelIndex].hidden ? '0.45' : '1';
           }
         });
 
