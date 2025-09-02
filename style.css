@@ -62,8 +62,7 @@ body::before{
   z-index: 0; /* sits above the body background but behind page content */
   pointer-events: none;
   /* try absolute root first, then relative and assets/ as fallbacks for different hosting setups */
-  /* use CSS variable when set by loader; otherwise fallback to common paths */
-  background-image: linear-gradient(rgba(0,0,0,0.52), rgba(0,0,0,0.52)), var(--bg-image-url, url('/background.png'), url('./background.png'), url('assets/background.png'));
+  background-image: linear-gradient(rgba(0,0,0,0.52), rgba(0,0,0,0.52)), url('/background.png'), url('./background.png'), url('assets/background.png');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -84,12 +83,6 @@ body > *{position:relative;z-index:1}
     opacity: 0.12;
     background-attachment: scroll;
   }
-}
-
-/* when the JS loader applied the background we lower the dark overlay intensity */
-body.bg-loaded::before{
-  opacity: 0.22; /* slightly less dark when image is confirmed */
-  background-image: linear-gradient(rgba(0,0,0,0.38), rgba(0,0,0,0.38)), var(--bg-image-url, url('/background.png'));
 }
 
 /* LOGIN CARD */
@@ -123,7 +116,15 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 
 /* QUIZ / APP BASIC LAYOUT */
 .container{width:100%;max-width:980px;margin:0 auto;padding:6px}
-.app-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-radius:10px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.04);box-shadow:0 6px 20px rgba(0,0,0,0.03)}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:18px 18px;border-radius:10px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.04);box-shadow:0 6px 20px rgba(0,0,0,0.03)}
+
+/* Performance page: larger white bar behind logo to visually fit large logo */
+body.performance-page .app-header{
+  padding:26px 18px; /* taller */
+  border-radius:12px;
+  background:rgba(255,255,255,0.85);
+}
+body.performance-page .logo-img-header{width:180px;max-height:180px}
 .brand-title{color:var(--text);font-weight:600}
 .logo-header{text-align:center}
 .logo-img-header{width:56px;height:56px}
@@ -140,6 +141,10 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
   max-height:420px;
   margin:0 auto;
 }
+
+/* Center chart-card contents so legend underneath doesn't push canvas to a corner */
+#chart-card{display:flex;flex-direction:column;align-items:center;justify-content:center}
+#chart-card canvas{max-width:100% !important}
 
 /* Responsive logo sizes (3x the prior responsive sizes) */
 @media (max-width:700px){

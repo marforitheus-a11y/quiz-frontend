@@ -34,7 +34,25 @@ async function init() {
 
     // setup chart
     const ctx = document.getElementById('themesChart').getContext('2d');
-    let chart = new Chart(ctx, { type: 'bar', data: { labels: [], datasets: [{ label: 'Perguntas respondidas', data: [], backgroundColor: [], borderRadius:6 }] }, options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}} } });
+    let chart = new Chart(ctx, {
+      type: 'bar',
+      data: { labels: [], datasets: [{ label: 'Perguntas respondidas', data: [], backgroundColor: [], borderRadius:6 }] },
+      options: {
+        responsive:true,
+        plugins:{
+          legend:{
+            display:true,
+            position:'bottom',
+            labels:{
+              usePointStyle:true,
+              boxWidth:12,
+              padding:16,
+            }
+          }
+        },
+        scales:{y:{beginAtZero:true}}
+      }
+    });
 
     // Build aggregate array from themeAgg
     const arr = Object.keys(themeAgg).map(tid => ({ tid, name: themeMap[tid] || 'Sem Tema', ...themeAgg[tid], pct: Math.round((themeAgg[tid].correct / themeAgg[tid].total) * 100) }));
