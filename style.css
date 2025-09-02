@@ -48,6 +48,39 @@ body{
   justify-content:center;
   align-items:flex-start;
   padding:36px 20px;
+  position:relative; /* allow overlay pseudo-elements */
+}
+
+/* Background image UX: subtle, darkened, low-opacity decorative layer
+   - Uses a fixed pseudo-element so content can remain interactive above it
+   - Adds a dark overlay to keep foreground contrast high (accessibility)
+   - Provides responsive opacity/position tweaks for mobile performance */
+body::before{
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0; /* sits above the body background but behind page content */
+  pointer-events: none;
+  background-image: linear-gradient(rgba(0,0,0,0.46), rgba(0,0,0,0.46)), url('background.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  filter: saturate(0.88) contrast(0.95);
+  opacity: 0.16; /* overall subtlety: adjust between 0.08 - 0.22 if needed */
+  will-change: transform, opacity;
+}
+
+/* Ensure all main content stacks above the decorative background */
+body > *{position:relative;z-index:1}
+
+/* Mobile: avoid fixed backgrounds for smoother scrolling and reduce opacity */
+@media (max-width:700px){
+  body::before{
+    position: absolute;
+    background-position: top center;
+    opacity: 0.12;
+    background-attachment: scroll;
+  }
 }
 
 /* LOGIN CARD */
