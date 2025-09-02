@@ -490,7 +490,55 @@ async function loadActiveSessions() {
     // Implemente se desejar
 }
 async function loadReports() {
-    // Implemente se desejar
+    const body = document.getElementById('reports-table-body');
+    if (!body) return;
+    try {
+        const resp = await fetch(`${API_URL}/admin/reports`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!resp.ok) {
+            const t = await resp.text();
+            console.error('loadReports failed', resp.status, t);
+            body.innerHTML = `<tr><td colspan="4" class="text-red-600">Erro ao carregar reportes.</td></tr>`;
+            return;
+        }
+        const reports = await resp.json();
+        body.innerHTML = '';
+        if (!reports || reports.length === 0) {
+            body.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-gray-500">Nenhum reporte recente.</td></tr>`;
+            return;
+        }
+        reports.forEach(r => {
+            const row = document.createElement('tr');
+            const detailsPreview = r.details ? (r.details.length > 80 ? r.details.slice(0,77) + '...' : r.details) : '';
+            row.innerHTML = `
+                <td>${r.id}</td>
+                <td class="no-break">${r.reported_by || '—'}</td>
+                <td title="${r.details ? r.details.replace(/"/g,'\"') : ''}">${detailsPreview}</td>
+                <td>${r.error_type || ''}</td>
+                <td>${new Date(r.reported_at).toLocaleString()}</td>
+                <td style="text-align:right"><button class="btn-secondary" data-report-id="${r.id}" data-question-id="${r.question_id || ''}">Analisar</button></td>
+            `;
+            body.appendChild(row);
+        });
+
+        // wire analyze buttons
+        body.querySelectorAll('button[data-report-id]').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const qid = btn.getAttribute('data-question-id');
+                if (!qid) return alert('Questão associada não disponível.');
+                // fetch full question JSON
+                try {
+                    const qresp = await fetch(`${API_URL}/admin/questions/${qid}`, { headers: { 'Authorization': `Bearer ${token}` } });
+                    if (!qresp.ok) { const t = await qresp.text(); return alert('Erro ao buscar questão: ' + t); }
+                    const qjson = await qresp.json();
+                    // open modal and populate
+                    document.getElementById('report-json-text').value = JSON.stringify(qjson, null, 2);
+                    document.getElementById('report-json-modal').style.display = 'flex';
+                } catch (err) { console.error('fetch question failed', err); alert('Erro ao buscar questão. Veja console.'); }
+            });
+        });
+    } catch (err) {
+        console.error('Erro loadReports:', err);
+    }
 }
 
 // --- FUNÇÕES GLOBAIS DE AÇÃO (para botões onClick) ---
@@ -944,6 +992,32 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // wire report JSON modal controls
+    const reportJsonModal = document.getElementById('report-json-modal');
+    const closeReportJson = document.getElementById('close-report-json');
+    const cancelReportJson = document.getElementById('cancel-report-json');
+    const saveReportJson = document.getElementById('save-report-json');
+    if (closeReportJson) closeReportJson.addEventListener('click', () => { if (reportJsonModal) reportJsonModal.style.display = 'none'; });
+    if (cancelReportJson) cancelReportJson.addEventListener('click', () => { if (reportJsonModal) reportJsonModal.style.display = 'none'; });
+    if (saveReportJson) saveReportJson.addEventListener('click', async () => {
+        const txt = document.getElementById('report-json-text').value;
+        try {
+            const parsed = JSON.parse(txt);
+            const qid = parsed.id;
+            if (!qid) return alert('JSON inválido: campo id ausente.');
+            const resp = await fetch(`${API_URL}/admin/questions/${qid}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(parsed)
+            });
+            if (!resp.ok) { const t = await resp.text(); return alert('Erro ao salvar: ' + t); }
+            alert('Questão atualizada com sucesso.');
+            if (reportJsonModal) reportJsonModal.style.display = 'none';
+            // refresh reports list
+            loadReports();
+        } catch (err) { console.error('save report json failed', err); alert('JSON inválido ou erro de rede. Veja console.'); }
+    });
 });
 
 async function testApi() {

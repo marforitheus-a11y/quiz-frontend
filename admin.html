@@ -174,8 +174,9 @@
               <tr>
                 <th class="px-5 py-3 font-semibold">ID</th>
                 <th class="px-5 py-3 font-semibold">Usuário</th>
-                <th class="px-5 py-3 font-semibold">Status</th>
-                <th class="px-5 py-3 font-semibold">Validade</th>
+                <th class="px-5 py-3 font-semibold">Detalhes</th>
+                <th class="px-5 py-3 font-semibold">Tipo</th>
+                <th class="px-5 py-3 font-semibold">Reportado Por</th>
                 <th class="px-5 py-3 font-semibold">Ação</th>
               </tr>
             </thead>
@@ -232,6 +233,21 @@
           </table>
         </div>
       </section>
+
+        <!-- Modal para analisar JSON da questão reportada -->
+        <div id="report-json-modal" style="display:none;position:fixed;inset:0;z-index:80;align-items:center;justify-content:center;background:rgba(0,0,0,0.4)">
+          <div style="background:#fff;padding:16px;border-radius:12px;max-width:900px;width:95%;max-height:80vh;overflow:auto">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <h3 style="margin:0">JSON da Questão</h3>
+              <button id="close-report-json" style="background:transparent;border:none;font-size:18px;cursor:pointer">✕</button>
+            </div>
+            <textarea id="report-json-text" style="width:100%;height:60vh;font-family:monospace;padding:8px;border:1px solid #e6edf8;border-radius:8px"></textarea>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+              <button id="cancel-report-json" class="btn-secondary">Fechar</button>
+              <button id="save-report-json" class="btn-primary">Salvar alterações</button>
+            </div>
+          </div>
+        </div>
     </main>
   </div>
 
