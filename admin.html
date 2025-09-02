@@ -115,6 +115,14 @@
             <input type="number" id="questionCount" name="questionCount" value="5" min="1" required class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
           </div>
           <div class="flex flex-col">
+            <label for="difficultySelect" class="mb-2 font-medium text-gray-700">Dificuldade</label>
+            <select id="difficultySelect" name="difficultySelect" class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="easy">Fácil</option>
+              <option value="medium">Média</option>
+              <option value="hard">Difícil</option>
+            </select>
+          </div>
+          <div class="flex flex-col">
             <label for="categorySelect" class="mb-2 font-medium text-gray-700">Categoria</label>
             <select id="categorySelect" name="categorySelect" class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="">Sem categoria</option>
@@ -332,6 +340,14 @@
           <div class="flex flex-col">
             <label for="addQuestionCount" class="mb-2 font-medium text-gray-700">Quantidade de Questões a Gerar</label>
             <input type="number" id="addQuestionCount" value="5" min="1" class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900" />
+          </div>
+          <div class="flex flex-col">
+            <label for="addDifficulty" class="mb-2 font-medium text-gray-700">Dificuldade</label>
+            <select id="addDifficulty" class="rounded-xl border border-gray-300 px-4 py-3 text-gray-900">
+              <option value="easy">Fácil</option>
+              <option value="medium">Média</option>
+              <option value="hard">Difícil</option>
+            </select>
           </div>
           <div class="flex justify-end gap-3 mt-4">
             <button type="button" id="cancel-add-questions" class="px-5 py-2 rounded-xl bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold">Cancelar</button>

@@ -159,6 +159,9 @@ async function handleThemeFormSubmit(e) {
     const formData = new FormData();
     formData.append('themeName', e.target.themeName.value);
     formData.append('questionCount', e.target.questionCount.value);
+    // include difficulty selection (easy|medium|hard)
+    const diff = document.getElementById('difficultySelect') ? document.getElementById('difficultySelect').value : 'easy';
+    formData.append('difficulty', diff);
     const source = document.getElementById('sourceType') ? document.getElementById('sourceType').value : 'pdf';
     formData.append('sourceType', source);
     if (source === 'pdf') formData.append('pdfFile', e.target.pdfFile.files[0]);
@@ -921,6 +924,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const src = document.getElementById('addSourceType').value;
             fd.append('sourceType', src);
             fd.append('questionCount', document.getElementById('addQuestionCount').value || '5');
+            // include difficulty when adding questions
+            const addDiff = document.getElementById('addDifficulty') ? document.getElementById('addDifficulty').value : 'easy';
+            fd.append('difficulty', addDiff);
             if (src === 'pdf') {
                 const f = document.getElementById('addPdfFile').files[0];
                 if (!f) { addStatus.textContent = 'Selecione um arquivo PDF.'; return; }
