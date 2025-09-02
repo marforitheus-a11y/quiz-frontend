@@ -116,7 +116,7 @@ input:focus{outline:none;box-shadow:0 6px 18px rgba(129,212,250,0.12);border-col
 
 /* QUIZ / APP BASIC LAYOUT */
 .container{width:100%;max-width:980px;margin:0 auto;padding:6px}
-.app-header{display:flex;align-items:center;justify-content:space-between;padding:18px 18px;border-radius:10px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.04);box-shadow:0 6px 20px rgba(0,0,0,0.03)}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:26px 18px;border-radius:10px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.04);box-shadow:0 6px 20px rgba(0,0,0,0.03)}
 
 /* Performance page: larger white bar behind logo to visually fit large logo */
 body.performance-page .app-header{
