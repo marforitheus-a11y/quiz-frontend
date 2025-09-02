@@ -148,8 +148,9 @@ body.performance-page .logo-img-header{width:180px;max-height:180px}
 
 /* Chart.js legend: make items wrap and center under the chart */
 .chartjs-legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding-top:12px}
-.chartjs-legend li{list-style:none;display:flex;align-items:center;gap:8px;font-weight:600;color:var(--text)}
-.chartjs-legend span{display:inline-block;width:12px;height:12px;border-radius:3px}
+.chartjs-legend{font-size:11px}
+.chartjs-legend .legend-item{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--text);margin:4px 8px}
+.chartjs-legend .legend-item span{display:inline-block;width:12px;height:12px;border-radius:3px}
 
 /* Responsive logo sizes (3x the prior responsive sizes) */
 @media (max-width:700px){

@@ -34,47 +34,27 @@ async function init() {
 
     // setup chart
     const ctx = document.getElementById('themesChart').getContext('2d');
+    // create chart with internal legend disabled; we'll render a single custom HTML legend below the canvas
     let chart = new Chart(ctx, {
       type: 'bar',
-      data: { labels: [], datasets: [{ /* dataset-level label intentionally left blank so legend is per-item */ label: '', data: [], backgroundColor: [], borderRadius:6 }] },
+      data: { labels: [], datasets: [{ /* dataset-level label intentionally left blank */ label: '', data: [], backgroundColor: [], borderRadius:6 }] },
       options: {
         responsive:true,
         plugins:{
-          legend:{
-            display:true,
-            position:'bottom',
-            align: 'center',
-            labels:{
-              usePointStyle:true,
-              boxWidth:12,
-              padding:12,
-              // generate one legend item per data (per bar)
-              generateLabels: function(chart) {
-                const data = chart.data;
-                if (!data || !data.datasets || !data.datasets.length) return [];
-                const ds = data.datasets[0];
-                return data.labels.map((label, i) => ({
-                  text: label,
-                  fillStyle: Array.isArray(ds.backgroundColor) ? ds.backgroundColor[i] : ds.backgroundColor,
-                  hidden: chart.getDatasetMeta(0).data[i].hidden,
-                  index: i
-                }));
-              }
-            },
-            // clicking a legend item toggles the visibility of the corresponding bar
-            onClick: function(e, legendItem, legend) {
-              const index = legendItem.index;
-              const ci = legend.chart;
-              const meta = ci.getDatasetMeta(0);
-              if (!meta || !meta.data || !meta.data[index]) return;
-              meta.data[index].hidden = !meta.data[index].hidden;
-              ci.update();
-            }
-          }
+          legend:{ display:false }
         },
         scales:{y:{beginAtZero:true}}
       }
     });
+
+    // ensure legend container exists under the chart
+    let legendContainer = document.getElementById('chart-legend');
+    if (!legendContainer) {
+      legendContainer = document.createElement('div');
+      legendContainer.id = 'chart-legend';
+      legendContainer.className = 'chartjs-legend';
+      document.getElementById('chart-card').appendChild(legendContainer);
+    }
 
     // Build aggregate array from themeAgg
     const arr = Object.keys(themeAgg).map(tid => ({ tid, name: themeMap[tid] || 'Sem Tema', ...themeAgg[tid], pct: Math.round((themeAgg[tid].correct / themeAgg[tid].total) * 100) }));
@@ -136,6 +116,46 @@ async function init() {
       chart.data.datasets[0].data = counts;
       chart.data.datasets[0].backgroundColor = colors;
       chart.update();
+
+      // build custom HTML legend (single source of legend, avoids duplicated legends)
+      legendContainer.innerHTML = '';
+      labels.forEach((lab, i) => {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.style.display = 'inline-flex';
+        item.style.alignItems = 'center';
+        item.style.gap = '8px';
+        item.style.margin = '6px 10px';
+        item.style.cursor = 'pointer';
+
+        const swatch = document.createElement('span');
+        swatch.style.width = '12px';
+        swatch.style.height = '12px';
+        swatch.style.background = colors[i];
+        swatch.style.display = 'inline-block';
+        swatch.style.borderRadius = '3px';
+
+        const txt = document.createElement('span');
+        txt.textContent = lab;
+        txt.style.fontWeight = '600';
+        txt.style.fontSize = '11px';
+
+        item.appendChild(swatch);
+        item.appendChild(txt);
+
+        // toggle bar visibility on click
+        item.addEventListener('click', ()=>{
+          const meta = chart.getDatasetMeta(0);
+          if (meta && meta.data && meta.data[i]) {
+            meta.data[i].hidden = !meta.data[i].hidden;
+            chart.update();
+            // dim the legend item
+            item.style.opacity = meta.data[i].hidden ? '0.45' : '1';
+          }
+        });
+
+        legendContainer.appendChild(item);
+      });
 
       document.getElementById('summary-text').textContent = `Temas presentes: ${arr.length} — total de questões: ${Object.values(themeAgg).reduce((s,x)=>s+x.total,0)}`;
     }
