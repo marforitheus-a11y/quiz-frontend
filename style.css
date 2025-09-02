@@ -363,6 +363,23 @@ body.site-theme .scroll-table td:first-child .theme-name{display:block;max-width
   .win-folder{width:44%;margin:6px}
 }
 
+/* Mobile tweaks for quiz setup controls: stack selects/controls and hide the 'Assunto' field
+   so the Start button doesn't overflow the viewport. Keeps button visible inside background. */
+@media (max-width:700px) {
+  /* make the discipline/subject selects stack vertically */
+  .select-pair { display:flex; flex-direction:column; gap:10px; }
+  /* hide secondary select (subject) to avoid overflow on small screens */
+  .select-box.secondary { display:none !important; }
+
+  /* stack difficulties, count input and button vertically */
+  .controls-row { display:flex; flex-direction:column; gap:10px; align-items:flex-start; padding:12px 8px; }
+  .controls-row > div { width:100%; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  /* make the question count input full-width and more touch-friendly */
+  #question-count { width:100%; max-width:100%; }
+  /* put the start button under the controls and make it full width */
+  .controls-row .btn-main { width:100%; align-self:stretch; padding:12px; font-size:1rem; }
+}
+
 /* Animations for folder open/close */
 .folder-list[aria-hidden="true"]{display:none}
 .folder-list.animate-open{display:flex;animation:folderOpen .22s ease forwards}

@@ -127,7 +127,8 @@ function displaySetupScreen(mainContent, themes = []) {
             themeHTML = '<p>Nenhum tema encontrado. Adicione um tema no Painel de Admin.</p>';
         } else {
             // controls row with discipline/subject selects
-            themeHTML = `<div class="select-pair"><div class="select-box"><label class="select-label">Disciplina</label><select id="discipline-select"><option value="">Selecione a disciplina</option>${disciplineOptions}</select></div><div class="select-box secondary"><label class="select-label">Assunto</label><select id="subject-select"><option value="">Escolha uma disciplina primeiro</option></select></div></div>`;
+            // Note: removed 'Assunto' select for improved mobile layout. Only 'Disciplina' is shown.
+            themeHTML = `<div class="select-pair"><div class="select-box"><label class="select-label">Disciplina</label><select id="discipline-select"><option value="">Selecione a disciplina</option>${disciplineOptions}</select></div></div>`;
             // build flattened rows for table: only theme, question_count and description (keep catId for filtering)
             const rows = [];
             Object.values(categoryMap).forEach(cat => {
@@ -204,32 +205,44 @@ function displaySetupScreen(mainContent, themes = []) {
             });
             if (!resp.ok) return;
             const data = await resp.json();
-            // sum counts for selected difficulties
+            // compute total: if single difficulty selected, show only that difficulty count;
+            // if multiple selected, sum them
             let total = 0;
-            difficulties.forEach(d => { if (data[d]) total += Number(data[d]); });
-            if (total > 0) countInput.value = Math.min(total, parseInt(countInput.min || '1', 10) || total) || total;
+            if (difficulties.length === 1) {
+                const d = difficulties[0];
+                total = Number(data[d] || 0);
+            } else {
+                difficulties.forEach(d => { if (data[d]) total += Number(data[d]); });
+            }
+            // set max and value accordingly
+            countInput.max = String(total);
+            const startBtnEl = document.getElementById('start-btn');
+            if (total <= 0) {
+                countInput.value = 0;
+                if (startBtnEl) startBtnEl.disabled = true;
+            } else {
+                const cur = parseInt(countInput.value, 10) || 0;
+                // keep current if within range, otherwise set to total (or 1 as minimum)
+                const newVal = Math.min(Math.max(cur, 1), total);
+                countInput.value = newVal;
+                if (startBtnEl) startBtnEl.disabled = false;
+            }
         } catch (err) { console.warn('refreshCounts failed', err); }
     }
     // wire difficulty and theme checkboxes to refresh counts
     document.querySelectorAll('input[name="difficulty"]').forEach(cb => cb.addEventListener('change', refreshCountsForSelectedThemes));
     // also refresh when theme checkboxes change
     document.addEventListener('change', (e) => { if (e.target && e.target.name === 'theme') refreshCountsForSelectedThemes(); });
-    // discipline / subject select behavior: populate subject select and filter rows
+    // run once to initialize counts (in case themes are pre-selected)
+    setTimeout(() => refreshCountsForSelectedThemes(), 250);
+    // discipline select behavior: filter rows by selected discipline
     const disciplineSelect = document.getElementById('discipline-select');
-    const subjectSelect = document.getElementById('subject-select');
+    // subjectSelect intentionally omitted (removed from DOM for mobile-friendly layout)
 
     // helper: build subject options for a discipline
+    // simplified: no subject select; just update visibility based on discipline
     function populateSubjectsForDiscipline(did) {
-        subjectSelect.innerHTML = '';
-        if (!did) {
-            subjectSelect.innerHTML = `<option value="">Escolha uma disciplina primeiro</option>`;
-            updateThemeRowsVisibility();
-            return;
-        }
-        const subcats = categoryMap[did].subcats || {};
-        const opts = Object.values(subcats).map(s => `<option value="${s.id}">${s.name} (${s.themes.length})</option>`).join('\n');
-        subjectSelect.innerHTML = `<option value="">Todos os assuntos</option>${opts}`;
-        subjectSelect.value = '';
+        // no subject select in this layout; just update theme row visibility
         updateThemeRowsVisibility();
     }
 
@@ -244,7 +257,7 @@ function displaySetupScreen(mainContent, themes = []) {
 
     function updateThemeRowsVisibility() {
         const did = disciplineSelect.value;
-        const sid = subjectSelect.value;
+        const sid = null; // subject not used in new layout
         // select the div-based theme rows (refactor from table -> flex rows)
         const rows = Array.from(document.querySelectorAll('.theme-row[data-cat-id]'));
         rows.forEach(r => {
@@ -254,15 +267,13 @@ function displaySetupScreen(mainContent, themes = []) {
             if (!did) { r.style.display = 'none'; return; }
             // hide rows that don't belong to the selected discipline
             if (cid !== did) { r.style.display = 'none'; return; }
-            // if a specific subject is selected, only show rows matching that sub-id
-            if (sid && rowSub !== sid) { r.style.display = 'none'; return; }
+            // subject filtering removed in this layout
             // otherwise show
             r.style.display = '';
         });
     }
 
     disciplineSelect.addEventListener('change', (e) => populateSubjectsForDiscipline(e.target.value));
-    subjectSelect.addEventListener('change', updateThemeRowsVisibility);
     // initially hide all rows until selection
     updateThemeRowsVisibility();
     // initialize header visibility
