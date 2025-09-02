@@ -37,16 +37,18 @@ async function init() {
     // create chart and use Chart.js internal legend positioned below the chart
     let chart = new Chart(ctx, {
       type: 'bar',
-      data: { labels: [], datasets: [{ label: 'Perguntas respondidas', data: [], backgroundColor: [], borderRadius:6 }] },
+      data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [], borderRadius:6 }] },
       options: {
-        responsive:true,
-        plugins:{
-          legend:{ display:true, position:'bottom', labels:{ usePointStyle:true, boxWidth:8, padding:6, font:{size:9} } }
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          // legend disabled: we remove the dataset label and don't show legend
+          legend: { display: false }
         },
-        layout:{ padding:{ bottom:18 } },
-        scales:{
-          y:{beginAtZero:true},
-          x:{ ticks:{ font:{size:10}, maxRotation:15, minRotation:0 } }
+        layout: { padding: { bottom: 12, top: 6 } },
+        scales: {
+          y: { beginAtZero: true },
+          x: { ticks: { font: { size: 11 }, maxRotation: 15, minRotation: 0 } }
         }
       }
     });
