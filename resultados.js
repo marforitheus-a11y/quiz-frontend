@@ -66,4 +66,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resultDetails.innerHTML = reviewHTML;
     sessionStorage.removeItem('lastQuizResults');
+
+    // attach report buttons to each question
+    document.querySelectorAll('.review-question').forEach((el, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-secondary';
+        btn.style.marginTop = '8px';
+        btn.textContent = 'Reportar erro';
+        btn.addEventListener('click', ()=> openReportModal(idx));
+        el.appendChild(btn);
+    });
+
+    const reportModal = document.getElementById('report-modal');
+    const reportQuestionText = document.getElementById('report-question-text');
+    const reportDetails = document.getElementById('report-details');
+    const reportSuggestion = document.getElementById('report-suggestion');
+    const cancelReport = document.getElementById('cancel-report');
+    const submitReport = document.getElementById('submit-report');
+
+    function openReportModal(questionIndex) {
+        const q = questions[questionIndex];
+        reportQuestionText.textContent = q.question;
+        document.getElementById('report-question-id').value = questionIndex;
+        reportDetails.value = '';
+        reportSuggestion.style.display = 'none';
+        reportSuggestion.textContent = '';
+        reportModal.style.display = 'flex';
+    }
+
+    cancelReport.addEventListener('click', ()=>{ reportModal.style.display = 'none'; });
+
+    submitReport.addEventListener('click', async ()=>{
+        const qIndex = parseInt(document.getElementById('report-question-id').value, 10);
+        const q = questions[qIndex];
+        const detailsText = reportDetails.value.trim();
+        if (!detailsText) {
+            alert('Descreva o problema antes de enviar.');
+            return;
+        }
+        submitReport.disabled = true;
+        submitReport.textContent = 'Enviando...';
+        try {
+            const token = localStorage.getItem('token');
+            const resp = await fetch(`${API_URL}/report-error-correct`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ questionIndex: qIndex, question: q, details: detailsText })
+            });
+            const data = await resp.json();
+            if (!resp.ok) throw new Error(data.message || 'Erro ao enviar reporte');
+            // show AI suggestion if present
+            if (data.suggestion) {
+                reportSuggestion.style.display = 'block';
+                reportSuggestion.innerHTML = `<strong>Sugestão automática da IA:</strong><div style="margin-top:8px">${data.suggestion}</div>`;
+            } else {
+                reportSuggestion.style.display = 'block';
+                reportSuggestion.textContent = 'Reporte enviado. Obrigado!';
+            }
+        } catch (err) {
+            console.error('report failed', err);
+            alert(err.message || 'Falha ao enviar reporte.');
+        } finally {
+            submitReport.disabled = false;
+            submitReport.textContent = 'Enviar reporte e pedir correção';
+        }
+    });
 });
