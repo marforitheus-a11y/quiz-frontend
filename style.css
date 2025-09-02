@@ -351,7 +351,21 @@ body.site-theme .scroll-table td:first-child .theme-name{display:block;max-width
 .quiz-actions{display:flex;gap:12px;margin-top:18px}
 
 /* Report button style */
-.btn-report{background:#fff;border:2px solid rgba(220,38,38,0.08);color:#b91c1c;padding:10px 20px;border-radius:999px;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(220,38,38,0.04)}
+.btn-report{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  border:2px solid rgba(220,38,38,0.08);
+  color:#b91c1c;
+  padding:10px 20px;
+  min-height:44px;
+  border-radius:999px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(220,38,38,0.04);
+  transition:transform .12s ease,box-shadow .12s ease;
+}
 .btn-report:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(220,38,38,0.08)}
 
 /* Selected state: immediate visual feedback when user clicks an option */
