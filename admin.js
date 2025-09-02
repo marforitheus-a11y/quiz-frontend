@@ -23,6 +23,7 @@ const token = localStorage.getItem('token');
 const username = localStorage.getItem('username');
 const API_URL = 'https://quiz-api-z4ri.onrender.com'; // ⚠️ VERIFIQUE SUA URL AQUI
 let categoriesCache = [];
+let usersCache = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
     // --- SELETORES DE ELEMENTOS ---
@@ -85,6 +86,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (reloadUsersBtn) {
         reloadUsersBtn.addEventListener('click', loadUsers);
+    }
+    // search input for users
+    const userSearch = document.getElementById('user-search');
+    if (userSearch) {
+        userSearch.addEventListener('input', (e) => {
+            const q = String(e.target.value || '').trim().toLowerCase();
+            renderUsersFiltered(q);
+        });
     }
 
     const createRootBtn = document.getElementById('create-root-category');
@@ -436,22 +445,35 @@ async function loadUsers() {
             return;
         }
         const users = await response.json();
-        usersTableBody.innerHTML = '';
-        users.forEach(user => {
-            const activeIcon = user.isActive ? '<span class="status-icon active" title="Online"></span>' : '<span class="status-icon inactive" title="Offline"></span>';
-            const expirationDate = user.subscription_expires_at ? new Date(user.subscription_expires_at).toLocaleDateString('pt-BR') : 'N/A';
-            const row = `
-                <tr>
-                    <td>${user.id}</td>
-                    <td class="no-break">${user.username}</td>
-                    <td>${activeIcon}</td>
-                    <td>${expirationDate}</td>
-                    <td><button class="btn-delete" onclick="deleteUser(${user.id})">Apagar</button></td>
-                </tr>
-            `;
-            usersTableBody.innerHTML += row;
-        });
+        usersCache = users || [];
+        renderUsersFiltered('');
     } catch (error) { console.error('Erro ao carregar usuários:', error); }
+}
+
+function renderUsersFiltered(query) {
+    const usersTableBody = document.getElementById('users-table-body');
+    if (!usersTableBody) return;
+    const q = String(query || '').trim().toLowerCase();
+    usersTableBody.innerHTML = '';
+    const list = usersCache.filter(u => !q || (u.username && String(u.username).toLowerCase().includes(q)));
+    if (list.length === 0) {
+        usersTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-500">Nenhum usuário encontrado.</td></tr>`;
+        return;
+    }
+    list.forEach(user => {
+        const activeIcon = user.isActive ? '<span class="status-icon active" title="Online"></span>' : '<span class="status-icon inactive" title="Offline"></span>';
+        const expirationDate = user.subscription_expires_at ? new Date(user.subscription_expires_at).toLocaleDateString('pt-BR') : 'N/A';
+        const row = `
+            <tr>
+                <td>${user.id}</td>
+                <td class="no-break">${user.username}</td>
+                <td>${activeIcon}</td>
+                <td>${expirationDate}</td>
+                <td><button class="btn-delete" onclick="deleteUser(${user.id})">Apagar</button></td>
+            </tr>
+        `;
+        usersTableBody.innerHTML += row;
+    });
 }
 
 async function loadActiveSessions() {
