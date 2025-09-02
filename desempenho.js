@@ -36,17 +36,39 @@ async function init() {
     const ctx = document.getElementById('themesChart').getContext('2d');
     let chart = new Chart(ctx, {
       type: 'bar',
-      data: { labels: [], datasets: [{ label: 'Perguntas respondidas', data: [], backgroundColor: [], borderRadius:6 }] },
+      data: { labels: [], datasets: [{ /* dataset-level label intentionally left blank so legend is per-item */ label: '', data: [], backgroundColor: [], borderRadius:6 }] },
       options: {
         responsive:true,
         plugins:{
           legend:{
             display:true,
             position:'bottom',
+            align: 'center',
             labels:{
               usePointStyle:true,
               boxWidth:12,
-              padding:16,
+              padding:12,
+              // generate one legend item per data (per bar)
+              generateLabels: function(chart) {
+                const data = chart.data;
+                if (!data || !data.datasets || !data.datasets.length) return [];
+                const ds = data.datasets[0];
+                return data.labels.map((label, i) => ({
+                  text: label,
+                  fillStyle: Array.isArray(ds.backgroundColor) ? ds.backgroundColor[i] : ds.backgroundColor,
+                  hidden: chart.getDatasetMeta(0).data[i].hidden,
+                  index: i
+                }));
+              }
+            },
+            // clicking a legend item toggles the visibility of the corresponding bar
+            onClick: function(e, legendItem, legend) {
+              const index = legendItem.index;
+              const ci = legend.chart;
+              const meta = ci.getDatasetMeta(0);
+              if (!meta || !meta.data || !meta.data[index]) return;
+              meta.data[index].hidden = !meta.data[index].hidden;
+              ci.update();
             }
           }
         },
