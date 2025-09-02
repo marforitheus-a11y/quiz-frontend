@@ -421,17 +421,23 @@ async function showResults(mainContent) {
         } else {
             await response.json();
         }
-        
-        sessionStorage.setItem('lastQuizResults', JSON.stringify({
-            score: score,
-            total: questionsToAsk.length,
-            questions: questionsToAsk,
-            userAnswers: userAnswers
-        }));
-        window.location.href = 'resultados.html';
     } catch (error) {
-        mainContent.innerHTML = `<p class="error">Não foi possível salvar seu resultado.</p>`;
-        console.error(error);
+        // Log network or unexpected errors but do not block the user flow.
+        console.error('Erro ao enviar resultado ao servidor:', error);
+    } finally {
+        // Always keep the local result and redirect so the user doesn't see a fatal error UI.
+        try {
+            sessionStorage.setItem('lastQuizResults', JSON.stringify({
+                score: score,
+                total: questionsToAsk.length,
+                questions: questionsToAsk,
+                userAnswers: userAnswers
+            }));
+        } catch (e) {
+            // If sessionStorage fails, still proceed to redirect; the results page can handle no data.
+            console.error('Falha ao gravar lastQuizResults localmente:', e);
+        }
+        window.location.href = 'resultados.html';
     }
 }
 
