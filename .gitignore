@@ -1,0 +1,14 @@
+# Ignore node modules
+node_modules/
+react-login/node_modules/
+
+# Build artifacts
+dist/
+react-login/dist/
+
+# Lockfiles
+package-lock.json
+
+# Logs and env
+*.log
+.env
