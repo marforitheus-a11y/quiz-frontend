@@ -1,0 +1,236 @@
+/* ===========================
+   RESET & BASE
+   =========================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* ===========================
+   CONTAINER PRINCIPAL
+   =========================== */
+.login-container {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* ===========================
+   LOGO & TÍTULO
+   =========================== */
+.logo {
+  margin-bottom: 20px;
+}
+
+.logo-img {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 10px;
+  filter: brightness(0) invert(1); /* deixa branco */
+}
+
+.logo h1 {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.logo p {
+  font-size: 0.9rem;
+  color: #ddd;
+  margin-top: 5px;
+}
+
+/* ===========================
+   TOGGLE BUTTONS (Login/Cadastro)
+   =========================== */
+.login-header {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 20px;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #bbb;
+  cursor: pointer;
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.3s ease;
+}
+
+.toggle-btn:hover {
+  color: #fff;
+}
+
+/* Linha animada abaixo do botão */
+.toggle-btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0;
+  height: 2px;
+  background: #fff;
+  transition: width 0.3s ease;
+}
+
+.toggle-btn.active {
+  color: #fff;
+}
+
+.toggle-btn.active::after {
+  width: 100%;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.7); /* glow suave */
+}
+
+/* ===========================
+   FORMULÁRIO
+   =========================== */
+#auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#auth-form input {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+#auth-form input::placeholder {
+  color: #ccc;
+}
+
+#auth-form input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+}
+
+/* Botão de login/cadastro */
+.login-btn {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #00b4db;
+  background: linear-gradient(135deg, #00b4db, #0083b0);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 180, 219, 0.4);
+}
+
+/* Esqueceu a senha */
+.forgot {
+  font-size: 0.85rem;
+  color: #ccc;
+  text-decoration: none;
+  text-align: right;
+  transition: color 0.3s;
+}
+
+.forgot:hover {
+  color: #fff;
+}
+
+/* ===========================
+   MENSAGEM DE ERRO
+   =========================== */
+.error-message {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #ff6b6b;
+  font-weight: 500;
+}
+
+/* ===========================
+   ANIMAÇÕES (fade-in dos campos extras)
+   =========================== */
+.fade-field {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.4s ease, max-height 0.4s ease, transform 0.4s ease;
+}
+
+.fade-field.show {
+  opacity: 1;
+  max-height: 100px;
+  transform: translateY(0);
+}
+
+.hidden {
+  display: none;
+}
+
+/* ===========================
+   KEYFRAMES
+   =========================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================
+   RESPONSIVIDADE
+   =========================== */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 25px;
+    max-width: 95%;
+  }
+
+  .logo h1 {
+    font-size: 1.5rem;
+  }
+
+  .toggle-btn {
+    font-size: 1rem;
+  }
+
+  #auth-form input {
+    font-size: 0.95rem;
+  }
+
+  .login-btn {
+    font-size: 1rem;
+  }
+}

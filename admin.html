@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Simulado Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>Painel Admin</h1>
+            <div>
+                <a href="broadcast.html" class="btn-header">Mensagem Global</a>
+                <button id="logout-btn" class="btn-logout">Sair <i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </header>
+        <main class="quiz-body">
+
+            <section class="admin-section">
+                <h2>Gerenciar Temas</h2>
+                <table class="admin-table">
+                    <thead><tr><th>ID</th><th>Nome</th><th>Ações</th></tr></thead>
+                    <tbody id="themes-table-body"><tr><td colspan="3">Carregando temas...</td></tr></tbody>
+                </table>
+            </section>
+            
+            <section class="admin-section">
+                <h2>Adicionar Novo Tema (PDF)</h2>
+                <form id="theme-form">
+                    <div class="input-group">
+                        <label for="themeName">Nome do Tema</label>
+                        <input type="text" id="themeName" name="themeName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="questionCount">Quantidade de Questões a Gerar</label>
+                        <input type="number" id="questionCount" name="questionCount" value="5" min="1" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="pdfFile">Arquivo PDF</label>
+                        <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required>
+                    </div>
+                    <button type="submit" class="btn" id="submit-theme-btn">Enviar e Gerar Questões</button>
+                    <div id="upload-progress-container" class="progress-container" style="display: none;">
+                        <p id="theme-status" class="status"></p>
+                        <div class="progress-bar"><div class="progress-bar-fill" id="progress-bar-fill"></div></div>
+                    </div>
+                </form>
+            </section>
+            
+            <section class="admin-section">
+                <h2>Gerenciar Usuários</h2>
+                <button id="reload-users-btn" class="btn-secondary">Atualizar Lista</button>
+                <table class="admin-table">
+                    <thead><tr><th>ID</th><th>Usuário</th><th>Status</th><th>Ação</th></tr></thead>
+                    <tbody id="users-table-body"><tr><td colspan="4">Carregando usuários...</td></tr></tbody>
+                </table>
+            </section>
+
+            <section class="admin-section">
+                <h2>Adicionar Novo Usuário</h2>
+                <form id="user-form">
+                    <div class="input-group"><label for="username">Nome do Usuário</label><input type="text" id="username" name="username" required></div>
+                    <div class="input-group"><label for="password">Senha</label><input type="password" id="password" name="password" required></div>
+                    <div class="input-group"><label for="subscription">Validade da Assinatura</label><input type="date" id="subscription" name="subscription"></div>
+                    <button type="submit" class="btn">Criar Usuário</button>
+                    <p id="user-status" class="status"></p>
+                </form>
+            </section>
+
+            <section class="admin-section">
+                <h2>Últimos Reportes de Erro</h2>
+                <table class="admin-table">
+                    <thead><tr><th>Status</th><th>Questão</th><th>Reportado Por</th><th>Tipo</th></tr></thead>
+                    <tbody id="reports-table-body"><tr><td colspan="4">Carregando reportes...</td></tr></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div id="reset-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2>Resetar Tema</h2>
+            <p>Para gerar novas questões, por favor, envie novamente o arquivo PDF original e defina a nova quantidade de questões.</p>
+            <form id="reset-theme-form">
+                <input type="hidden" id="reset-theme-id">
+                <div class="input-group">
+                    <label for="resetQuestionCount">Nova Quantidade de Questões</label>
+                    <input type="number" id="resetQuestionCount" name="questionCount" value="5" min="1" required>
+                </div>
+                <div class="input-group">
+                    <label for="resetPdfFile">Arquivo PDF Original</label>
+                    <input type="file" id="resetPdfFile" name="pdfFile" accept=".pdf" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancel-reset">Cancelar</button>
+                    <button type="submit" class="btn">Resetar Questões</button>
+                </div>
+                <p id="reset-status" class="status"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
